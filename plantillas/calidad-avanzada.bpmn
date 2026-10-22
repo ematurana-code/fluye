@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="calidad_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="calidad_avanzada_colab0">
+    <bpmn:participant id="calidad_avanzada_pool_empresa" name="Empresa" processRef="calidad_avanzada_proceso_empresa" />
+    <bpmn:participant id="calidad_avanzada_pool_auditora" name="Empresa auditora" processRef="calidad_avanzada_proceso_auditora" />
+    <bpmn:messageFlow id="calidad_avanzada_m0_0" name="Solicitud" sourceRef="calidad_avanzada_e_sol" targetRef="calidad_avanzada_a_ini" />
+    <bpmn:messageFlow id="calidad_avanzada_m0_1" name="Informe" sourceRef="calidad_avanzada_a_inf" targetRef="calidad_avanzada_e_inf" />
+    <bpmn:messageFlow id="calidad_avanzada_m0_2" name="Certificado" sourceRef="calidad_avanzada_a_cer" targetRef="calidad_avanzada_e_cer" />
+  </bpmn:collaboration>
+  <bpmn:process id="calidad_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="calidad_avanzada_carriles_empresa">
+      <bpmn:lane id="calidad_avanzada_carril_cal" name="Calidad">
+        <bpmn:flowNodeRef>calidad_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_sol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_pre</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_inf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_hal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_cer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="calidad_avanzada_carril_are" name="Áreas auditadas">
+        <bpmn:flowNodeRef>calidad_avanzada_e_atn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_e_cor</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="calidad_avanzada_e_ini" name="Se acerca la auditoría anual">
+      <bpmn:outgoing>calidad_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="calidad_avanzada_e_sol" name="Solicitar la auditoría">
+      <bpmn:incoming>calidad_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:subProcess id="calidad_avanzada_e_pre" name="Preparar la auditoría">
+      <bpmn:documentation>El detalle está en la pestaña "Preparar la auditoría".</bpmn:documentation>
+      <bpmn:incoming>calidad_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_2</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:intermediateCatchEvent id="calidad_avanzada_e_esp" name="Esperar la fecha de auditoría">
+      <bpmn:incoming>calidad_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="calidad_avanzada_e_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="calidad_avanzada_e_atn" name="Atender a los auditores">
+      <bpmn:incoming>calidad_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:intermediateCatchEvent id="calidad_avanzada_e_inf" name="Llega el informe de auditoría">
+      <bpmn:incoming>calidad_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="calidad_avanzada_e_inf_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="calidad_avanzada_e_hal" name="¿Hay hallazgos?">
+      <bpmn:incoming>calidad_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_6</bpmn:outgoing>
+      <bpmn:outgoing>calidad_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="calidad_avanzada_e_cor" name="Corregir los hallazgos">
+      <bpmn:incoming>calidad_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="calidad_avanzada_e_uni">
+      <bpmn:incoming>calidad_avanzada_f0_6</bpmn:incoming>
+      <bpmn:incoming>calidad_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="calidad_avanzada_e_cer" name="Llega el certificado">
+      <bpmn:incoming>calidad_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="calidad_avanzada_e_cer_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="calidad_avanzada_e_fin" name="Empresa certificada">
+      <bpmn:incoming>calidad_avanzada_f0_10</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_0" sourceRef="calidad_avanzada_e_ini" targetRef="calidad_avanzada_e_sol" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_1" sourceRef="calidad_avanzada_e_sol" targetRef="calidad_avanzada_e_pre" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_2" sourceRef="calidad_avanzada_e_pre" targetRef="calidad_avanzada_e_esp" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_3" sourceRef="calidad_avanzada_e_esp" targetRef="calidad_avanzada_e_atn" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_4" sourceRef="calidad_avanzada_e_atn" targetRef="calidad_avanzada_e_inf" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_5" sourceRef="calidad_avanzada_e_inf" targetRef="calidad_avanzada_e_hal" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_6" name="No" sourceRef="calidad_avanzada_e_hal" targetRef="calidad_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_7" name="Sí" sourceRef="calidad_avanzada_e_hal" targetRef="calidad_avanzada_e_cor" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_8" sourceRef="calidad_avanzada_e_cor" targetRef="calidad_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_9" sourceRef="calidad_avanzada_e_uni" targetRef="calidad_avanzada_e_cer" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_10" sourceRef="calidad_avanzada_e_cer" targetRef="calidad_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmn:process id="calidad_avanzada_proceso_auditora" isExecutable="false">
+    <bpmn:laneSet id="calidad_avanzada_carriles_auditora">
+      <bpmn:lane id="calidad_avanzada_carril_aud" name="Auditor">
+        <bpmn:flowNodeRef>calidad_avanzada_a_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_pla</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_aud</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_inf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_cer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_a_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="calidad_avanzada_a_ini" name="Recibe la solicitud">
+      <bpmn:outgoing>calidad_avanzada_f0_11</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="calidad_avanzada_a_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="calidad_avanzada_a_pla" name="Planificar la auditoría">
+      <bpmn:incoming>calidad_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="calidad_avanzada_a_aud" name="Auditar en terreno">
+      <bpmn:incoming>calidad_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:userTask id="calidad_avanzada_a_inf" name="Enviar el informe">
+      <bpmn:incoming>calidad_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="calidad_avanzada_a_esp" name="Plazo para cerrar hallazgos (30 días)">
+      <bpmn:incoming>calidad_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_15</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="calidad_avanzada_a_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="calidad_avanzada_a_cer" name="Emitir el certificado">
+      <bpmn:incoming>calidad_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f0_16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="calidad_avanzada_a_fin" name="Auditoría cerrada">
+      <bpmn:incoming>calidad_avanzada_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_11" sourceRef="calidad_avanzada_a_ini" targetRef="calidad_avanzada_a_pla" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_12" sourceRef="calidad_avanzada_a_pla" targetRef="calidad_avanzada_a_aud" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_13" sourceRef="calidad_avanzada_a_aud" targetRef="calidad_avanzada_a_inf" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_14" sourceRef="calidad_avanzada_a_inf" targetRef="calidad_avanzada_a_esp" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_15" sourceRef="calidad_avanzada_a_esp" targetRef="calidad_avanzada_a_cer" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f0_16" sourceRef="calidad_avanzada_a_cer" targetRef="calidad_avanzada_a_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="calidad_avanzada_colab1">
+    <bpmn:participant id="calidad_avanzada_pool_preparacion" name="Preparación" processRef="calidad_avanzada_proceso_preparacion" />
+  </bpmn:collaboration>
+  <bpmn:process id="calidad_avanzada_proceso_preparacion" isExecutable="false">
+    <bpmn:laneSet id="calidad_avanzada_carriles_preparacion">
+      <bpmn:lane id="calidad_avanzada_carril_p_cal" name="Calidad">
+        <bpmn:flowNodeRef>calidad_avanzada_p_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_doc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="calidad_avanzada_carril_p_are" name="Áreas">
+        <bpmn:flowNodeRef>calidad_avanzada_p_aut</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_com</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_avanzada_p_fi2</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="calidad_avanzada_p_ini" name="Se agenda la auditoría">
+      <bpmn:outgoing>calidad_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="calidad_avanzada_p_par">
+      <bpmn:incoming>calidad_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_1</bpmn:outgoing>
+      <bpmn:outgoing>calidad_avanzada_f1_2</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="calidad_avanzada_p_doc" name="Actualizar procedimientos y registros">
+      <bpmn:incoming>calidad_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="calidad_avanzada_p_aut" name="Hacer una autoevaluación">
+      <bpmn:incoming>calidad_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="calidad_avanzada_p_jun">
+      <bpmn:incoming>calidad_avanzada_f1_3</bpmn:incoming>
+      <bpmn:incoming>calidad_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="calidad_avanzada_p_dec" name="¿Está todo listo?">
+      <bpmn:incoming>calidad_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_6</bpmn:outgoing>
+      <bpmn:outgoing>calidad_avanzada_f1_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="calidad_avanzada_p_ok" name="Listos para la auditoría">
+      <bpmn:incoming>calidad_avanzada_f1_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="calidad_avanzada_p_com" name="Completar lo pendiente">
+      <bpmn:incoming>calidad_avanzada_f1_7</bpmn:incoming>
+      <bpmn:outgoing>calidad_avanzada_f1_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="calidad_avanzada_p_fi2" name="Listos con pendientes menores">
+      <bpmn:incoming>calidad_avanzada_f1_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_0" sourceRef="calidad_avanzada_p_ini" targetRef="calidad_avanzada_p_par" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_1" sourceRef="calidad_avanzada_p_par" targetRef="calidad_avanzada_p_doc" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_2" sourceRef="calidad_avanzada_p_par" targetRef="calidad_avanzada_p_aut" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_3" sourceRef="calidad_avanzada_p_doc" targetRef="calidad_avanzada_p_jun" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_4" sourceRef="calidad_avanzada_p_aut" targetRef="calidad_avanzada_p_jun" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_5" sourceRef="calidad_avanzada_p_jun" targetRef="calidad_avanzada_p_dec" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_6" name="Sí" sourceRef="calidad_avanzada_p_dec" targetRef="calidad_avanzada_p_ok" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_7" name="No" sourceRef="calidad_avanzada_p_dec" targetRef="calidad_avanzada_p_com" />
+    <bpmn:sequenceFlow id="calidad_avanzada_f1_8" sourceRef="calidad_avanzada_p_com" targetRef="calidad_avanzada_p_fi2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="calidad_avanzada_diagrama0" name="Auditoría">
+    <bpmndi:BPMNPlane id="calidad_avanzada_plano0" bpmnElement="calidad_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_pool_empresa" bpmnElement="calidad_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2110" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_pool_auditora" bpmnElement="calidad_avanzada_pool_auditora" isHorizontal="true">
+        <dc:Bounds x="80" y="450" width="2110" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_carril_cal" bpmnElement="calidad_avanzada_carril_cal" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_carril_are" bpmnElement="calidad_avanzada_carril_are" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_carril_aud" bpmnElement="calidad_avanzada_carril_aud" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_ini" bpmnElement="calidad_avanzada_e_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_sol" bpmnElement="calidad_avanzada_e_sol">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_pre" bpmnElement="calidad_avanzada_e_pre" isExpanded="false">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_esp" bpmnElement="calidad_avanzada_e_esp">
+        <dc:Bounds x="702" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_atn" bpmnElement="calidad_avanzada_e_atn">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_inf" bpmnElement="calidad_avanzada_e_inf">
+        <dc:Bounds x="1212" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_hal" bpmnElement="calidad_avanzada_e_hal" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_cor" bpmnElement="calidad_avanzada_e_cor">
+        <dc:Bounds x="1510" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_uni" bpmnElement="calidad_avanzada_e_uni" isMarkerVisible="false">
+        <dc:Bounds x="1717" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_cer" bpmnElement="calidad_avanzada_e_cer">
+        <dc:Bounds x="1892" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_e_fin" bpmnElement="calidad_avanzada_e_fin">
+        <dc:Bounds x="2062" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_ini" bpmnElement="calidad_avanzada_a_ini">
+        <dc:Bounds x="362" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_pla" bpmnElement="calidad_avanzada_a_pla">
+        <dc:Bounds x="490" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_aud" bpmnElement="calidad_avanzada_a_aud">
+        <dc:Bounds x="830" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_inf" bpmnElement="calidad_avanzada_a_inf">
+        <dc:Bounds x="1170" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_esp" bpmnElement="calidad_avanzada_a_esp">
+        <dc:Bounds x="1552" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_cer" bpmnElement="calidad_avanzada_a_cer">
+        <dc:Bounds x="1850" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_a_fin" bpmnElement="calidad_avanzada_a_fin">
+        <dc:Bounds x="2062" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_0" bpmnElement="calidad_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_1" bpmnElement="calidad_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_2" bpmnElement="calidad_avanzada_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="702" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_3" bpmnElement="calidad_avanzada_f0_3">
+        <di:waypoint x="738" y="135" />
+        <di:waypoint x="784" y="135" />
+        <di:waypoint x="784" y="285" />
+        <di:waypoint x="830" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_4" bpmnElement="calidad_avanzada_f0_4">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="1081" y="285" />
+        <di:waypoint x="1081" y="135" />
+        <di:waypoint x="1212" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_5" bpmnElement="calidad_avanzada_f0_5">
+        <di:waypoint x="1248" y="135" />
+        <di:waypoint x="1377" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_6" bpmnElement="calidad_avanzada_f0_6">
+        <di:waypoint x="1423" y="135" />
+        <di:waypoint x="1717" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_7" bpmnElement="calidad_avanzada_f0_7">
+        <di:waypoint x="1400" y="158" />
+        <di:waypoint x="1400" y="285" />
+        <di:waypoint x="1510" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_8" bpmnElement="calidad_avanzada_f0_8">
+        <di:waypoint x="1630" y="285" />
+        <di:waypoint x="1740" y="285" />
+        <di:waypoint x="1740" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_9" bpmnElement="calidad_avanzada_f0_9">
+        <di:waypoint x="1763" y="135" />
+        <di:waypoint x="1892" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_10" bpmnElement="calidad_avanzada_f0_10">
+        <di:waypoint x="1928" y="135" />
+        <di:waypoint x="2062" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_11" bpmnElement="calidad_avanzada_f0_11">
+        <di:waypoint x="398" y="525" />
+        <di:waypoint x="490" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_12" bpmnElement="calidad_avanzada_f0_12">
+        <di:waypoint x="610" y="525" />
+        <di:waypoint x="830" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_13" bpmnElement="calidad_avanzada_f0_13">
+        <di:waypoint x="950" y="525" />
+        <di:waypoint x="1170" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_14" bpmnElement="calidad_avanzada_f0_14">
+        <di:waypoint x="1290" y="525" />
+        <di:waypoint x="1552" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_15" bpmnElement="calidad_avanzada_f0_15">
+        <di:waypoint x="1588" y="525" />
+        <di:waypoint x="1850" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f0_16" bpmnElement="calidad_avanzada_f0_16">
+        <di:waypoint x="1970" y="525" />
+        <di:waypoint x="2062" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_m0_0" bpmnElement="calidad_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_m0_1" bpmnElement="calidad_avanzada_m0_1">
+        <di:waypoint x="1230" y="493" />
+        <di:waypoint x="1230" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_m0_2" bpmnElement="calidad_avanzada_m0_2">
+        <di:waypoint x="1910" y="493" />
+        <di:waypoint x="1910" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="calidad_avanzada_diagrama1" name="Preparar la auditoría">
+    <bpmndi:BPMNPlane id="calidad_avanzada_plano1" bpmnElement="calidad_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_pool_preparacion" bpmnElement="calidad_avanzada_pool_preparacion" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_carril_p_cal" bpmnElement="calidad_avanzada_carril_p_cal" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_carril_p_are" bpmnElement="calidad_avanzada_carril_p_are" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_ini" bpmnElement="calidad_avanzada_p_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_par" bpmnElement="calidad_avanzada_p_par">
+        <dc:Bounds x="357" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_doc" bpmnElement="calidad_avanzada_p_doc">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_aut" bpmnElement="calidad_avanzada_p_aut">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_jun" bpmnElement="calidad_avanzada_p_jun">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_dec" bpmnElement="calidad_avanzada_p_dec" isMarkerVisible="false">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_ok" bpmnElement="calidad_avanzada_p_ok">
+        <dc:Bounds x="1042" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_com" bpmnElement="calidad_avanzada_p_com">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_avanzada_p_fi2" bpmnElement="calidad_avanzada_p_fi2">
+        <dc:Bounds x="1042" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_0" bpmnElement="calidad_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="357" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_1" bpmnElement="calidad_avanzada_f1_1">
+        <di:waypoint x="403" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_2" bpmnElement="calidad_avanzada_f1_2">
+        <di:waypoint x="380" y="158" />
+        <di:waypoint x="380" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_3" bpmnElement="calidad_avanzada_f1_3">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_4" bpmnElement="calidad_avanzada_f1_4">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="720" y="285" />
+        <di:waypoint x="720" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_5" bpmnElement="calidad_avanzada_f1_5">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_6" bpmnElement="calidad_avanzada_f1_6">
+        <di:waypoint x="913" y="135" />
+        <di:waypoint x="1042" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_7" bpmnElement="calidad_avanzada_f1_7">
+        <di:waypoint x="890" y="158" />
+        <di:waypoint x="890" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_avanzada_f1_8" bpmnElement="calidad_avanzada_f1_8">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="1042" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

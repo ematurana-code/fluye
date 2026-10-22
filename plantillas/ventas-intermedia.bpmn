@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="ventas_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="ventas_intermedia_colab0">
+    <bpmn:participant id="ventas_intermedia_pool_empresa" name="Empresa" processRef="ventas_intermedia_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="ventas_intermedia_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="ventas_intermedia_carriles_empresa">
+      <bpmn:lane id="ventas_intermedia_carril_eje" name="Ejecutivo comercial">
+        <bpmn:flowNodeRef>ventas_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_cot</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_neg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_ace</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_aju</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_fir</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_seg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ventas_intermedia_carril_jef" name="Jefatura comercial">
+        <bpmn:flowNodeRef>ventas_intermedia_apb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_intermedia_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ventas_intermedia_carril_ope" name="Operaciones">
+        <bpmn:flowNodeRef>ventas_intermedia_ent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ventas_intermedia_carril_fct" name="Facturación">
+        <bpmn:flowNodeRef>ventas_intermedia_fac</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ventas_intermedia_ini" name="Cliente interesado">
+      <bpmn:outgoing>ventas_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ventas_intermedia_cot" name="Preparar y enviar la cotización">
+      <bpmn:incoming>ventas_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ventas_intermedia_neg" name="Negociar condiciones">
+      <bpmn:incoming>ventas_intermedia_f0_1</bpmn:incoming>
+      <bpmn:incoming>ventas_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ventas_intermedia_ace" name="¿El cliente acepta?">
+      <bpmn:incoming>ventas_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>ventas_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ventas_intermedia_aju" name="Ajustar la propuesta">
+      <bpmn:incoming>ventas_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ventas_intermedia_fir" name="Firmar el contrato">
+      <bpmn:incoming>ventas_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ventas_intermedia_apb" name="Aprobar el contrato">
+      <bpmn:incoming>ventas_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="ventas_intermedia_par">
+      <bpmn:incoming>ventas_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_8</bpmn:outgoing>
+      <bpmn:outgoing>ventas_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="ventas_intermedia_ent" name="Programar la entrega">
+      <bpmn:incoming>ventas_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ventas_intermedia_fac" name="Emitir la factura">
+      <bpmn:incoming>ventas_intermedia_f0_9</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="ventas_intermedia_jun">
+      <bpmn:incoming>ventas_intermedia_f0_10</bpmn:incoming>
+      <bpmn:incoming>ventas_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="ventas_intermedia_seg" name="Hacer seguimiento al cliente">
+      <bpmn:incoming>ventas_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>ventas_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ventas_intermedia_fin" name="Venta cerrada">
+      <bpmn:incoming>ventas_intermedia_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_0" sourceRef="ventas_intermedia_ini" targetRef="ventas_intermedia_cot" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_1" sourceRef="ventas_intermedia_cot" targetRef="ventas_intermedia_neg" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_2" sourceRef="ventas_intermedia_neg" targetRef="ventas_intermedia_ace" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_3" name="Sí" sourceRef="ventas_intermedia_ace" targetRef="ventas_intermedia_fir" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_4" name="No" sourceRef="ventas_intermedia_ace" targetRef="ventas_intermedia_aju" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_5" sourceRef="ventas_intermedia_aju" targetRef="ventas_intermedia_neg" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_6" sourceRef="ventas_intermedia_fir" targetRef="ventas_intermedia_apb" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_7" sourceRef="ventas_intermedia_apb" targetRef="ventas_intermedia_par" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_8" sourceRef="ventas_intermedia_par" targetRef="ventas_intermedia_ent" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_9" sourceRef="ventas_intermedia_par" targetRef="ventas_intermedia_fac" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_10" sourceRef="ventas_intermedia_ent" targetRef="ventas_intermedia_jun" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_11" sourceRef="ventas_intermedia_fac" targetRef="ventas_intermedia_jun" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_12" sourceRef="ventas_intermedia_jun" targetRef="ventas_intermedia_seg" />
+    <bpmn:sequenceFlow id="ventas_intermedia_f0_13" sourceRef="ventas_intermedia_seg" targetRef="ventas_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ventas_intermedia_diagrama0" name="Oportunidad de venta">
+    <bpmndi:BPMNPlane id="ventas_intermedia_plano0" bpmnElement="ventas_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_pool_empresa" bpmnElement="ventas_intermedia_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="720" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_carril_eje" bpmnElement="ventas_intermedia_carril_eje" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_carril_jef" bpmnElement="ventas_intermedia_carril_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_carril_ope" bpmnElement="ventas_intermedia_carril_ope" isHorizontal="true">
+        <dc:Bounds x="110" y="480" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_carril_fct" bpmnElement="ventas_intermedia_carril_fct" isHorizontal="true">
+        <dc:Bounds x="110" y="630" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_ini" bpmnElement="ventas_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_cot" bpmnElement="ventas_intermedia_cot">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_neg" bpmnElement="ventas_intermedia_neg">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_ace" bpmnElement="ventas_intermedia_ace" isMarkerVisible="false">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_aju" bpmnElement="ventas_intermedia_aju">
+        <dc:Bounds x="660" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_fir" bpmnElement="ventas_intermedia_fir">
+        <dc:Bounds x="830" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_apb" bpmnElement="ventas_intermedia_apb">
+        <dc:Bounds x="1000" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_par" bpmnElement="ventas_intermedia_par">
+        <dc:Bounds x="1207" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_ent" bpmnElement="ventas_intermedia_ent">
+        <dc:Bounds x="1340" y="523" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_fac" bpmnElement="ventas_intermedia_fac">
+        <dc:Bounds x="1340" y="673" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_jun" bpmnElement="ventas_intermedia_jun">
+        <dc:Bounds x="1547" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_seg" bpmnElement="ventas_intermedia_seg">
+        <dc:Bounds x="1680" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_intermedia_fin" bpmnElement="ventas_intermedia_fin">
+        <dc:Bounds x="1892" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_0" bpmnElement="ventas_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_1" bpmnElement="ventas_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_2" bpmnElement="ventas_intermedia_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_3" bpmnElement="ventas_intermedia_f0_3">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="830" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_4" bpmnElement="ventas_intermedia_f0_4">
+        <di:waypoint x="720" y="158" />
+        <di:waypoint x="720" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_5" bpmnElement="ventas_intermedia_f0_5">
+        <di:waypoint x="660" y="255" />
+        <di:waypoint x="550" y="255" />
+        <di:waypoint x="550" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_6" bpmnElement="ventas_intermedia_f0_6">
+        <di:waypoint x="950" y="135" />
+        <di:waypoint x="975" y="135" />
+        <di:waypoint x="975" y="405" />
+        <di:waypoint x="1000" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_7" bpmnElement="ventas_intermedia_f0_7">
+        <di:waypoint x="1120" y="405" />
+        <di:waypoint x="1207" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_8" bpmnElement="ventas_intermedia_f0_8">
+        <di:waypoint x="1230" y="428" />
+        <di:waypoint x="1230" y="555" />
+        <di:waypoint x="1340" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_9" bpmnElement="ventas_intermedia_f0_9">
+        <di:waypoint x="1230" y="428" />
+        <di:waypoint x="1230" y="705" />
+        <di:waypoint x="1340" y="705" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_10" bpmnElement="ventas_intermedia_f0_10">
+        <di:waypoint x="1460" y="555" />
+        <di:waypoint x="1570" y="555" />
+        <di:waypoint x="1570" y="428" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_11" bpmnElement="ventas_intermedia_f0_11">
+        <di:waypoint x="1460" y="705" />
+        <di:waypoint x="1570" y="705" />
+        <di:waypoint x="1570" y="428" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_12" bpmnElement="ventas_intermedia_f0_12">
+        <di:waypoint x="1570" y="382" />
+        <di:waypoint x="1570" y="135" />
+        <di:waypoint x="1680" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_intermedia_f0_13" bpmnElement="ventas_intermedia_f0_13">
+        <di:waypoint x="1800" y="135" />
+        <di:waypoint x="1892" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

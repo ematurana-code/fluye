@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="finanzas_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="finanzas_intermedia_colab0">
+    <bpmn:participant id="finanzas_intermedia_pool_empresa" name="Empresa" processRef="finanzas_intermedia_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="finanzas_intermedia_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="finanzas_intermedia_carriles_empresa">
+      <bpmn:lane id="finanzas_intermedia_carril_cnt" name="Contabilidad">
+        <bpmn:flowNodeRef>finanzas_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_coi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_cbz</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="finanzas_intermedia_carril_are" name="Área que compró">
+        <bpmn:flowNodeRef>finanzas_intermedia_acl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_apr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="finanzas_intermedia_carril_tes" name="Tesorería">
+        <bpmn:flowNodeRef>finanzas_intermedia_pro</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_com</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_intermedia_ini" name="Llega una factura">
+      <bpmn:outgoing>finanzas_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="finanzas_intermedia_reg" name="Registrar la factura">
+      <bpmn:incoming>finanzas_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finanzas_intermedia_val" name="Validar con la orden de compra">
+      <bpmn:incoming>finanzas_intermedia_f0_1</bpmn:incoming>
+      <bpmn:incoming>finanzas_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="finanzas_intermedia_coi" name="¿Coincide con la orden?">
+      <bpmn:incoming>finanzas_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>finanzas_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="finanzas_intermedia_acl" name="Pedir aclaración o nota de crédito">
+      <bpmn:incoming>finanzas_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="finanzas_intermedia_par">
+      <bpmn:incoming>finanzas_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_6</bpmn:outgoing>
+      <bpmn:outgoing>finanzas_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="finanzas_intermedia_cbz" name="Contabilizar la factura">
+      <bpmn:incoming>finanzas_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finanzas_intermedia_apr" name="Aprobar el pago">
+      <bpmn:incoming>finanzas_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="finanzas_intermedia_jun">
+      <bpmn:incoming>finanzas_intermedia_f0_8</bpmn:incoming>
+      <bpmn:incoming>finanzas_intermedia_f0_9</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="finanzas_intermedia_pro" name="Programar el pago">
+      <bpmn:incoming>finanzas_intermedia_f0_10</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="finanzas_intermedia_pag" name="Pagar por transferencia">
+      <bpmn:incoming>finanzas_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="finanzas_intermedia_com" name="Enviar el comprobante al proveedor">
+      <bpmn:incoming>finanzas_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>finanzas_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="finanzas_intermedia_fin" name="Factura pagada">
+      <bpmn:incoming>finanzas_intermedia_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_0" sourceRef="finanzas_intermedia_ini" targetRef="finanzas_intermedia_reg" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_1" sourceRef="finanzas_intermedia_reg" targetRef="finanzas_intermedia_val" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_2" sourceRef="finanzas_intermedia_val" targetRef="finanzas_intermedia_coi" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_3" name="Sí" sourceRef="finanzas_intermedia_coi" targetRef="finanzas_intermedia_par" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_4" name="No" sourceRef="finanzas_intermedia_coi" targetRef="finanzas_intermedia_acl" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_5" sourceRef="finanzas_intermedia_acl" targetRef="finanzas_intermedia_val" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_6" sourceRef="finanzas_intermedia_par" targetRef="finanzas_intermedia_cbz" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_7" sourceRef="finanzas_intermedia_par" targetRef="finanzas_intermedia_apr" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_8" sourceRef="finanzas_intermedia_cbz" targetRef="finanzas_intermedia_jun" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_9" sourceRef="finanzas_intermedia_apr" targetRef="finanzas_intermedia_jun" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_10" sourceRef="finanzas_intermedia_jun" targetRef="finanzas_intermedia_pro" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_11" sourceRef="finanzas_intermedia_pro" targetRef="finanzas_intermedia_pag" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_12" sourceRef="finanzas_intermedia_pag" targetRef="finanzas_intermedia_com" />
+    <bpmn:sequenceFlow id="finanzas_intermedia_f0_13" sourceRef="finanzas_intermedia_com" targetRef="finanzas_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="finanzas_intermedia_diagrama0" name="Pago de facturas">
+    <bpmndi:BPMNPlane id="finanzas_intermedia_plano0" bpmnElement="finanzas_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_pool_empresa" bpmnElement="finanzas_intermedia_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_carril_cnt" bpmnElement="finanzas_intermedia_carril_cnt" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_carril_are" bpmnElement="finanzas_intermedia_carril_are" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_carril_tes" bpmnElement="finanzas_intermedia_carril_tes" isHorizontal="true">
+        <dc:Bounds x="110" y="360" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_ini" bpmnElement="finanzas_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_reg" bpmnElement="finanzas_intermedia_reg">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_val" bpmnElement="finanzas_intermedia_val">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_coi" bpmnElement="finanzas_intermedia_coi" isMarkerVisible="false">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_acl" bpmnElement="finanzas_intermedia_acl">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_par" bpmnElement="finanzas_intermedia_par">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_cbz" bpmnElement="finanzas_intermedia_cbz">
+        <dc:Bounds x="1000" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_apr" bpmnElement="finanzas_intermedia_apr">
+        <dc:Bounds x="1000" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_jun" bpmnElement="finanzas_intermedia_jun">
+        <dc:Bounds x="1207" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_pro" bpmnElement="finanzas_intermedia_pro">
+        <dc:Bounds x="1340" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_pag" bpmnElement="finanzas_intermedia_pag">
+        <dc:Bounds x="1510" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_com" bpmnElement="finanzas_intermedia_com">
+        <dc:Bounds x="1680" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_intermedia_fin" bpmnElement="finanzas_intermedia_fin">
+        <dc:Bounds x="1892" y="417" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_0" bpmnElement="finanzas_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_1" bpmnElement="finanzas_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_2" bpmnElement="finanzas_intermedia_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_3" bpmnElement="finanzas_intermedia_f0_3">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_4" bpmnElement="finanzas_intermedia_f0_4">
+        <di:waypoint x="720" y="158" />
+        <di:waypoint x="720" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_5" bpmnElement="finanzas_intermedia_f0_5">
+        <di:waypoint x="660" y="285" />
+        <di:waypoint x="550" y="285" />
+        <di:waypoint x="550" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_6" bpmnElement="finanzas_intermedia_f0_6">
+        <di:waypoint x="913" y="135" />
+        <di:waypoint x="1000" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_7" bpmnElement="finanzas_intermedia_f0_7">
+        <di:waypoint x="890" y="158" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="1000" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_8" bpmnElement="finanzas_intermedia_f0_8">
+        <di:waypoint x="1120" y="135" />
+        <di:waypoint x="1230" y="135" />
+        <di:waypoint x="1230" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_9" bpmnElement="finanzas_intermedia_f0_9">
+        <di:waypoint x="1120" y="285" />
+        <di:waypoint x="1207" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_10" bpmnElement="finanzas_intermedia_f0_10">
+        <di:waypoint x="1230" y="308" />
+        <di:waypoint x="1230" y="435" />
+        <di:waypoint x="1340" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_11" bpmnElement="finanzas_intermedia_f0_11">
+        <di:waypoint x="1460" y="435" />
+        <di:waypoint x="1510" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_12" bpmnElement="finanzas_intermedia_f0_12">
+        <di:waypoint x="1630" y="435" />
+        <di:waypoint x="1680" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_intermedia_f0_13" bpmnElement="finanzas_intermedia_f0_13">
+        <di:waypoint x="1800" y="435" />
+        <di:waypoint x="1892" y="435" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

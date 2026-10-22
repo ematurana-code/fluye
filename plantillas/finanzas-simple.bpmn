@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="finanzas_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="finanzas_simple_colab0">
+    <bpmn:participant id="finanzas_simple_pool_empresa" name="Empresa" processRef="finanzas_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="finanzas_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="finanzas_simple_carriles_empresa">
+      <bpmn:lane id="finanzas_simple_carril_col" name="Colaborador">
+        <bpmn:flowNodeRef>finanzas_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_simple_ren</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_simple_cor</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="finanzas_simple_carril_fnz" name="Finanzas">
+        <bpmn:flowNodeRef>finanzas_simple_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_simple_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_simple_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_simple_ini" name="Hizo un gasto de la empresa">
+      <bpmn:outgoing>finanzas_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="finanzas_simple_ren" name="Rendir el gasto con su boleta">
+      <bpmn:incoming>finanzas_simple_f0_0</bpmn:incoming>
+      <bpmn:incoming>finanzas_simple_f0_6</bpmn:incoming>
+      <bpmn:outgoing>finanzas_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finanzas_simple_rev" name="Revisar la rendición">
+      <bpmn:incoming>finanzas_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>finanzas_simple_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="finanzas_simple_dec" name="¿Está correcta?">
+      <bpmn:incoming>finanzas_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>finanzas_simple_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>finanzas_simple_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="finanzas_simple_pag" name="Reembolsar al colaborador">
+      <bpmn:incoming>finanzas_simple_f0_3</bpmn:incoming>
+      <bpmn:outgoing>finanzas_simple_f0_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="finanzas_simple_fin" name="Gasto reembolsado">
+      <bpmn:incoming>finanzas_simple_f0_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="finanzas_simple_cor" name="Corregir la rendición">
+      <bpmn:incoming>finanzas_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>finanzas_simple_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="finanzas_simple_f0_0" sourceRef="finanzas_simple_ini" targetRef="finanzas_simple_ren" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_1" sourceRef="finanzas_simple_ren" targetRef="finanzas_simple_rev" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_2" sourceRef="finanzas_simple_rev" targetRef="finanzas_simple_dec" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_3" name="Sí" sourceRef="finanzas_simple_dec" targetRef="finanzas_simple_pag" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_4" sourceRef="finanzas_simple_pag" targetRef="finanzas_simple_fin" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_5" name="No" sourceRef="finanzas_simple_dec" targetRef="finanzas_simple_cor" />
+    <bpmn:sequenceFlow id="finanzas_simple_f0_6" sourceRef="finanzas_simple_cor" targetRef="finanzas_simple_ren" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="finanzas_simple_diagrama0" name="Rendición de gastos">
+    <bpmndi:BPMNPlane id="finanzas_simple_plano0" bpmnElement="finanzas_simple_colab0">
+      <bpmndi:BPMNShape id="DI_finanzas_simple_pool_empresa" bpmnElement="finanzas_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_carril_col" bpmnElement="finanzas_simple_carril_col" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_carril_fnz" bpmnElement="finanzas_simple_carril_fnz" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_ini" bpmnElement="finanzas_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_ren" bpmnElement="finanzas_simple_ren">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_rev" bpmnElement="finanzas_simple_rev">
+        <dc:Bounds x="490" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_dec" bpmnElement="finanzas_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_pag" bpmnElement="finanzas_simple_pag">
+        <dc:Bounds x="830" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_fin" bpmnElement="finanzas_simple_fin">
+        <dc:Bounds x="1042" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_simple_cor" bpmnElement="finanzas_simple_cor">
+        <dc:Bounds x="660" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_0" bpmnElement="finanzas_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_1" bpmnElement="finanzas_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="405" />
+        <di:waypoint x="490" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_2" bpmnElement="finanzas_simple_f0_2">
+        <di:waypoint x="610" y="405" />
+        <di:waypoint x="697" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_3" bpmnElement="finanzas_simple_f0_3">
+        <di:waypoint x="743" y="405" />
+        <di:waypoint x="830" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_4" bpmnElement="finanzas_simple_f0_4">
+        <di:waypoint x="950" y="405" />
+        <di:waypoint x="1042" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_5" bpmnElement="finanzas_simple_f0_5">
+        <di:waypoint x="720" y="382" />
+        <di:waypoint x="720" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_simple_f0_6" bpmnElement="finanzas_simple_f0_6">
+        <di:waypoint x="660" y="255" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

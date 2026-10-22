@@ -1,0 +1,30 @@
+/* Página web interactiva (Exportar → .html): mismo aspecto de Fluye, sin paleta ni panel de propiedades. */
+.fl-visor .fl-cuerpo { grid-template-columns: 1fr; }
+body.en-play .fl-visor .fl-cuerpo { grid-template-columns: 1fr var(--ancho-panel); }
+.fl-visor #nombre-archivo { cursor: default; }
+.fl-visor #nombre-archivo:hover { background: none; border-color: transparent; }
+.fl-solo-lectura { font-size: 12px; color: var(--text-soft); white-space: nowrap; padding: 2px 8px; border: 1px solid var(--border); border-radius: 99px; }
+
+/* Arrastrar mueve la vista (mouse o dedo); dos dedos acercan o alejan. */
+.fl-visor .fl-lienzo { cursor: grab; touch-action: none; user-select: none; container-type: inline-size; }
+.fl-visor .fl-lienzo.arrastrando { cursor: grabbing; }
+
+/* Barra del Play: si el lienzo es angosto (ventana chica o celular) quedan solo los íconos. */
+.fl-visor .fl-play-barra { max-width: calc(100% - 16px); overflow-x: auto; }
+@container (max-width: 760px) {
+  .fl-play-btn span, .fl-play-estado, .fl-play-sep { display: none; }
+  .fl-play-btn { padding: 0 10px; }
+}
+
+@media (max-width: 768px) {
+  :root { --alto-barra: 50px; }
+  .fl-barra { gap: 10px; padding: 0 10px; }
+  .fl-marca span, .fl-solo-lectura, .fl-estado-ayuda { display: none; }
+  .fl-archivo { padding-left: 10px; }
+  .fl-visor #nombre-archivo { max-width: 52vw; }
+  .fl-estado { justify-content: flex-end; }
+  body.en-play .fl-visor .fl-cuerpo { grid-template-columns: 1fr; grid-template-rows: 1fr 36vh; }
+  body.en-play .fl-visor .fl-bitacora { border-left: 0; border-top: 1px solid var(--border); }
+  .fl-visor .fl-play-barra { bottom: 10px; }
+  .fl-decision { width: 210px; }
+}

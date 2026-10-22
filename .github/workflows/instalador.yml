@@ -1,0 +1,46 @@
+# Arma el instalador de Windows y lo publica como versión (Releases) al subir una etiqueta, por ejemplo:
+#   git tag v1.0.0 && git push origin v1.0.0
+# La versión del instalador sale de package.json: la etiqueta debe coincidir con ella.
+name: Instalador
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Armar el instalador
+        run: npm run instalador
+        env:
+          FLUYE_SALIDA: instalador
+      - name: Publicar la versión con el instalador
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" instalador/Fluye-Instalar-*.exe --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" instalador/Fluye-Instalar-*.exe \
+              --title "Fluye ${GITHUB_REF_NAME#v}" \
+              --notes "Instalador para Windows 10 y 11 (64 bits). Se instala para tu usuario, sin pedir administrador. Si Windows muestra «Windows protegió su PC», pincha «Más información» y luego «Ejecutar de todas formas»."
+          fi
+      - name: Guardar el instalador (ejecución manual)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador
+          path: instalador/Fluye-Instalar-*.exe

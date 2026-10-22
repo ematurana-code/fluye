@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="aduana_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="aduana_intermedia_colab0">
+    <bpmn:participant id="aduana_intermedia_pool_agencia" name="Agencia de aduana" processRef="aduana_intermedia_proceso_agencia" />
+  </bpmn:collaboration>
+  <bpmn:process id="aduana_intermedia_proceso_agencia" isExecutable="false">
+    <bpmn:laneSet id="aduana_intermedia_carriles_agencia">
+      <bpmn:lane id="aduana_intermedia_carril_ejec" name="Ejecutivo de cuenta">
+        <bpmn:flowNodeRef>aduana_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_fal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_ent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_intermedia_carril_docu" name="Documentación">
+        <bpmn:flowNodeRef>aduana_intermedia_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_dc1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_din</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_can</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_par</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_intermedia_carril_finz" name="Finanzas">
+        <bpmn:flowNodeRef>aduana_intermedia_pag</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_intermedia_carril_oper" name="Operaciones">
+        <bpmn:flowNodeRef>aduana_intermedia_afo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_tra</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_intermedia_ret</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_intermedia_ini" name="El cliente avisa que viene un embarque">
+      <bpmn:outgoing>aduana_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="aduana_intermedia_rev" name="Revisar los documentos del embarque">
+      <bpmn:incoming>aduana_intermedia_f0_0</bpmn:incoming>
+      <bpmn:incoming>aduana_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="aduana_intermedia_dc1" name="¿Documentos completos?">
+      <bpmn:incoming>aduana_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_2</bpmn:outgoing>
+      <bpmn:outgoing>aduana_intermedia_f0_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="aduana_intermedia_fal" name="Pedir los documentos que faltan">
+      <bpmn:incoming>aduana_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="aduana_intermedia_din" name="Confeccionar la DIN">
+      <bpmn:documentation>Se completa la Declaración de Ingreso con los datos de la factura y del transporte.</bpmn:documentation>
+      <bpmn:incoming>aduana_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="aduana_intermedia_env" name="Enviar la DIN a Aduana">
+      <bpmn:incoming>aduana_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="aduana_intermedia_can" name="¿Qué canal asignó Aduana?">
+      <bpmn:incoming>aduana_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_7</bpmn:outgoing>
+      <bpmn:outgoing>aduana_intermedia_f0_8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="aduana_intermedia_afo" name="Presentar la carga al aforo físico">
+      <bpmn:documentation>Con canal rojo, un fiscalizador revisa la mercadería en el almacén.</bpmn:documentation>
+      <bpmn:incoming>aduana_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="aduana_intermedia_uni">
+      <bpmn:incoming>aduana_intermedia_f0_8</bpmn:incoming>
+      <bpmn:incoming>aduana_intermedia_f0_9</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="aduana_intermedia_par">
+      <bpmn:incoming>aduana_intermedia_f0_10</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_11</bpmn:outgoing>
+      <bpmn:outgoing>aduana_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="aduana_intermedia_pag" name="Pagar derechos e IVA">
+      <bpmn:incoming>aduana_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="aduana_intermedia_tra" name="Coordinar el retiro y el transporte">
+      <bpmn:incoming>aduana_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="aduana_intermedia_jun">
+      <bpmn:incoming>aduana_intermedia_f0_13</bpmn:incoming>
+      <bpmn:incoming>aduana_intermedia_f0_14</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_15</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:manualTask id="aduana_intermedia_ret" name="Retirar la carga del almacén">
+      <bpmn:incoming>aduana_intermedia_f0_15</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_16</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:userTask id="aduana_intermedia_ent" name="Entregar al cliente y cerrar la carpeta">
+      <bpmn:incoming>aduana_intermedia_f0_16</bpmn:incoming>
+      <bpmn:outgoing>aduana_intermedia_f0_17</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="aduana_intermedia_fin" name="Despacho terminado">
+      <bpmn:incoming>aduana_intermedia_f0_17</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_0" sourceRef="aduana_intermedia_ini" targetRef="aduana_intermedia_rev" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_1" sourceRef="aduana_intermedia_rev" targetRef="aduana_intermedia_dc1" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_2" name="Sí" sourceRef="aduana_intermedia_dc1" targetRef="aduana_intermedia_din" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_3" name="No" sourceRef="aduana_intermedia_dc1" targetRef="aduana_intermedia_fal" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_4" sourceRef="aduana_intermedia_fal" targetRef="aduana_intermedia_rev" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_5" sourceRef="aduana_intermedia_din" targetRef="aduana_intermedia_env" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_6" sourceRef="aduana_intermedia_env" targetRef="aduana_intermedia_can" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_7" name="Rojo" sourceRef="aduana_intermedia_can" targetRef="aduana_intermedia_afo" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_8" name="Verde" sourceRef="aduana_intermedia_can" targetRef="aduana_intermedia_uni" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_9" sourceRef="aduana_intermedia_afo" targetRef="aduana_intermedia_uni" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_10" sourceRef="aduana_intermedia_uni" targetRef="aduana_intermedia_par" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_11" sourceRef="aduana_intermedia_par" targetRef="aduana_intermedia_pag" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_12" sourceRef="aduana_intermedia_par" targetRef="aduana_intermedia_tra" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_13" sourceRef="aduana_intermedia_pag" targetRef="aduana_intermedia_jun" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_14" sourceRef="aduana_intermedia_tra" targetRef="aduana_intermedia_jun" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_15" sourceRef="aduana_intermedia_jun" targetRef="aduana_intermedia_ret" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_16" sourceRef="aduana_intermedia_ret" targetRef="aduana_intermedia_ent" />
+    <bpmn:sequenceFlow id="aduana_intermedia_f0_17" sourceRef="aduana_intermedia_ent" targetRef="aduana_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="aduana_intermedia_diagrama0" name="Despacho de importación">
+    <bpmndi:BPMNPlane id="aduana_intermedia_plano0" bpmnElement="aduana_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_pool_agencia" bpmnElement="aduana_intermedia_pool_agencia" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2450" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_carril_ejec" bpmnElement="aduana_intermedia_carril_ejec" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_carril_docu" bpmnElement="aduana_intermedia_carril_docu" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_carril_finz" bpmnElement="aduana_intermedia_carril_finz" isHorizontal="true">
+        <dc:Bounds x="110" y="360" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_carril_oper" bpmnElement="aduana_intermedia_carril_oper" isHorizontal="true">
+        <dc:Bounds x="110" y="510" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_ini" bpmnElement="aduana_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_rev" bpmnElement="aduana_intermedia_rev">
+        <dc:Bounds x="320" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_dc1" bpmnElement="aduana_intermedia_dc1" isMarkerVisible="false">
+        <dc:Bounds x="527" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_fal" bpmnElement="aduana_intermedia_fal">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_din" bpmnElement="aduana_intermedia_din">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_env" bpmnElement="aduana_intermedia_env">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_can" bpmnElement="aduana_intermedia_can" isMarkerVisible="false">
+        <dc:Bounds x="1037" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_afo" bpmnElement="aduana_intermedia_afo">
+        <dc:Bounds x="1170" y="553" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_uni" bpmnElement="aduana_intermedia_uni" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_par" bpmnElement="aduana_intermedia_par">
+        <dc:Bounds x="1547" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_pag" bpmnElement="aduana_intermedia_pag">
+        <dc:Bounds x="1680" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_tra" bpmnElement="aduana_intermedia_tra">
+        <dc:Bounds x="1680" y="553" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_jun" bpmnElement="aduana_intermedia_jun">
+        <dc:Bounds x="1887" y="562" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_ret" bpmnElement="aduana_intermedia_ret">
+        <dc:Bounds x="2020" y="553" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_ent" bpmnElement="aduana_intermedia_ent">
+        <dc:Bounds x="2190" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_intermedia_fin" bpmnElement="aduana_intermedia_fin">
+        <dc:Bounds x="2402" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_0" bpmnElement="aduana_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="274" y="135" />
+        <di:waypoint x="274" y="285" />
+        <di:waypoint x="320" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_1" bpmnElement="aduana_intermedia_f0_1">
+        <di:waypoint x="440" y="285" />
+        <di:waypoint x="527" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_2" bpmnElement="aduana_intermedia_f0_2">
+        <di:waypoint x="573" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_3" bpmnElement="aduana_intermedia_f0_3">
+        <di:waypoint x="550" y="262" />
+        <di:waypoint x="550" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_4" bpmnElement="aduana_intermedia_f0_4">
+        <di:waypoint x="490" y="135" />
+        <di:waypoint x="380" y="135" />
+        <di:waypoint x="380" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_5" bpmnElement="aduana_intermedia_f0_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="830" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_6" bpmnElement="aduana_intermedia_f0_6">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="1037" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_7" bpmnElement="aduana_intermedia_f0_7">
+        <di:waypoint x="1060" y="308" />
+        <di:waypoint x="1060" y="585" />
+        <di:waypoint x="1170" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_8" bpmnElement="aduana_intermedia_f0_8">
+        <di:waypoint x="1083" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_9" bpmnElement="aduana_intermedia_f0_9">
+        <di:waypoint x="1290" y="585" />
+        <di:waypoint x="1400" y="585" />
+        <di:waypoint x="1400" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_10" bpmnElement="aduana_intermedia_f0_10">
+        <di:waypoint x="1423" y="285" />
+        <di:waypoint x="1547" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_11" bpmnElement="aduana_intermedia_f0_11">
+        <di:waypoint x="1570" y="308" />
+        <di:waypoint x="1570" y="435" />
+        <di:waypoint x="1680" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_12" bpmnElement="aduana_intermedia_f0_12">
+        <di:waypoint x="1570" y="308" />
+        <di:waypoint x="1570" y="585" />
+        <di:waypoint x="1680" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_13" bpmnElement="aduana_intermedia_f0_13">
+        <di:waypoint x="1800" y="435" />
+        <di:waypoint x="1910" y="435" />
+        <di:waypoint x="1910" y="562" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_14" bpmnElement="aduana_intermedia_f0_14">
+        <di:waypoint x="1800" y="585" />
+        <di:waypoint x="1887" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_15" bpmnElement="aduana_intermedia_f0_15">
+        <di:waypoint x="1933" y="585" />
+        <di:waypoint x="2020" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_16" bpmnElement="aduana_intermedia_f0_16">
+        <di:waypoint x="2140" y="585" />
+        <di:waypoint x="2165" y="585" />
+        <di:waypoint x="2165" y="135" />
+        <di:waypoint x="2190" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_intermedia_f0_17" bpmnElement="aduana_intermedia_f0_17">
+        <di:waypoint x="2310" y="135" />
+        <di:waypoint x="2402" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

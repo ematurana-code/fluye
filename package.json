@@ -1,0 +1,98 @@
+{
+  "name": "fluye",
+  "productName": "Fluye",
+  "version": "1.0.0",
+  "description": "Modelador de procesos BPMN para Windows, simple y con Play paso a paso",
+  "author": "Esteban Maturana",
+  "license": "MIT",
+  "homepage": "https://ematurana-code.github.io/fluye/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ematurana-code/fluye.git"
+  },
+  "private": true,
+  "type": "module",
+  "main": "src/main/main.js",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "start": "node scripts/build.mjs && electron .",
+    "web": "node scripts/build.mjs && node scripts/servidor.mjs",
+    "instalador": "node scripts/build.mjs && node scripts/instalador.mjs",
+    "sitio": "node scripts/build.mjs && node scripts/sitio.mjs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "bpmn-moddle": "10.3.1",
+    "diagram-js": "15.28.1",
+    "diagram-js-direct-editing": "3.6.0",
+    "docx": "9.12.0",
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "0.28.2",
+    "lucide": "1.59.0",
+    "min-dash": "5.1.0",
+    "min-dom": "5.3.0",
+    "tiny-svg": "4.1.4"
+  },
+  "build": {
+    "appId": "io.github.ematurana-code.fluye",
+    "productName": "Fluye",
+    "copyright": "Copyright © 2026 Esteban Maturana",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "buildResources": "build"
+    },
+    "files": [
+      "package.json",
+      "src/main/**",
+      "dist/**",
+      "!dist/**/*.map",
+      "recursos/**",
+      "build/icono.ico",
+      "build/icono.png",
+      "LICENSE",
+      "AVISOS-DE-TERCEROS.md"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icono.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "Fluye-Instalar-${version}.exe",
+      "shortcutName": "Fluye",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "installerLanguages": [
+        "es_ES"
+      ],
+      "installerIcon": "build/icono.ico",
+      "uninstallerIcon": "build/icono.ico",
+      "uninstallDisplayName": "Fluye",
+      "differentialPackage": false,
+      "include": "build/instalador.nsh"
+    },
+    "fileAssociations": [
+      {
+        "ext": "bpmn",
+        "name": "Fluye.bpmn",
+        "description": "Proceso BPMN",
+        "icon": "build/icono.ico",
+        "role": "Editor"
+      }
+    ],
+    "publish": null
+  }
+}

@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="web_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="web_avanzada_colab0">
+    <bpmn:participant id="web_avanzada_pool_cliente" name="Cliente" processRef="web_avanzada_proceso_cliente" />
+    <bpmn:participant id="web_avanzada_pool_tienda" name="Tienda web" processRef="web_avanzada_proceso_tienda" />
+    <bpmn:participant id="web_avanzada_pool_pasarela" name="Pasarela de pago" processRef="web_avanzada_proceso_pasarela" />
+    <bpmn:messageFlow id="web_avanzada_m0_0" name="Pedido" sourceRef="web_avanzada_c_car" targetRef="web_avanzada_w_ini" />
+    <bpmn:messageFlow id="web_avanzada_m0_1" name="Página de pago" sourceRef="web_avanzada_w_red" targetRef="web_avanzada_c_red" />
+    <bpmn:messageFlow id="web_avanzada_m0_2" name="Datos de la tarjeta" sourceRef="web_avanzada_c_pag" targetRef="web_avanzada_p_ini" />
+    <bpmn:messageFlow id="web_avanzada_m0_3" name="Resultado del pago" sourceRef="web_avanzada_p_res" targetRef="web_avanzada_w_res" />
+    <bpmn:messageFlow id="web_avanzada_m0_4" name="Resultado" sourceRef="web_avanzada_w_avi" targetRef="web_avanzada_c_res" />
+  </bpmn:collaboration>
+  <bpmn:process id="web_avanzada_proceso_cliente" isExecutable="false">
+    <bpmn:laneSet id="web_avanzada_carriles_cliente">
+      <bpmn:lane id="web_avanzada_carril_cli" name="Cliente">
+        <bpmn:flowNodeRef>web_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_log</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_car</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_red</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_avanzada_c_ini" name="Quiere comprar en línea">
+      <bpmn:outgoing>web_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="web_avanzada_c_log" name="Iniciar sesión">
+      <bpmn:documentation>El detalle está en la pestaña "Iniciar sesión".</bpmn:documentation>
+      <bpmn:incoming>web_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:userTask id="web_avanzada_c_car" name="Armar el carro y confirmar la compra">
+      <bpmn:incoming>web_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="web_avanzada_c_red" name="Llega a la página de pago">
+      <bpmn:incoming>web_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_c_red_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="web_avanzada_c_pag" name="Ingresar los datos de la tarjeta">
+      <bpmn:incoming>web_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="web_avanzada_c_res" name="Recibe el resultado de la compra">
+      <bpmn:incoming>web_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_c_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="web_avanzada_c_fin" name="Compra terminada">
+      <bpmn:incoming>web_avanzada_f0_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="web_avanzada_f0_0" sourceRef="web_avanzada_c_ini" targetRef="web_avanzada_c_log" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_1" sourceRef="web_avanzada_c_log" targetRef="web_avanzada_c_car" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_2" sourceRef="web_avanzada_c_car" targetRef="web_avanzada_c_red" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_3" sourceRef="web_avanzada_c_red" targetRef="web_avanzada_c_pag" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_4" sourceRef="web_avanzada_c_pag" targetRef="web_avanzada_c_res" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_5" sourceRef="web_avanzada_c_res" targetRef="web_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="web_avanzada_proceso_tienda" isExecutable="false">
+    <bpmn:laneSet id="web_avanzada_carriles_tienda">
+      <bpmn:lane id="web_avanzada_carril_web" name="Sitio web">
+        <bpmn:flowNodeRef>web_avanzada_w_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_red</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_anu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_w_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="web_avanzada_carril_bod" name="Bodega">
+        <bpmn:flowNodeRef>web_avanzada_w_pre</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_avanzada_w_ini" name="Recibe el pedido">
+      <bpmn:outgoing>web_avanzada_f0_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_w_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="web_avanzada_w_red" name="Redirigir a la pasarela de pago">
+      <bpmn:incoming>web_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="web_avanzada_w_esp" name="Plazo para pagar (15 minutos)">
+      <bpmn:incoming>web_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_8</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="web_avanzada_w_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="web_avanzada_w_res" name="Llega el resultado del pago">
+      <bpmn:incoming>web_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_9</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_w_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="web_avanzada_w_dec" name="¿Pago aprobado?">
+      <bpmn:incoming>web_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:outgoing>web_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="web_avanzada_w_anu" name="Anular el pedido y liberar el stock">
+      <bpmn:incoming>web_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="web_avanzada_w_pre" name="Preparar el despacho">
+      <bpmn:incoming>web_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="web_avanzada_w_uni">
+      <bpmn:incoming>web_avanzada_f0_12</bpmn:incoming>
+      <bpmn:incoming>web_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_14</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="web_avanzada_w_avi" name="Avisar el resultado al cliente">
+      <bpmn:incoming>web_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_15</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_w_avi_def" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="web_avanzada_w_fin" name="Pedido procesado">
+      <bpmn:incoming>web_avanzada_f0_15</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="web_avanzada_f0_6" sourceRef="web_avanzada_w_ini" targetRef="web_avanzada_w_red" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_7" sourceRef="web_avanzada_w_red" targetRef="web_avanzada_w_esp" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_8" sourceRef="web_avanzada_w_esp" targetRef="web_avanzada_w_res" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_9" sourceRef="web_avanzada_w_res" targetRef="web_avanzada_w_dec" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_10" name="Sí" sourceRef="web_avanzada_w_dec" targetRef="web_avanzada_w_pre" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_11" name="No" sourceRef="web_avanzada_w_dec" targetRef="web_avanzada_w_anu" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_12" sourceRef="web_avanzada_w_anu" targetRef="web_avanzada_w_uni" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_13" sourceRef="web_avanzada_w_pre" targetRef="web_avanzada_w_uni" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_14" sourceRef="web_avanzada_w_uni" targetRef="web_avanzada_w_avi" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_15" sourceRef="web_avanzada_w_avi" targetRef="web_avanzada_w_fin" />
+  </bpmn:process>
+  <bpmn:process id="web_avanzada_proceso_pasarela" isExecutable="false">
+    <bpmn:laneSet id="web_avanzada_carriles_pasarela">
+      <bpmn:lane id="web_avanzada_carril_pas" name="Pasarela de pago">
+        <bpmn:flowNodeRef>web_avanzada_p_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_p_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_p_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_p_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_avanzada_p_ini" name="Recibe los datos de la tarjeta">
+      <bpmn:outgoing>web_avanzada_f0_16</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="web_avanzada_p_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="web_avanzada_p_val" name="Validar con el banco emisor">
+      <bpmn:incoming>web_avanzada_f0_16</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_17</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="web_avanzada_p_res" name="Informar el resultado a la tienda">
+      <bpmn:incoming>web_avanzada_f0_17</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f0_18</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="web_avanzada_p_fin" name="Pago procesado">
+      <bpmn:incoming>web_avanzada_f0_18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="web_avanzada_f0_16" sourceRef="web_avanzada_p_ini" targetRef="web_avanzada_p_val" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_17" sourceRef="web_avanzada_p_val" targetRef="web_avanzada_p_res" />
+    <bpmn:sequenceFlow id="web_avanzada_f0_18" sourceRef="web_avanzada_p_res" targetRef="web_avanzada_p_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="web_avanzada_colab1">
+    <bpmn:participant id="web_avanzada_pool_login" name="Inicio de sesión" processRef="web_avanzada_proceso_login" />
+  </bpmn:collaboration>
+  <bpmn:process id="web_avanzada_proceso_login" isExecutable="false">
+    <bpmn:laneSet id="web_avanzada_carriles_login">
+      <bpmn:lane id="web_avanzada_carril_l_usu" name="Cliente">
+        <bpmn:flowNodeRef>web_avanzada_l_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_l_ing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_l_err</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="web_avanzada_carril_l_web" name="Sitio web">
+        <bpmn:flowNodeRef>web_avanzada_l_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_l_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_avanzada_l_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_avanzada_l_ini" name="Entra a la tienda">
+      <bpmn:outgoing>web_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="web_avanzada_l_ing" name="Ingresar correo y contraseña">
+      <bpmn:incoming>web_avanzada_f1_0</bpmn:incoming>
+      <bpmn:incoming>web_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="web_avanzada_l_val" name="Validar las credenciales">
+      <bpmn:incoming>web_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f1_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="web_avanzada_l_dec" name="¿Son correctas?">
+      <bpmn:incoming>web_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f1_3</bpmn:outgoing>
+      <bpmn:outgoing>web_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="web_avanzada_l_ok" name="Sesión iniciada">
+      <bpmn:incoming>web_avanzada_f1_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="web_avanzada_l_err" name="Mostrar mensaje de error">
+      <bpmn:incoming>web_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>web_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="web_avanzada_f1_0" sourceRef="web_avanzada_l_ini" targetRef="web_avanzada_l_ing" />
+    <bpmn:sequenceFlow id="web_avanzada_f1_1" sourceRef="web_avanzada_l_ing" targetRef="web_avanzada_l_val" />
+    <bpmn:sequenceFlow id="web_avanzada_f1_2" sourceRef="web_avanzada_l_val" targetRef="web_avanzada_l_dec" />
+    <bpmn:sequenceFlow id="web_avanzada_f1_3" name="Sí" sourceRef="web_avanzada_l_dec" targetRef="web_avanzada_l_ok" />
+    <bpmn:sequenceFlow id="web_avanzada_f1_4" name="No" sourceRef="web_avanzada_l_dec" targetRef="web_avanzada_l_err" />
+    <bpmn:sequenceFlow id="web_avanzada_f1_5" sourceRef="web_avanzada_l_err" targetRef="web_avanzada_l_ing" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="web_avanzada_diagrama0" name="Compra en línea">
+    <bpmndi:BPMNPlane id="web_avanzada_plano0" bpmnElement="web_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_web_avanzada_pool_cliente" bpmnElement="web_avanzada_pool_cliente" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_pool_tienda" bpmnElement="web_avanzada_pool_tienda" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="2280" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_pool_pasarela" bpmnElement="web_avanzada_pool_pasarela" isHorizontal="true">
+        <dc:Bounds x="80" y="690" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_cli" bpmnElement="web_avanzada_carril_cli" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_web" bpmnElement="web_avanzada_carril_web" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_bod" bpmnElement="web_avanzada_carril_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_pas" bpmnElement="web_avanzada_carril_pas" isHorizontal="true">
+        <dc:Bounds x="110" y="690" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_ini" bpmnElement="web_avanzada_c_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_log" bpmnElement="web_avanzada_c_log" isExpanded="false">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_car" bpmnElement="web_avanzada_c_car">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_red" bpmnElement="web_avanzada_c_red">
+        <dc:Bounds x="702" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_pag" bpmnElement="web_avanzada_c_pag">
+        <dc:Bounds x="1000" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_res" bpmnElement="web_avanzada_c_res">
+        <dc:Bounds x="2062" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_c_fin" bpmnElement="web_avanzada_c_fin">
+        <dc:Bounds x="2232" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_ini" bpmnElement="web_avanzada_w_ini">
+        <dc:Bounds x="532" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_red" bpmnElement="web_avanzada_w_red">
+        <dc:Bounds x="660" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_esp" bpmnElement="web_avanzada_w_esp">
+        <dc:Bounds x="872" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_res" bpmnElement="web_avanzada_w_res">
+        <dc:Bounds x="1382" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_dec" bpmnElement="web_avanzada_w_dec" isMarkerVisible="false">
+        <dc:Bounds x="1547" y="352" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_anu" bpmnElement="web_avanzada_w_anu">
+        <dc:Bounds x="1680" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_pre" bpmnElement="web_avanzada_w_pre">
+        <dc:Bounds x="1680" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_uni" bpmnElement="web_avanzada_w_uni" isMarkerVisible="false">
+        <dc:Bounds x="1887" y="352" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_avi" bpmnElement="web_avanzada_w_avi">
+        <dc:Bounds x="2062" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_w_fin" bpmnElement="web_avanzada_w_fin">
+        <dc:Bounds x="2232" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_p_ini" bpmnElement="web_avanzada_p_ini">
+        <dc:Bounds x="1042" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_p_val" bpmnElement="web_avanzada_p_val">
+        <dc:Bounds x="1170" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_p_res" bpmnElement="web_avanzada_p_res">
+        <dc:Bounds x="1340" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_p_fin" bpmnElement="web_avanzada_p_fin">
+        <dc:Bounds x="1552" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_0" bpmnElement="web_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_1" bpmnElement="web_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_2" bpmnElement="web_avanzada_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="702" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_3" bpmnElement="web_avanzada_f0_3">
+        <di:waypoint x="738" y="135" />
+        <di:waypoint x="1000" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_4" bpmnElement="web_avanzada_f0_4">
+        <di:waypoint x="1120" y="135" />
+        <di:waypoint x="2062" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_5" bpmnElement="web_avanzada_f0_5">
+        <di:waypoint x="2098" y="135" />
+        <di:waypoint x="2232" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_6" bpmnElement="web_avanzada_f0_6">
+        <di:waypoint x="568" y="375" />
+        <di:waypoint x="660" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_7" bpmnElement="web_avanzada_f0_7">
+        <di:waypoint x="780" y="375" />
+        <di:waypoint x="872" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_8" bpmnElement="web_avanzada_f0_8">
+        <di:waypoint x="908" y="375" />
+        <di:waypoint x="1382" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_9" bpmnElement="web_avanzada_f0_9">
+        <di:waypoint x="1418" y="375" />
+        <di:waypoint x="1547" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_10" bpmnElement="web_avanzada_f0_10">
+        <di:waypoint x="1570" y="398" />
+        <di:waypoint x="1570" y="525" />
+        <di:waypoint x="1680" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_11" bpmnElement="web_avanzada_f0_11">
+        <di:waypoint x="1593" y="375" />
+        <di:waypoint x="1680" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_12" bpmnElement="web_avanzada_f0_12">
+        <di:waypoint x="1800" y="375" />
+        <di:waypoint x="1887" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_13" bpmnElement="web_avanzada_f0_13">
+        <di:waypoint x="1800" y="525" />
+        <di:waypoint x="1910" y="525" />
+        <di:waypoint x="1910" y="398" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_14" bpmnElement="web_avanzada_f0_14">
+        <di:waypoint x="1933" y="375" />
+        <di:waypoint x="2062" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_15" bpmnElement="web_avanzada_f0_15">
+        <di:waypoint x="2098" y="375" />
+        <di:waypoint x="2232" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_16" bpmnElement="web_avanzada_f0_16">
+        <di:waypoint x="1078" y="765" />
+        <di:waypoint x="1170" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_17" bpmnElement="web_avanzada_f0_17">
+        <di:waypoint x="1290" y="765" />
+        <di:waypoint x="1340" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f0_18" bpmnElement="web_avanzada_f0_18">
+        <di:waypoint x="1460" y="765" />
+        <di:waypoint x="1552" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_m0_0" bpmnElement="web_avanzada_m0_0">
+        <di:waypoint x="550" y="167" />
+        <di:waypoint x="550" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_m0_1" bpmnElement="web_avanzada_m0_1">
+        <di:waypoint x="720" y="343" />
+        <di:waypoint x="720" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_m0_2" bpmnElement="web_avanzada_m0_2">
+        <di:waypoint x="1060" y="167" />
+        <di:waypoint x="1060" y="747" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_m0_3" bpmnElement="web_avanzada_m0_3">
+        <di:waypoint x="1400" y="733" />
+        <di:waypoint x="1400" y="393" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_m0_4" bpmnElement="web_avanzada_m0_4">
+        <di:waypoint x="2080" y="357" />
+        <di:waypoint x="2080" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="web_avanzada_diagrama1" name="Iniciar sesión">
+    <bpmndi:BPMNPlane id="web_avanzada_plano1" bpmnElement="web_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_web_avanzada_pool_login" bpmnElement="web_avanzada_pool_login" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="920" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_l_usu" bpmnElement="web_avanzada_carril_l_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="890" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_carril_l_web" bpmnElement="web_avanzada_carril_l_web" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="890" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_ini" bpmnElement="web_avanzada_l_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_ing" bpmnElement="web_avanzada_l_ing">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_val" bpmnElement="web_avanzada_l_val">
+        <dc:Bounds x="490" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_dec" bpmnElement="web_avanzada_l_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_ok" bpmnElement="web_avanzada_l_ok">
+        <dc:Bounds x="872" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_avanzada_l_err" bpmnElement="web_avanzada_l_err">
+        <dc:Bounds x="660" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_0" bpmnElement="web_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_1" bpmnElement="web_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="405" />
+        <di:waypoint x="490" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_2" bpmnElement="web_avanzada_f1_2">
+        <di:waypoint x="610" y="405" />
+        <di:waypoint x="697" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_3" bpmnElement="web_avanzada_f1_3">
+        <di:waypoint x="743" y="405" />
+        <di:waypoint x="872" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_4" bpmnElement="web_avanzada_f1_4">
+        <di:waypoint x="720" y="382" />
+        <di:waypoint x="720" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_avanzada_f1_5" bpmnElement="web_avanzada_f1_5">
+        <di:waypoint x="660" y="255" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

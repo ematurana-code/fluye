@@ -1,0 +1,266 @@
+[
+ {
+  "id": "aduana-simple",
+  "nombre": "Revisión de documentos de embarque",
+  "categoria": "Aduana",
+  "nivel": "simple",
+  "descripcion": "Antes de despachar, el ejecutivo revisa que el cliente envió todo y pide lo que falta.",
+  "incluye": "un carril y una decisión"
+ },
+ {
+  "id": "aduana-intermedia",
+  "nombre": "Despacho de importación",
+  "categoria": "Aduana",
+  "nivel": "intermedia",
+  "descripcion": "El despacho dentro de la agencia: documentos, DIN, canal de aforo, pago y retiro de la carga.",
+  "incluye": "4 carriles, 2 decisiones y un paralelo"
+ },
+ {
+  "id": "aduana-avanzada",
+  "nombre": "Despacho completo: cliente, agencia y Aduana",
+  "categoria": "Aduana",
+  "nivel": "avanzada",
+  "descripcion": "El importador, la agencia y el Servicio Nacional de Aduanas intercambian documentos y avisos; el aforo físico va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
+ },
+ {
+  "id": "ti-simple",
+  "nombre": "Restablecer contraseña",
+  "categoria": "Soporte TI",
+  "nivel": "simple",
+  "descripcion": "La mesa de ayuda confirma quién pide el cambio y entrega una clave temporal.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "ti-intermedia",
+  "nombre": "Ticket de mesa de ayuda",
+  "categoria": "Soporte TI",
+  "nivel": "intermedia",
+  "descripcion": "Del reporte al cierre: nivel 1, escalamiento a nivel 2 y confirmación del usuario antes de cerrar.",
+  "incluye": "3 carriles, 2 decisiones y un paralelo"
+ },
+ {
+  "id": "ti-avanzada",
+  "nombre": "Incidente con proveedor externo",
+  "categoria": "Soporte TI",
+  "nivel": "avanzada",
+  "descripcion": "El área usuaria, TI y el proveedor se coordinan con avisos y un plazo de respuesta (SLA); el diagnóstico va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un paralelo, un plazo y 2 pestañas"
+ },
+ {
+  "id": "rrhh-simple",
+  "nombre": "Solicitud de vacaciones",
+  "categoria": "Recursos Humanos",
+  "nivel": "simple",
+  "descripcion": "El colaborador pide sus días y la jefatura aprueba o le propone otras fechas.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "rrhh-intermedia",
+  "nombre": "Ingreso de personal nuevo",
+  "categoria": "Recursos Humanos",
+  "nivel": "intermedia",
+  "descripcion": "Contrato, afiliaciones, equipo y plan de inducción en paralelo, y revisión de que tenga todo para trabajar.",
+  "incluye": "3 carriles, una decisión y un paralelo"
+ },
+ {
+  "id": "rrhh-avanzada",
+  "nombre": "Selección de personal",
+  "categoria": "Recursos Humanos",
+  "nivel": "avanzada",
+  "descripcion": "La agencia, una consultora y el postulante se mandan pedidos, ternas y ofertas; las entrevistas van en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un paralelo, un plazo y 2 pestañas"
+ },
+ {
+  "id": "compras-simple",
+  "nombre": "Solicitud de compra",
+  "categoria": "Compras",
+  "nivel": "simple",
+  "descripcion": "Alguien pide comprar algo y su jefatura aprueba o le pide ajustar la solicitud.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "compras-intermedia",
+  "nombre": "Compra con cotizaciones",
+  "categoria": "Compras",
+  "nivel": "intermedia",
+  "descripcion": "Tres cotizaciones, autorización si supera el monto límite, orden de compra y recepción conforme.",
+  "incluye": "4 carriles, 2 decisiones y un paralelo"
+ },
+ {
+  "id": "compras-avanzada",
+  "nombre": "Compra a proveedor externo",
+  "categoria": "Compras",
+  "nivel": "avanzada",
+  "descripcion": "La empresa y el proveedor se mandan la orden, la mercadería, la factura y el pago; la licitación va en su propia pestaña.",
+  "incluye": "2 pools que se comunican, 2 decisiones, 2 plazos y 2 pestañas"
+ },
+ {
+  "id": "finanzas-simple",
+  "nombre": "Rendición de gastos",
+  "categoria": "Finanzas",
+  "nivel": "simple",
+  "descripcion": "El colaborador rinde un gasto con su boleta y Finanzas lo reembolsa o le pide corregir.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "finanzas-intermedia",
+  "nombre": "Pago de facturas a proveedores",
+  "categoria": "Finanzas",
+  "nivel": "intermedia",
+  "descripcion": "La factura se valida contra la orden de compra, se contabiliza y aprueba en paralelo y Tesorería la paga.",
+  "incluye": "3 carriles, una decisión y un paralelo"
+ },
+ {
+  "id": "finanzas-avanzada",
+  "nombre": "Cobranza a clientes",
+  "categoria": "Finanzas",
+  "nivel": "avanzada",
+  "descripcion": "La empresa factura, espera el vencimiento y concilia el abono que avisa el banco; la gestión de cobranza va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, 2 plazos y 2 pestañas"
+ },
+ {
+  "id": "ventas-simple",
+  "nombre": "Cotización a un cliente",
+  "categoria": "Ventas",
+  "nivel": "simple",
+  "descripcion": "El ejecutivo entiende la necesidad, prepara la cotización y pide aprobación si lleva descuento especial.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "ventas-intermedia",
+  "nombre": "De la oportunidad al cierre",
+  "categoria": "Ventas",
+  "nivel": "intermedia",
+  "descripcion": "Cotización, negociación hasta que el cliente acepta, contrato aprobado y entrega con factura en paralelo.",
+  "incluye": "4 carriles, una decisión y un paralelo"
+ },
+ {
+  "id": "ventas-avanzada",
+  "nombre": "Venta con despacho al cliente",
+  "categoria": "Ventas",
+  "nivel": "avanzada",
+  "descripcion": "El cliente, la empresa y el transporte se mandan cotización, respuesta y entrega; la preparación del pedido va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
+ },
+ {
+  "id": "atencion-simple",
+  "nombre": "Consulta de un cliente",
+  "categoria": "Atención al cliente",
+  "nivel": "simple",
+  "descripcion": "Se registra la consulta y se responde de inmediato o se deriva al área que corresponde.",
+  "incluye": "un carril y una decisión"
+ },
+ {
+  "id": "atencion-intermedia",
+  "nombre": "Gestión de reclamos",
+  "categoria": "Atención al cliente",
+  "nivel": "intermedia",
+  "descripcion": "Se clasifica el reclamo, se investiga la causa mientras Calidad lo registra y se propone una solución hasta que el cliente queda conforme.",
+  "incluye": "3 carriles, 2 decisiones y un paralelo"
+ },
+ {
+  "id": "atencion-avanzada",
+  "nombre": "Garantía con servicio técnico",
+  "categoria": "Atención al cliente",
+  "nivel": "avanzada",
+  "descripcion": "El cliente reclama la garantía, la empresa envía el producto a un servicio técnico externo y avisa el resultado; el diagnóstico va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
+ },
+ {
+  "id": "logistica-simple",
+  "nombre": "Recepción de mercadería",
+  "categoria": "Logística y bodega",
+  "nivel": "simple",
+  "descripcion": "La bodega cuenta lo que llega contra la guía, anota diferencias y guarda la mercadería.",
+  "incluye": "un carril y una decisión"
+ },
+ {
+  "id": "logistica-intermedia",
+  "nombre": "Preparación y despacho de pedidos",
+  "categoria": "Logística y bodega",
+  "nivel": "intermedia",
+  "descripcion": "Se buscan los productos (con reposición si falta stock), se embala y se emite la guía en paralelo, y se despacha.",
+  "incluye": "3 carriles, una decisión, un paralelo y un plazo"
+ },
+ {
+  "id": "logistica-avanzada",
+  "nombre": "Devolución de productos",
+  "categoria": "Logística y bodega",
+  "nivel": "avanzada",
+  "descripcion": "El cliente devuelve un producto por transporte, la bodega lo revisa y la empresa avisa el resultado; la revisión va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, una decisión, un paralelo, un plazo y 2 pestañas"
+ },
+ {
+  "id": "legal-simple",
+  "nombre": "Revisión de un contrato",
+  "categoria": "Legal y contratos",
+  "nivel": "simple",
+  "descripcion": "El área envía el borrador, Legal revisa cláusulas y riesgos y lo visa o pide corregirlo.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "legal-intermedia",
+  "nombre": "Contrato con proveedor",
+  "categoria": "Legal y contratos",
+  "nivel": "intermedia",
+  "descripcion": "Legal redacta y negocia hasta llegar a acuerdo; la gerencia firma mientras se arma la carpeta y Administración lo registra.",
+  "incluye": "4 carriles, una decisión y un paralelo"
+ },
+ {
+  "id": "legal-avanzada",
+  "nombre": "Firma de contrato con contraparte y notaría",
+  "categoria": "Legal y contratos",
+  "nivel": "avanzada",
+  "descripcion": "La empresa, la contraparte y la notaría se mandan el contrato, la respuesta y la escritura; la negociación de cambios va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
+ },
+ {
+  "id": "calidad-simple",
+  "nombre": "Reporte de una no conformidad",
+  "categoria": "Calidad",
+  "nivel": "simple",
+  "descripcion": "Un trabajador reporta un problema y Calidad lo registra con un responsable o lo descarta con explicación.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "calidad-intermedia",
+  "nombre": "Acción correctiva",
+  "categoria": "Calidad",
+  "nivel": "intermedia",
+  "descripcion": "Se analiza la causa raíz, se aprueba un plan, se corrige y capacita en paralelo y se verifica que el problema no vuelva.",
+  "incluye": "3 carriles, una decisión y un paralelo"
+ },
+ {
+  "id": "calidad-avanzada",
+  "nombre": "Auditoría externa de calidad",
+  "categoria": "Calidad",
+  "nivel": "avanzada",
+  "descripcion": "La empresa pide la auditoría, la auditora visita, informa hallazgos y certifica tras el plazo de corrección; la preparación va en su propia pestaña.",
+  "incluye": "2 pools que se comunican, 2 decisiones, un paralelo, 2 plazos y 2 pestañas"
+ },
+ {
+  "id": "web-simple",
+  "nombre": "Inicio de sesión",
+  "categoria": "Sistemas web",
+  "nivel": "simple",
+  "descripcion": "El usuario entra con su usuario y contraseña; si no son correctos, ve un mensaje y vuelve a intentarlo.",
+  "incluye": "2 carriles y una decisión"
+ },
+ {
+  "id": "web-intermedia",
+  "nombre": "Inicio de sesión con bloqueo por intentos",
+  "categoria": "Sistemas web",
+  "nivel": "intermedia",
+  "descripcion": "Valida las credenciales, crea la sesión mientras registra el acceso y bloquea la cuenta después de 3 intentos fallidos.",
+  "incluye": "3 carriles, 2 decisiones y un paralelo"
+ },
+ {
+  "id": "web-avanzada",
+  "nombre": "Compra en una tienda web",
+  "categoria": "Sistemas web",
+  "nivel": "avanzada",
+  "descripcion": "El cliente, la tienda y la pasarela de pago se comunican para pagar en línea; el inicio de sesión va en su propia pestaña.",
+  "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
+ }
+]

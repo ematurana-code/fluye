@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="ti_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="ti_simple_colab0">
+    <bpmn:participant id="ti_simple_pool_soporte" name="Soporte TI" processRef="ti_simple_proceso_soporte" />
+  </bpmn:collaboration>
+  <bpmn:process id="ti_simple_proceso_soporte" isExecutable="false">
+    <bpmn:laneSet id="ti_simple_carriles_soporte">
+      <bpmn:lane id="ti_simple_carril_usu" name="Usuario">
+        <bpmn:flowNodeRef>ti_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_pid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_cam</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ti_simple_carril_mesa" name="Mesa de ayuda">
+        <bpmn:flowNodeRef>ti_simple_ver</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_gen</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_exp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_simple_rec</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_simple_ini" name="Olvidó su contraseña">
+      <bpmn:outgoing>ti_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ti_simple_pid" name="Pedir el cambio de clave">
+      <bpmn:incoming>ti_simple_f0_0</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_simple_ver" name="Verificar la identidad del usuario">
+      <bpmn:documentation>Se confirma con datos que solo la persona conoce o con su jefatura.</bpmn:documentation>
+      <bpmn:incoming>ti_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ti_simple_dec" name="¿Identidad confirmada?">
+      <bpmn:incoming>ti_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>ti_simple_f0_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ti_simple_gen" name="Generar una clave temporal">
+      <bpmn:incoming>ti_simple_f0_3</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="ti_simple_cam" name="Entrar y cambiar la clave">
+      <bpmn:incoming>ti_simple_f0_4</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_simple_fin" name="Acceso recuperado">
+      <bpmn:incoming>ti_simple_f0_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="ti_simple_exp" name="Explicar por qué no se puede">
+      <bpmn:incoming>ti_simple_f0_6</bpmn:incoming>
+      <bpmn:outgoing>ti_simple_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_simple_rec" name="Solicitud rechazada">
+      <bpmn:incoming>ti_simple_f0_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_simple_f0_0" sourceRef="ti_simple_ini" targetRef="ti_simple_pid" />
+    <bpmn:sequenceFlow id="ti_simple_f0_1" sourceRef="ti_simple_pid" targetRef="ti_simple_ver" />
+    <bpmn:sequenceFlow id="ti_simple_f0_2" sourceRef="ti_simple_ver" targetRef="ti_simple_dec" />
+    <bpmn:sequenceFlow id="ti_simple_f0_3" name="Sí" sourceRef="ti_simple_dec" targetRef="ti_simple_gen" />
+    <bpmn:sequenceFlow id="ti_simple_f0_4" sourceRef="ti_simple_gen" targetRef="ti_simple_cam" />
+    <bpmn:sequenceFlow id="ti_simple_f0_5" sourceRef="ti_simple_cam" targetRef="ti_simple_fin" />
+    <bpmn:sequenceFlow id="ti_simple_f0_6" name="No" sourceRef="ti_simple_dec" targetRef="ti_simple_exp" />
+    <bpmn:sequenceFlow id="ti_simple_f0_7" sourceRef="ti_simple_exp" targetRef="ti_simple_rec" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ti_simple_diagrama0" name="Restablecer contraseña">
+    <bpmndi:BPMNPlane id="ti_simple_plano0" bpmnElement="ti_simple_colab0">
+      <bpmndi:BPMNShape id="DI_ti_simple_pool_soporte" bpmnElement="ti_simple_pool_soporte" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1260" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_carril_usu" bpmnElement="ti_simple_carril_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_carril_mesa" bpmnElement="ti_simple_carril_mesa" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1230" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_ini" bpmnElement="ti_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_pid" bpmnElement="ti_simple_pid">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_ver" bpmnElement="ti_simple_ver">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_dec" bpmnElement="ti_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_gen" bpmnElement="ti_simple_gen">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_cam" bpmnElement="ti_simple_cam">
+        <dc:Bounds x="1000" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_fin" bpmnElement="ti_simple_fin">
+        <dc:Bounds x="1212" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_exp" bpmnElement="ti_simple_exp">
+        <dc:Bounds x="830" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_simple_rec" bpmnElement="ti_simple_rec">
+        <dc:Bounds x="1042" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_0" bpmnElement="ti_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_1" bpmnElement="ti_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_2" bpmnElement="ti_simple_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="697" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_3" bpmnElement="ti_simple_f0_3">
+        <di:waypoint x="743" y="285" />
+        <di:waypoint x="830" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_4" bpmnElement="ti_simple_f0_4">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="975" y="285" />
+        <di:waypoint x="975" y="135" />
+        <di:waypoint x="1000" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_5" bpmnElement="ti_simple_f0_5">
+        <di:waypoint x="1120" y="135" />
+        <di:waypoint x="1212" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_6" bpmnElement="ti_simple_f0_6">
+        <di:waypoint x="720" y="308" />
+        <di:waypoint x="720" y="405" />
+        <di:waypoint x="830" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_simple_f0_7" bpmnElement="ti_simple_f0_7">
+        <di:waypoint x="950" y="405" />
+        <di:waypoint x="1042" y="405" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

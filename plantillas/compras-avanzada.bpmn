@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="compras_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="compras_avanzada_colab0">
+    <bpmn:participant id="compras_avanzada_pool_empresa" name="Empresa" processRef="compras_avanzada_proceso_empresa" />
+    <bpmn:participant id="compras_avanzada_pool_proveedor" name="Proveedor" processRef="compras_avanzada_proceso_proveedor" />
+    <bpmn:messageFlow id="compras_avanzada_m0_0" name="Orden de compra" sourceRef="compras_avanzada_e_oc" targetRef="compras_avanzada_p_ini" />
+    <bpmn:messageFlow id="compras_avanzada_m0_1" name="Mercadería y guía" sourceRef="compras_avanzada_p_des" targetRef="compras_avanzada_e_lle" />
+    <bpmn:messageFlow id="compras_avanzada_m0_2" name="Factura" sourceRef="compras_avanzada_p_fac" targetRef="compras_avanzada_e_fac" />
+    <bpmn:messageFlow id="compras_avanzada_m0_3" name="Pago" sourceRef="compras_avanzada_e_pag" targetRef="compras_avanzada_p_cob" />
+  </bpmn:collaboration>
+  <bpmn:process id="compras_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="compras_avanzada_carriles_empresa">
+      <bpmn:lane id="compras_avanzada_carril_cmp" name="Compras">
+        <bpmn:flowNodeRef>compras_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_lic</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_oc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_dif</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_avanzada_carril_bod" name="Bodega">
+        <bpmn:flowNodeRef>compras_avanzada_e_lle</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_con</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_uni</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_avanzada_carril_fnz" name="Finanzas">
+        <bpmn:flowNodeRef>compras_avanzada_e_fac</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="compras_avanzada_e_ini" name="Compra aprobada">
+      <bpmn:outgoing>compras_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="compras_avanzada_e_lic" name="Licitación">
+      <bpmn:documentation>El detalle está en la pestaña "Licitación".</bpmn:documentation>
+      <bpmn:incoming>compras_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:userTask id="compras_avanzada_e_oc" name="Enviar la orden de compra">
+      <bpmn:incoming>compras_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="compras_avanzada_e_esp" name="Esperar el despacho (plazo pactado)">
+      <bpmn:incoming>compras_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="compras_avanzada_e_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="compras_avanzada_e_lle" name="Llega la mercadería y la guía">
+      <bpmn:incoming>compras_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_4</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="compras_avanzada_e_lle_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="compras_avanzada_e_rev" name="Revisar la mercadería">
+      <bpmn:incoming>compras_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_5</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="compras_avanzada_e_con" name="¿Llegó conforme?">
+      <bpmn:incoming>compras_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_6</bpmn:outgoing>
+      <bpmn:outgoing>compras_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="compras_avanzada_e_dif" name="Registrar la diferencia">
+      <bpmn:incoming>compras_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="compras_avanzada_e_uni">
+      <bpmn:incoming>compras_avanzada_f0_6</bpmn:incoming>
+      <bpmn:incoming>compras_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="compras_avanzada_e_fac" name="Llega la factura">
+      <bpmn:incoming>compras_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="compras_avanzada_e_fac_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="compras_avanzada_e_pag" name="Pagar la factura">
+      <bpmn:incoming>compras_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="compras_avanzada_e_fin" name="Compra pagada">
+      <bpmn:incoming>compras_avanzada_f0_11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="compras_avanzada_f0_0" sourceRef="compras_avanzada_e_ini" targetRef="compras_avanzada_e_lic" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_1" sourceRef="compras_avanzada_e_lic" targetRef="compras_avanzada_e_oc" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_2" sourceRef="compras_avanzada_e_oc" targetRef="compras_avanzada_e_esp" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_3" sourceRef="compras_avanzada_e_esp" targetRef="compras_avanzada_e_lle" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_4" sourceRef="compras_avanzada_e_lle" targetRef="compras_avanzada_e_rev" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_5" sourceRef="compras_avanzada_e_rev" targetRef="compras_avanzada_e_con" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_6" name="Sí" sourceRef="compras_avanzada_e_con" targetRef="compras_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_7" name="No" sourceRef="compras_avanzada_e_con" targetRef="compras_avanzada_e_dif" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_8" sourceRef="compras_avanzada_e_dif" targetRef="compras_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_9" sourceRef="compras_avanzada_e_uni" targetRef="compras_avanzada_e_fac" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_10" sourceRef="compras_avanzada_e_fac" targetRef="compras_avanzada_e_pag" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_11" sourceRef="compras_avanzada_e_pag" targetRef="compras_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmn:process id="compras_avanzada_proceso_proveedor" isExecutable="false">
+    <bpmn:laneSet id="compras_avanzada_carriles_proveedor">
+      <bpmn:lane id="compras_avanzada_carril_prv" name="Proveedor">
+        <bpmn:flowNodeRef>compras_avanzada_p_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_p_pre</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_p_des</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_p_fac</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_p_cob</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_p_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="compras_avanzada_p_ini" name="Recibe la orden de compra">
+      <bpmn:outgoing>compras_avanzada_f0_12</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="compras_avanzada_p_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="compras_avanzada_p_pre" name="Preparar el pedido">
+      <bpmn:incoming>compras_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="compras_avanzada_p_des" name="Despachar con guía">
+      <bpmn:incoming>compras_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="compras_avanzada_p_fac" name="Emitir la factura">
+      <bpmn:incoming>compras_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="compras_avanzada_p_cob" name="Recibe el pago">
+      <bpmn:incoming>compras_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f0_16</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="compras_avanzada_p_cob_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="compras_avanzada_p_fin" name="Venta cobrada">
+      <bpmn:incoming>compras_avanzada_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="compras_avanzada_f0_12" sourceRef="compras_avanzada_p_ini" targetRef="compras_avanzada_p_pre" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_13" sourceRef="compras_avanzada_p_pre" targetRef="compras_avanzada_p_des" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_14" sourceRef="compras_avanzada_p_des" targetRef="compras_avanzada_p_fac" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_15" sourceRef="compras_avanzada_p_fac" targetRef="compras_avanzada_p_cob" />
+    <bpmn:sequenceFlow id="compras_avanzada_f0_16" sourceRef="compras_avanzada_p_cob" targetRef="compras_avanzada_p_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="compras_avanzada_colab1">
+    <bpmn:participant id="compras_avanzada_pool_licitacion" name="Licitación" processRef="compras_avanzada_proceso_licitacion" />
+  </bpmn:collaboration>
+  <bpmn:process id="compras_avanzada_proceso_licitacion" isExecutable="false">
+    <bpmn:laneSet id="compras_avanzada_carriles_licitacion">
+      <bpmn:lane id="compras_avanzada_carril_l_cmp" name="Compras">
+        <bpmn:flowNodeRef>compras_avanzada_l_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_l_inv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_l_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_l_amp</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_avanzada_carril_l_jef" name="Jefatura">
+        <bpmn:flowNodeRef>compras_avanzada_l_eva</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_l_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_avanzada_l_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="compras_avanzada_l_ini" name="Se necesita un proveedor">
+      <bpmn:outgoing>compras_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="compras_avanzada_l_inv" name="Invitar a proveedores">
+      <bpmn:incoming>compras_avanzada_f1_0</bpmn:incoming>
+      <bpmn:incoming>compras_avanzada_f1_6</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="compras_avanzada_l_esp" name="Plazo para recibir ofertas (5 días)">
+      <bpmn:incoming>compras_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="compras_avanzada_l_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="compras_avanzada_l_eva" name="Evaluar las ofertas">
+      <bpmn:incoming>compras_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="compras_avanzada_l_dec" name="¿Hay una oferta válida?">
+      <bpmn:incoming>compras_avanzada_f1_3</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f1_4</bpmn:outgoing>
+      <bpmn:outgoing>compras_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="compras_avanzada_l_ok" name="Proveedor elegido">
+      <bpmn:incoming>compras_avanzada_f1_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="compras_avanzada_l_amp" name="Ampliar la invitación">
+      <bpmn:incoming>compras_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>compras_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="compras_avanzada_f1_0" sourceRef="compras_avanzada_l_ini" targetRef="compras_avanzada_l_inv" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_1" sourceRef="compras_avanzada_l_inv" targetRef="compras_avanzada_l_esp" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_2" sourceRef="compras_avanzada_l_esp" targetRef="compras_avanzada_l_eva" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_3" sourceRef="compras_avanzada_l_eva" targetRef="compras_avanzada_l_dec" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_4" name="Sí" sourceRef="compras_avanzada_l_dec" targetRef="compras_avanzada_l_ok" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_5" name="No" sourceRef="compras_avanzada_l_dec" targetRef="compras_avanzada_l_amp" />
+    <bpmn:sequenceFlow id="compras_avanzada_f1_6" sourceRef="compras_avanzada_l_amp" targetRef="compras_avanzada_l_inv" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="compras_avanzada_diagrama0" name="Compra">
+    <bpmndi:BPMNPlane id="compras_avanzada_plano0" bpmnElement="compras_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_compras_avanzada_pool_empresa" bpmnElement="compras_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2110" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_pool_proveedor" bpmnElement="compras_avanzada_pool_proveedor" isHorizontal="true">
+        <dc:Bounds x="80" y="600" width="2110" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_cmp" bpmnElement="compras_avanzada_carril_cmp" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_bod" bpmnElement="compras_avanzada_carril_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_fnz" bpmnElement="compras_avanzada_carril_fnz" isHorizontal="true">
+        <dc:Bounds x="110" y="360" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_prv" bpmnElement="compras_avanzada_carril_prv" isHorizontal="true">
+        <dc:Bounds x="110" y="600" width="2080" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_ini" bpmnElement="compras_avanzada_e_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_lic" bpmnElement="compras_avanzada_e_lic" isExpanded="false">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_oc" bpmnElement="compras_avanzada_e_oc">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_esp" bpmnElement="compras_avanzada_e_esp">
+        <dc:Bounds x="702" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_lle" bpmnElement="compras_avanzada_e_lle">
+        <dc:Bounds x="1042" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_rev" bpmnElement="compras_avanzada_e_rev">
+        <dc:Bounds x="1170" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_con" bpmnElement="compras_avanzada_e_con" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_dif" bpmnElement="compras_avanzada_e_dif">
+        <dc:Bounds x="1340" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_uni" bpmnElement="compras_avanzada_e_uni" isMarkerVisible="false">
+        <dc:Bounds x="1547" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_fac" bpmnElement="compras_avanzada_e_fac">
+        <dc:Bounds x="1722" y="417" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_pag" bpmnElement="compras_avanzada_e_pag">
+        <dc:Bounds x="1850" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_e_fin" bpmnElement="compras_avanzada_e_fin">
+        <dc:Bounds x="2062" y="417" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_ini" bpmnElement="compras_avanzada_p_ini">
+        <dc:Bounds x="532" y="657" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_pre" bpmnElement="compras_avanzada_p_pre">
+        <dc:Bounds x="660" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_des" bpmnElement="compras_avanzada_p_des">
+        <dc:Bounds x="1000" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_fac" bpmnElement="compras_avanzada_p_fac">
+        <dc:Bounds x="1680" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_cob" bpmnElement="compras_avanzada_p_cob">
+        <dc:Bounds x="1892" y="657" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_p_fin" bpmnElement="compras_avanzada_p_fin">
+        <dc:Bounds x="2062" y="657" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_0" bpmnElement="compras_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_1" bpmnElement="compras_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_2" bpmnElement="compras_avanzada_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="702" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_3" bpmnElement="compras_avanzada_f0_3">
+        <di:waypoint x="738" y="135" />
+        <di:waypoint x="890" y="135" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="1042" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_4" bpmnElement="compras_avanzada_f0_4">
+        <di:waypoint x="1078" y="285" />
+        <di:waypoint x="1170" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_5" bpmnElement="compras_avanzada_f0_5">
+        <di:waypoint x="1290" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_6" bpmnElement="compras_avanzada_f0_6">
+        <di:waypoint x="1423" y="285" />
+        <di:waypoint x="1547" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_7" bpmnElement="compras_avanzada_f0_7">
+        <di:waypoint x="1400" y="262" />
+        <di:waypoint x="1400" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_8" bpmnElement="compras_avanzada_f0_8">
+        <di:waypoint x="1460" y="135" />
+        <di:waypoint x="1570" y="135" />
+        <di:waypoint x="1570" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_9" bpmnElement="compras_avanzada_f0_9">
+        <di:waypoint x="1570" y="308" />
+        <di:waypoint x="1570" y="435" />
+        <di:waypoint x="1722" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_10" bpmnElement="compras_avanzada_f0_10">
+        <di:waypoint x="1758" y="435" />
+        <di:waypoint x="1850" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_11" bpmnElement="compras_avanzada_f0_11">
+        <di:waypoint x="1970" y="435" />
+        <di:waypoint x="2062" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_12" bpmnElement="compras_avanzada_f0_12">
+        <di:waypoint x="568" y="675" />
+        <di:waypoint x="660" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_13" bpmnElement="compras_avanzada_f0_13">
+        <di:waypoint x="780" y="675" />
+        <di:waypoint x="1000" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_14" bpmnElement="compras_avanzada_f0_14">
+        <di:waypoint x="1120" y="675" />
+        <di:waypoint x="1680" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_15" bpmnElement="compras_avanzada_f0_15">
+        <di:waypoint x="1800" y="675" />
+        <di:waypoint x="1892" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f0_16" bpmnElement="compras_avanzada_f0_16">
+        <di:waypoint x="1928" y="675" />
+        <di:waypoint x="2062" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_m0_0" bpmnElement="compras_avanzada_m0_0">
+        <di:waypoint x="550" y="167" />
+        <di:waypoint x="550" y="657" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_m0_1" bpmnElement="compras_avanzada_m0_1">
+        <di:waypoint x="1060" y="643" />
+        <di:waypoint x="1060" y="303" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_m0_2" bpmnElement="compras_avanzada_m0_2">
+        <di:waypoint x="1740" y="643" />
+        <di:waypoint x="1740" y="453" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_m0_3" bpmnElement="compras_avanzada_m0_3">
+        <di:waypoint x="1910" y="467" />
+        <di:waypoint x="1910" y="657" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="compras_avanzada_diagrama1" name="Licitación">
+    <bpmndi:BPMNPlane id="compras_avanzada_plano1" bpmnElement="compras_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_compras_avanzada_pool_licitacion" bpmnElement="compras_avanzada_pool_licitacion" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_l_cmp" bpmnElement="compras_avanzada_carril_l_cmp" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_carril_l_jef" bpmnElement="compras_avanzada_carril_l_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_ini" bpmnElement="compras_avanzada_l_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_inv" bpmnElement="compras_avanzada_l_inv">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_esp" bpmnElement="compras_avanzada_l_esp">
+        <dc:Bounds x="532" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_eva" bpmnElement="compras_avanzada_l_eva">
+        <dc:Bounds x="660" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_dec" bpmnElement="compras_avanzada_l_dec" isMarkerVisible="false">
+        <dc:Bounds x="867" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_ok" bpmnElement="compras_avanzada_l_ok">
+        <dc:Bounds x="1042" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_avanzada_l_amp" bpmnElement="compras_avanzada_l_amp">
+        <dc:Bounds x="830" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_0" bpmnElement="compras_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_1" bpmnElement="compras_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="532" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_2" bpmnElement="compras_avanzada_f1_2">
+        <di:waypoint x="568" y="135" />
+        <di:waypoint x="614" y="135" />
+        <di:waypoint x="614" y="405" />
+        <di:waypoint x="660" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_3" bpmnElement="compras_avanzada_f1_3">
+        <di:waypoint x="780" y="405" />
+        <di:waypoint x="867" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_4" bpmnElement="compras_avanzada_f1_4">
+        <di:waypoint x="913" y="405" />
+        <di:waypoint x="1042" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_5" bpmnElement="compras_avanzada_f1_5">
+        <di:waypoint x="890" y="382" />
+        <di:waypoint x="890" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_avanzada_f1_6" bpmnElement="compras_avanzada_f1_6">
+        <di:waypoint x="830" y="255" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

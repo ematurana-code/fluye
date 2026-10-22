@@ -1,0 +1,28 @@
+# Dependencias y lo que se genera al compilar
+node_modules/
+dist/
+instalador/
+
+# Notas internas de trabajo (no son parte del programa)
+CLAUDE.md
+docs/especificacion.md
+docs/instalar.md
+
+# Sistema y editores
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Ayuda local para armar el instalador en el disco F: de este PC
+Armar instalador.cmd
+
+# Archivos de trabajo de la skill de diseño
+.taste-skill/
+
+# Sitio armado para GitHub Pages (npm run sitio)
+_sitio/
+
+# Especificación BPMN de la OMG (se descarga de omg.org; no es parte de Fluye)
+docs/referencias/

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluye: dibuja tu proceso y míralo fluir</title>
+<meta name="description" content="Fluye es un modelador de procesos BPMN para Windows, gratis y de código abierto, en español. Dibujas el proceso, pulsas Play y ves si llega al final.">
+<meta name="theme-color" content="#1e3a8a">
+<meta property="og:title" content="Fluye: dibuja tu proceso y míralo fluir">
+<meta property="og:description" content="Modelador de procesos BPMN para Windows, gratis y de código abierto, con un Play que recorre el proceso paso a paso.">
+<meta property="og:image" content="https://ematurana-code.github.io/fluye/imagenes/play.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="imagenes/icono.png" type="image/png">
+<link rel="preload" href="fuentes/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fuentes/inter-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilo.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<a class="saltar" href="#contenido">Ir al contenido</a>
+
+<header class="barra">
+  <a class="marca" href="#" aria-label="Fluye, inicio">
+    <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="6.5" cy="20.5" r="2.5" fill="#60a5fa"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff"/></svg>
+    <span translate="no">Fluye</span>
+  </a>
+  <nav aria-label="Secciones">
+    <a href="#play">El Play</a>
+    <a href="#plantillas">Plantillas</a>
+    <a href="#instalar">Instalar</a>
+    <a href="#english" lang="en">English</a>
+  </nav>
+  <a class="boton boton-chico" href="https://github.com/ematurana-code/fluye/releases/latest">Descargar</a>
+</header>
+
+<main id="contenido">
+
+  <!-- Portada: la tarjeta con la ola a la izquierda; a la derecha, la app sobre la ola gigante. -->
+  <section class="portada" aria-labelledby="titulo">
+    <div class="tarjeta">
+      <div class="olas" aria-hidden="true"></div>
+      <div class="tarjeta-cuerpo">
+        <p class="sello" translate="no" data-entra>
+          <svg viewBox="0 0 32 32" width="44" height="44" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="6.5" cy="20.5" r="2.5" fill="#60a5fa"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff"/></svg>
+          Fluye
+        </p>
+        <h1 id="titulo" data-entra>Dibújalo.<br>Míralo fluir.</h1>
+        <p class="bajada" data-entra>Fluye es un modelador de procesos BPMN para Windows, gratis y de código abierto. Dibujas el proceso, pulsas Play y ves si llega al final.</p>
+        <div class="acciones" data-entra>
+          <a class="boton" href="https://github.com/ematurana-code/fluye/releases/latest">Descargar para Windows</a>
+          <p class="nota">Versión 1.0 · Windows 10 y 11 · sin pedir administrador</p>
+        </div>
+        <p class="enlaces" data-entra>
+          <a href="demo/">Probar en el navegador</a>
+          <a href="https://github.com/ematurana-code/fluye">Código en GitHub</a>
+          <a href="#english" lang="en">In English</a>
+        </p>
+      </div>
+    </div>
+    <figure class="escenario">
+      <div class="escenario-ola" aria-hidden="true"></div>
+      <div class="pantallas" data-ui>
+        <img class="pantalla activa" src="imagenes/editor.png" width="1440" height="860" alt="El editor de Fluye con la plantilla Solicitud de compra y el panel que resume el diagrama: 5 pasos, 1 decisión, todo en orden.">
+        <img class="pantalla" src="imagenes/play.png" width="1440" height="860" alt="El Play recorriendo el proceso: la ficha llegó a la decisión ¿Se aprueba? y pregunta qué camino seguir." loading="lazy">
+        <img class="pantalla" src="imagenes/galeria.png" width="1440" height="860" alt="La galería de plantillas, con filtros por nivel y por área." loading="lazy">
+      </div>
+      <figcaption>Fluye 1.0 en Windows: el editor, el Play y la galería de plantillas.</figcaption>
+    </figure>
+  </section>
+
+  <!-- El Play: el control del que vive todo el programa, en grande y funcionando. -->
+  <section id="play" class="play" aria-labelledby="play-titulo" data-estado="pausa">
+    <div class="play-texto">
+      <h2 id="play-titulo" data-entra><span class="play-palabra">Pulsa</span> Play</h2>
+      <p data-entra>La ficha recorre el proceso paso a paso, se detiene en cada decisión para que elijas el camino y avisa si algo se atasca: un paso sin salida, un paralelo que nunca se junta o un mensaje que nunca llega.</p>
+    </div>
+
+    <div class="play-zona">
+      <div class="diagrama" data-ui data-entra>
+        <svg id="mini" role="img" aria-label="Proceso Solicitud de compra: necesita comprar algo, completar la solicitud, revisar la solicitud, decisión ¿Se aprueba?, enviar a compras y solicitud aprobada. Si no se aprueba, ajustar la solicitud y volver a completarla."></svg>
+        <noscript><img src="imagenes/play.png" width="1440" height="860" alt="El Play de Fluye detenido en una decisión."></noscript>
+        <div class="eleccion" hidden>
+          <p><strong>¿Se aprueba?</strong> Elige el camino</p>
+          <button type="button" data-camino="si">Sí <span>→ Enviar a compras</span></button>
+          <button type="button" data-camino="no">No <span>→ Ajustar la solicitud</span></button>
+        </div>
+      </div>
+      <div class="bitacora" data-ui data-entra>
+        <p class="bitacora-titulo">Recorrido del proceso</p>
+        <ol aria-live="polite"></ol>
+        <button type="button" class="reiniciar">Reiniciar</button>
+      </div>
+    </div>
+
+    <button type="button" class="play-boton" data-ui aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="icono-play" d="M7 4.5v15l12.5-7.5z"/><path class="icono-pausa" d="M6.5 4.5h4v15h-4zm7 0h4v15h-4z"/></svg>
+      <span>Reproducir</span>
+    </button>
+  </section>
+
+  <!-- Qué trae: un párrafo con trozos reales de la app en lugar de una grilla de tarjetas. -->
+  <section class="trae" aria-labelledby="trae-titulo">
+    <h2 id="trae-titulo" class="oculto">Qué trae Fluye</h2>
+    <p class="enunciado" data-entra>Arrastras pasos <img class="trozo" src="imagenes/trozo-decision.png" width="116" height="61" alt="La ficha del Play llegando a la decisión ¿Se aprueba?">, el panel avisa qué falta <img class="trozo" src="imagenes/trozo-revision.png" width="128" height="67" alt="Recuadro verde Todo en orden del panel de revisión">, el Play anota cada fase <img class="trozo" src="imagenes/trozo-bitacora.png" width="140" height="74" alt="Bitácora del Play con las fases numeradas por carril"> y todo se exporta a Word, PDF o web.</p>
+    <div class="trae-pie" data-entra>
+      <p>Abre y guarda archivos .bpmn estándar, también los que exportan otras herramientas de modelado, con sus colores. Trae varios diagramas por archivo, cada uno en su pestaña, y corrige la ortografía en español sin internet.</p>
+      <a class="boton boton-claro" href="demo/">Probar en el navegador</a>
+    </div>
+  </section>
+
+  <!-- Plantillas: una hoja de muestras, un área por baldosa. -->
+  <section id="plantillas" class="plantillas" aria-labelledby="plantillas-titulo">
+    <ul class="muro">
+      <li class="baldosa t1 cifra"><h2 id="plantillas-titulo"><span class="palabra">33</span><span class="pie">plantillas listas</span></h2></li>
+      <li class="baldosa t2"><span class="palabra">Aduana</span><span class="pie">embarques y despachos</span></li>
+      <li class="baldosa t3"><span class="palabra">Compras</span><span class="pie">cotizaciones</span></li>
+      <li class="baldosa foto"><img src="imagenes/tarjeta-1.png" width="258" height="296" alt="Tarjeta de la plantilla Revisión de documentos de embarque, nivel simple" loading="lazy"></li>
+      <li class="baldosa t4"><span class="palabra">Finanzas</span><span class="pie">facturas y cobranza</span></li>
+      <li class="baldosa t1"><span class="palabra">Ventas</span><span class="pie">del pedido al cierre</span></li>
+      <li class="baldosa t2"><span class="palabra">Personas</span><span class="pie">vacaciones e ingresos</span></li>
+      <li class="baldosa foto"><img src="imagenes/tarjeta-2.png" width="258" height="296" alt="Tarjeta de la plantilla Despacho de importación, nivel intermedio" loading="lazy"></li>
+      <li class="baldosa t3"><span class="palabra">Soporte</span><span class="pie">tickets e incidentes</span></li>
+      <li class="baldosa t4"><span class="palabra">Atención</span><span class="pie">consultas y reclamos</span></li>
+      <li class="baldosa t1"><span class="palabra">Bodega</span><span class="pie">despachos y devoluciones</span></li>
+      <li class="baldosa foto"><img src="imagenes/tarjeta-3.png" width="258" height="296" alt="Tarjeta de la plantilla Despacho completo con tres pools, nivel avanzado" loading="lazy"></li>
+      <li class="baldosa t2"><span class="palabra">Legal</span><span class="pie">contratos y firmas</span></li>
+      <li class="baldosa t3"><span class="palabra">Calidad</span><span class="pie">auditorías</span></li>
+      <li class="baldosa t4"><span class="palabra">Web</span><span class="pie">inicio de sesión y tienda</span></li>
+      <li class="baldosa t1 cifra"><span class="palabra">3</span><span class="pie">niveles: simple, intermedia, avanzada</span></li>
+    </ul>
+  </section>
+
+  <div class="banda" aria-hidden="true"></div>
+
+  <!-- Así se usa: la misma tarjeta del panel, más avanzada en cada franja. -->
+  <section class="uso" aria-labelledby="uso-titulo">
+    <div class="franja f1">
+      <h2 id="uso-titulo">Así se usa</h2>
+      <div class="ficha-panel" data-ui>
+        <p class="fp-titulo">Proceso nuevo</p>
+        <p class="fp-cifras"><span><b>0</b> pasos</span><span><b>0</b> decisiones</span><span><b>2</b> carriles</span></p>
+        <p class="fp-estado alerta">Para revisar (2): falta el fin y el inicio no tiene salida.</p>
+      </div>
+      <p class="clausula">Primero eliges una plantilla o una hoja en blanco.</p>
+    </div>
+    <div class="franja f2">
+      <div class="ficha-panel" data-ui>
+        <p class="fp-titulo">Solicitud de compra</p>
+        <p class="fp-cifras"><span><b>4</b> pasos</span><span><b>1</b> decisión</span><span><b>2</b> carriles</span></p>
+        <p class="fp-estado alerta">Para revisar (1): una decisión tiene un camino sin nombre.</p>
+      </div>
+      <p class="clausula">Luego dibujas y el panel te avisa qué falta.</p>
+    </div>
+    <div class="franja f3">
+      <div class="ficha-panel" data-ui>
+        <p class="fp-titulo">Solicitud de compra</p>
+        <p class="fp-cifras"><span><b>5</b> pasos</span><span><b>1</b> decisión</span><span><b>2</b> carriles</span></p>
+        <p class="fp-estado bien">Todo en orden</p>
+        <p class="fp-boton">Recorrer con el Play</p>
+      </div>
+      <p class="clausula">Después pulsas Play y eliges cada camino.</p>
+    </div>
+    <div class="franja f4">
+      <div class="ficha-panel" data-ui>
+        <p class="fp-titulo">Solicitud de compra</p>
+        <p class="fp-cifras"><span><b>6</b> fases</span><span><b>1</b> decisión</span><span><b>0</b> problemas</span></p>
+        <p class="fp-estado bien">Llegó al final</p>
+        <p class="fp-boton">Exportado: Solicitud de compra.docx</p>
+      </div>
+      <p class="clausula">Al final lo compartes en Word, PDF o web.</p>
+    </div>
+  </section>
+
+  <!-- Gratis y abierto: cómo instalarlo y el código. -->
+  <section id="instalar" class="abierto" aria-labelledby="abierto-titulo">
+    <div class="panel">
+      <h2 id="abierto-titulo" data-entra>Gratis, abierto<br>y en español</h2>
+      <div class="panel-textos">
+        <div data-entra>
+          <h3>Cómo instalarlo</h3>
+          <p>Descarga el instalador y ábrelo con doble clic: se instala para tu usuario, sin pedir administrador, y queda en el escritorio y en el menú Inicio. Si Windows muestra “Windows protegió su PC”, pincha <em>Más información</em> y luego <em>Ejecutar de todas formas</em>; pasa la primera vez porque el instalador todavía no va firmado.</p>
+        </div>
+        <div data-entra>
+          <h3>Código abierto</h3>
+          <p>Fluye tiene licencia MIT: puedes usarlo, estudiarlo, cambiarlo y repartirlo, también en tu empresa. Está hecho con Electron, diagram-js y bpmn-moddle, y las sugerencias y reportes de errores son bienvenidos en GitHub.</p>
+        </div>
+        <a class="boton boton-claro" href="https://github.com/ematurana-code/fluye" data-entra>Ver el código en GitHub</a>
+      </div>
+      <figure class="retrato">
+        <img src="imagenes/celular.png" width="780" height="1688" alt="La página web que exporta Fluye, abierta en un celular: el Play detenido en la decisión ¿Credenciales correctas?" loading="lazy">
+      </figure>
+    </div>
+  </section>
+
+  <section id="english" class="ingles" lang="en" aria-labelledby="ingles-titulo">
+    <h2 id="ingles-titulo" data-entra>Fluye in English</h2>
+    <div class="ingles-textos" data-entra>
+      <p><strong>Fluye</strong> (“it flows”) is a free, open-source BPMN 2.0 process modeler for Windows. Draw pools, lanes, tasks, gateways, events and message flows; press Play to walk through the process token by token, pick a path at each gateway and get warned about dead ends and deadlocks.</p>
+      <p>It opens and saves standard .bpmn files, ships 33 templates, and exports to BPMN, PNG, SVG, PDF, Word and a single-file interactive web page that includes the Play. The interface is in Spanish. MIT licensed.</p>
+      <p class="ingles-enlaces"><a href="https://github.com/ematurana-code/fluye/releases/latest">Download for Windows</a> <a href="demo/">Try it in your browser</a> <a href="https://github.com/ematurana-code/fluye">Source on GitHub</a></p>
+    </div>
+  </section>
+
+  <a class="llamado" href="https://github.com/ematurana-code/fluye/releases/latest" aria-label="Descargar Fluye para Windows">
+    <span class="llamado-frase">Un instalador de 100 MB para Windows 10 y 11. Gratis, sin cuentas ni publicidad.</span>
+    <svg class="llamado-flecha" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 34 34 14M18 14h16v16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="llamado-palabra">Descarga</span>
+  </a>
+</main>
+
+<footer class="cierre">
+  <div class="bloques" role="img" aria-label="Fluye">
+    <span class="b b1">F</span><span class="b b2">l</span><span class="b b3">u</span><span class="b b4">y</span><span class="b b5">e</span>
+  </div>
+  <div class="cierre-enlaces">
+    <div>
+      <h2>Programa</h2>
+      <ul>
+        <li><a href="https://github.com/ematurana-code/fluye/releases/latest">Descargar</a></li>
+        <li><a href="demo/">Probar en el navegador</a></li>
+        <li><a href="https://github.com/ematurana-code/fluye/releases">Versiones</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Código</h2>
+      <ul>
+        <li><a href="https://github.com/ematurana-code/fluye">Repositorio</a></li>
+        <li><a href="https://github.com/ematurana-code/fluye/blob/main/LICENSE">Licencia MIT</a></li>
+        <li><a href="https://github.com/ematurana-code/fluye/blob/main/AVISOS-DE-TERCEROS.md">Avisos de terceros</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Ayuda</h2>
+      <ul>
+        <li><a href="https://github.com/ematurana-code/fluye#readme">Guía rápida</a></li>
+        <li><a href="https://github.com/ematurana-code/fluye/issues">Reportar un problema</a></li>
+        <li><a href="#instalar">Cómo instalarlo</a></li>
+      </ul>
+    </div>
+    <div class="cierre-autor">
+      <h2>Autor</h2>
+      <p>Hecho en Chile por Esteban Maturana.</p>
+      <p><a href="https://github.com/ematurana-code">github.com/ematurana-code</a></p>
+    </div>
+  </div>
+  <div class="cierre-final">
+    <p>© 2026 Esteban Maturana · Licencia MIT · BPMN es un estándar de la OMG.</p>
+    <a class="boton boton-chico" href="https://github.com/ematurana-code/fluye/releases/latest">Descargar</a>
+  </div>
+</footer>
+
+<script src="sitio.js" defer></script>
+</body>
+</html>

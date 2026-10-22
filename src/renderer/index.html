@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'">
+<title>Fluye</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="fl-app">
+  <header class="fl-barra">
+    <div class="fl-marca" title="Fluye">
+      <svg id="logo-fluye" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+        <path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="6.5" cy="20.5" r="2.5" fill="#60a5fa"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff"/>
+      </svg>
+      <span>Fluye</span>
+    </div>
+    <div class="fl-archivo">
+      <span id="nombre-archivo">Proceso sin título</span>
+      <span id="marca-cambios" class="fl-punto-cambios" title="Cambios sin guardar" hidden></span>
+    </div>
+    <nav class="fl-acciones">
+      <button id="btn-nuevo" class="fl-btn" data-icono="nuevo" title="Nuevo: proyecto o pestaña (Ctrl+N proyecto, Ctrl+T pestaña)" aria-haspopup="dialog"><span>Nuevo</span></button>
+      <div class="fl-grupo-boton">
+        <button id="btn-abrir" class="fl-btn" data-icono="abrir" title="Abrir (Ctrl+O)"><span>Abrir</span></button>
+        <button id="btn-recientes" class="fl-btn fl-btn-flecha" data-icono="flechaAbajo" data-tamano="14" title="Recientes"></button>
+        <div id="menu-recientes" class="fl-menu" hidden></div>
+      </div>
+      <button id="btn-guardar" class="fl-btn" data-icono="guardar" title="Guardar (Ctrl+S)"><span>Guardar</span></button>
+      <span class="fl-sep"></span>
+      <button id="btn-deshacer" class="fl-btn fl-btn-icono" data-icono="deshacer" title="Deshacer (Ctrl+Z)" disabled></button>
+      <button id="btn-rehacer" class="fl-btn fl-btn-icono" data-icono="rehacer" title="Rehacer (Ctrl+Y)" disabled></button>
+      <span class="fl-sep"></span>
+      <div class="fl-grupo-boton">
+        <button id="btn-exportar" class="fl-btn" data-icono="exportar" title="Exportar"><span>Exportar</span></button>
+        <div id="menu-exportar" class="fl-menu" hidden>
+          <button class="fl-menu-item" data-formato="bpmn"><strong>BPMN (.bpmn)</strong><small>Estándar: se abre en Bizagi y otras herramientas</small></button>
+          <button class="fl-menu-item" data-formato="png"><strong>Imagen PNG</strong><small>Para presentaciones, correos y chats</small></button>
+          <button class="fl-menu-item" data-formato="svg"><strong>Imagen SVG</strong><small>Vectorial: se agranda sin perder calidad</small></button>
+          <button class="fl-menu-item" data-formato="pdf"><strong>PDF</strong><small>Una hoja A4 con el diagrama, lista para imprimir</small></button>
+          <button class="fl-menu-item" data-formato="word"><strong>Word (documentación)</strong><small>Portada, diagrama y ficha de cada paso</small></button>
+          <button class="fl-menu-item" data-formato="html"><strong>Página web interactiva</strong><small>Con Play: se abre en cualquier navegador, sin instalar nada</small></button>
+        </div>
+      </div>
+      <button id="btn-play" class="fl-btn fl-btn-play" data-icono="play" title="Recorrer el proceso paso a paso"><span>Play</span></button>
+      <span class="fl-sep"></span>
+      <button id="btn-panel" class="fl-btn fl-btn-icono" data-icono="panel" title="Mostrar u ocultar propiedades"></button>
+    </nav>
+  </header>
+
+  <main class="fl-cuerpo">
+    <aside id="paleta" class="fl-paleta" aria-label="Elementos"></aside>
+    <div class="fl-centro">
+      <nav id="pestanas" class="fl-pestanas" role="tablist" aria-label="Diagramas del archivo"></nav>
+      <section id="lienzo" class="fl-lienzo"><div id="play-barra" hidden></div></section>
+    </div>
+    <aside id="propiedades" class="fl-propiedades" aria-label="Propiedades"></aside>
+    <aside id="bitacora" class="fl-bitacora" aria-label="Recorrido del proceso"></aside>
+  </main>
+
+  <footer class="fl-estado">
+    <span id="ayuda-estado" class="fl-estado-ayuda">Arrastra desde la paleta · Selecciona un elemento para agregar el siguiente · Arrastra desde un punto azul para conectar · Espacio + arrastrar para moverte</span>
+    <div class="fl-zoom">
+      <button id="estado-revision" class="fl-estado-revision" type="button" hidden></button>
+      <span class="fl-zoom-separador"></span>
+      <div id="herramientas" class="fl-herramientas"></div>
+      <span class="fl-zoom-separador"></span>
+      <button id="zoom-alejar" class="fl-btn fl-btn-icono" data-icono="alejar" data-tamano="16" title="Alejar"></button>
+      <button id="zoom-valor" class="fl-zoom-valor" title="Volver a 100%">100%</button>
+      <button id="zoom-acercar" class="fl-btn fl-btn-icono" data-icono="acercar" data-tamano="16" title="Acercar"></button>
+      <button id="zoom-ajustar" class="fl-btn fl-btn-icono" data-icono="ajustar" data-tamano="16" title="Ajustar a la pantalla"></button>
+    </div>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
