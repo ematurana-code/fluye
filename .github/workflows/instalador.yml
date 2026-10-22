@@ -15,12 +15,14 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Descargar Electron (desde la versión 44 no se baja solo al instalar)
+        run: node node_modules/electron/install.js
       - name: Armar el instalador
         run: npm run instalador
         env:
