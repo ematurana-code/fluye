@@ -50,6 +50,7 @@ npm install
 npm start              # compila y abre la app
 npm run web            # versión web de prueba en http://localhost:8095
 npm run instalador     # arma el instalador en ./instalador
+npm run sitio          # arma la página del proyecto (portada, guías y plantillas) en ./_sitio
 ```
 
 | Carpeta | Qué hay |

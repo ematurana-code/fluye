@@ -1,6 +1,6 @@
 // Empaqueta la interfaz (src/renderer) en dist/renderer con esbuild. Uso: node scripts/build.mjs [--watch]
 import * as esbuild from 'esbuild';
-import { cpSync, mkdirSync, readFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
@@ -97,4 +97,7 @@ if (vigilar) {
   await ctx.watch();
 } else {
   await esbuild.build(opciones);
+  // La misma plantilla de la página web interactiva, aparte: la usa scripts/sitio.mjs para las plantillas de la web.
+  mkdirSync(join(raiz, 'dist', 'visor'), { recursive: true });
+  writeFileSync(join(raiz, 'dist', 'visor', 'plantilla.html'), await plantillaVisor());
 }

@@ -570,7 +570,11 @@ const herramientas = crearHerramientas($('#herramientas'), modeler);
 crearPropiedades($('#propiedades'), modeler, { alPlay: () => $('#btn-play').click() });
 
 const primero = await archivo.inicial();
-if (!(primero && await cargar(primero.contenido, primero.nombre, primero.ruta))) {
+// En la versión web (la demo de la página del proyecto), ?plantilla=<id> abre esa plantilla de la galería.
+const pedida = !window.fluyeEscritorio && PLANTILLAS.find((p) => p.id === new URLSearchParams(location.search).get('plantilla'));
+if (pedida && await cargar(pedida.bpmn, `${pedida.nombre}.bpmn`, null)) {
+  aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
+} else if (!(primero && await cargar(primero.contenido, primero.nombre, primero.ruta))) {
   await modeler.nuevo('Proceso 1');
   estado.guardadoEn = puntoPila();
   pestanas.actualizar();

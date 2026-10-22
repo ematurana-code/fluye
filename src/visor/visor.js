@@ -19,7 +19,18 @@ async function iniciar() {
   document.querySelectorAll('[data-icono]').forEach((n) => { n.insertAdjacentHTML('afterbegin', icono(n.dataset.icono, Number(n.dataset.tamano) || 18)); });
   await Promise.all(['400', '600'].map((p) => document.fonts.load(`${p} 12px Inter`))).catch(() => {});
 
-  const datos = desempaquetar($('#fluye-datos').textContent);
+  let datos = desempaquetar($('#fluye-datos').textContent);
+  // En la página del proyecto un solo visor muestra todas las plantillas: ?archivo=<.bpmn del mismo sitio>&titulo=<nombre>.
+  // Las páginas que exporta Fluye traen el proceso adentro y su CSP no deja conectarse a nada, así que esto no corre ahí.
+  const pedido = new URLSearchParams(location.search);
+  if (!datos && pedido.get('archivo')) {
+    try {
+      const r = await fetch(pedido.get('archivo'));
+      if (r.ok) datos = { titulo: pedido.get('titulo') || 'Proceso', bpmn: await r.text() };
+    } catch (e) {
+      console.error(e);
+    }
+  }
   document.body.classList.add('listo');
   if (!datos) return aviso('Esta página no trae un proceso de Fluye.', 'error', 15000);
   $('#nombre-archivo').textContent = datos.titulo || 'Proceso';
