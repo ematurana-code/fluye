@@ -1,7 +1,7 @@
 {
   "name": "fluye",
   "productName": "Fluye",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modelador de procesos BPMN para Windows, simple y con Play paso a paso",
   "author": "Esteban Maturana",
   "license": "MIT",
