@@ -27,6 +27,42 @@ function destinoLegible(flecha) {
   return nombrados.length > 1 ? `${nombrados.slice(0, -1).join(', ')} y ${nombrados[nombrados.length - 1]}` : (nombrados[0] || '');
 }
 
+// "Quién hace qué, paso a paso": las figuras del diagrama principal puestas en el carril de quien las hace y en filas
+// según su posición de izquierda a derecha en el dibujo (lo que está a la misma altura del recorrido va en la misma fila).
+function flujo(defs, procesos) {
+  const formas = new Map();
+  for (const f of defs.diagrams?.[0]?.plane?.planeElement || []) if (f.bpmnElement && f.bounds) formas.set(f.bpmnElement, f.bounds);
+  const tipo = (el) => {
+    if (es(el, 'bpmn:StartEvent')) return 'inicio';
+    if (es(el, 'bpmn:EndEvent')) return 'fin';
+    if (es(el, 'bpmn:IntermediateCatchEvent') || es(el, 'bpmn:IntermediateThrowEvent')) return 'evento';
+    if (es(el, 'bpmn:ExclusiveGateway') || es(el, 'bpmn:InclusiveGateway')) return 'decision';
+    if (es(el, 'bpmn:Activity')) return 'tarea';
+    return null;
+  };
+  const carriles = [], figuras = [];
+  for (const { nombre: pool, proceso } of procesos) {
+    const lanes = proceso.laneSets?.[0]?.lanes || [];
+    const base = carriles.length;
+    if (lanes.length) lanes.forEach((l) => carriles.push({ nombre: nombre(l) || pool, pool }));
+    else carriles.push({ nombre: pool || 'Proceso', pool });
+    for (const el of proceso.flowElements || []) {
+      const t = tipo(el), b = formas.get(el);
+      if (!t || !b || !nombre(el)) continue;
+      const i = lanes.findIndex((l) => (l.flowNodeRef || []).includes(el));
+      figuras.push({ tipo: t, nombre: nombre(el), carril: base + Math.max(0, i), x: b.x + b.width / 2 });
+    }
+  }
+  // Filas: se agrupan las figuras cuyos centros quedan a menos de 60 px en el dibujo.
+  figuras.sort((a, b) => a.x - b.x);
+  let fila = 0, inicioFila = -Infinity;
+  for (const f of figuras) {
+    if (f.x - inicioFila > 60) { fila++; inicioFila = f.x; }
+    f.fila = fila;
+  }
+  return { carriles, figuras: figuras.map(({ x, ...f }) => f), filas: fila };
+}
+
 export async function analizar(xml) {
   const { rootElement: defs } = await new BpmnModdle().fromXML(xml, 'bpmn:Definitions');
   const colaboracion = (defs.rootElements || []).find((r) => es(r, 'bpmn:Collaboration'));
@@ -61,6 +97,7 @@ export async function analizar(xml) {
 
   return {
     pools,
+    flujo: flujo(defs, procesos),
     mensajes: (colaboracion?.messageFlows || []).map(nombre).filter(Boolean),
     pestanas: (defs.diagrams || []).map((d) => nombre(d)).filter(Boolean),
     responsables: pools.reduce((n, p) => n + p.carriles.filter((c) => c.nombre).length, 0),

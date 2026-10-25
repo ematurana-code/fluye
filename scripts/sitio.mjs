@@ -2,11 +2,11 @@
 // - portada, guías y una página por plantilla (scripts/sitio/*.mjs), con datos estructurados para buscadores;
 // - visor/: el visor interactivo de Fluye (el de la página web exportada) que carga cada plantilla por su dirección;
 // - demo/: la app completa en el navegador (dist/renderer);
-// - sitemap.xml y 404.html. Los recursos fijos (estilos, letra, imágenes) vienen de sitio/.
+// - sitemap.xml, llms.txt (resumen para asistentes de IA) y 404.html. Los recursos fijos (estilos, letra, imágenes) vienen de sitio/.
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { analizar, ruta } from './sitio/datos.mjs';
-import { SITIO, pagina } from './sitio/comun.mjs';
+import { DESCARGA, REPO, SITIO, VERSION, pagina } from './sitio/comun.mjs';
 import { portada } from './sitio/portada.mjs';
 import { NIVELES, indicePlantillas, paginaPlantilla } from './sitio/plantillas.mjs';
 import { guias, indiceGuias } from './sitio/guias.mjs';
@@ -46,6 +46,7 @@ for (const p of catalogo) {
   const item = { ...p, ruta: ruta(p.nombre), nivelNombre: NIVELES[p.nivel].nombre, analisis: await analizar(xml) };
   escribir(`plantillas/${item.ruta}/${item.ruta}.bpmn`, xml);
   escribir(`plantillas/${item.ruta}/vista.svg`, readFileSync(join(raiz, 'plantillas', `${p.id}.svg`), 'utf8'));
+  cpSync(join(raiz, 'plantillas', `${p.id}.png`), join(salida, 'plantillas', item.ruta, 'vista.png'));
   plantillas.push(item);
 }
 const areas = [...new Set(plantillas.map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, 'es')).map((nombre) => ({ nombre, ruta: ruta(nombre) }));
@@ -56,8 +57,8 @@ const paginas = [
   portada({ plantillas: ordenadas, areas }),
   indicePlantillas(ordenadas, areas),
   ...ordenadas.map((p) => paginaPlantilla(p, ordenadas)),
-  indiceGuias(),
-  ...guias()
+  indiceGuias(ordenadas),
+  ...guias(ordenadas)
 ];
 for (const p of paginas) escribir(`${p.ruta}index.html`, pagina({ ...p, areas }));
 
@@ -65,10 +66,13 @@ for (const p of paginas) escribir(`${p.ruta}index.html`, pagina({ ...p, areas })
 escribir('404.html', pagina({
   ruta: '', titulo: 'Página no encontrada | Fluye', descripcion: 'Esta dirección no existe en el sitio de Fluye.', indexar: false, areas, base: '/fluye/',
   cuerpo: `
-<div class="ancho">
-  <header class="cabeza-pagina">
-    <h1>Esta página no existe</h1>
-    <p class="bajada">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar. Prueba con la <a href="./">portada</a>, las <a href="plantillas/">plantillas</a> o las <a href="guias/">guías</a>.</p>
+<div class="pila">
+  <header class="tablero titular">
+    <div class="pieza titular-texto">
+      <h1>Esta página no existe</h1>
+      <p class="bajada">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar. Prueba con la <a href="./">portada</a>, las <a href="plantillas/">plantillas</a> o las <a href="guias/">guías</a>.</p>
+    </div>
+    <div class="pieza pieza-fin titular-lado"><p class="frase">Este camino termina aquí, pero los demás siguen abiertos.</p></div>
   </header>
 </div>`
 }));
@@ -78,6 +82,41 @@ escribir('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${paginas.map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}
 </urlset>
+`);
+
+// Resumen en Markdown para asistentes de IA (formato llms.txt): qué es Fluye, datos clave y las páginas que importan.
+const guiasHechas = paginas.filter((p) => p.ruta.startsWith('guias/') && p.ruta !== 'guias/');
+escribir('llms.txt', `# Fluye
+
+> Fluye es un programa gratis y de código abierto (licencia MIT) para hacer diagramas BPMN 2.0 y diagramas de flujo en Windows 10 y 11, en español. Dibuja pools, carriles, tareas, decisiones y eventos, revisa que el diagrama esté completo y lo recorre paso a paso con un Play. Funciona sin internet y no pide cuenta. Lo creó Esteban Maturana, en Chile.
+
+Datos clave:
+
+- Precio: gratis, sin planes de pago ni anuncios.
+- Sistema: Windows 10 y 11 de 64 bits. También se puede probar en el navegador, sin instalar.
+- Notación: BPMN 2.0, el estándar de la OMG. Abre y guarda archivos .bpmn estándar, también los que exportan otras herramientas de modelado.
+- Exporta a BPMN, PNG, SVG, PDF, Word y una página web interactiva de un solo archivo que trae el Play.
+- Trae ${plantillas.length} plantillas de ${areas.length} áreas en tres niveles, revisión del diagrama mientras se dibuja y corrector ortográfico en español sin internet.
+- Versión actual: ${VERSION}.
+
+## Empezar
+
+- [Descargar Fluye para Windows](${DESCARGA}): instalador por usuario, no pide administrador.
+- [Probar Fluye en el navegador](${SITIO}demo/): el editor completo, sin instalar.
+
+## Guías
+
+${guiasHechas.map((p) => `- [${p.titulo.replace(/ \| Fluye$/, '')}](${SITIO}${p.ruta}): ${p.descripcion}`).join('\n')}
+
+## Plantillas BPMN gratis
+
+- [Todas las plantillas](${SITIO}plantillas/): índice por área y nivel.
+${ordenadas.map((p) => `- [${p.nombre}](${SITIO}plantillas/${p.ruta}/): ${p.descripcion} Área ${p.categoria}, nivel ${p.nivelNombre.toLowerCase()}.`).join('\n')}
+
+## Optional
+
+- [Código fuente en GitHub](${REPO})
+- [Licencia MIT](${REPO}/blob/main/LICENSE)
 `);
 
 console.log(`Sitio listo en ${salida}: ${paginas.length} páginas, ${plantillas.length} plantillas.`);

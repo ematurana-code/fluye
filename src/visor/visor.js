@@ -131,6 +131,8 @@ async function iniciar() {
     const r = await play.iniciar((opciones) => elegirOpcion('¿Desde qué inicio?', 'El diagrama tiene varios eventos de inicio. Elige por dónde empezar el recorrido.', opciones.map((o) => ({ valor: o.elemento, texto: o.texto }))));
     if (r.error) aviso(r.error, 'alerta', 5000);
   });
+  // La página del proyecto abre el visor con ?play=1 cuando la persona pulsó "Recorrer con el Play": parte andando.
+  if (pedido.get('play') === '1') $('#btn-play').click();
 
   // ----- pestañas: si el archivo trae varios diagramas se puede pasar de uno a otro (solo mirar) -----
   const vistas = new Map();

@@ -12,10 +12,20 @@ export const DESCARGA = `${REPO}/releases/latest/download/Fluye-Instalar-${VERSI
 export const VERSIONES = `${REPO}/releases`;
 export const PESO = '97 MB';
 
+// Código de verificación de Google Search Console (etiqueta HTML). Vacío mientras no se registre el sitio.
+export const GOOGLE_VERIFICACION = '';
+
 export const escapar = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // El logo de Fluye (la ola) en línea, para no depender de una imagen.
 export const LOGO = (tam = 30) => `<svg viewBox="0 0 32 32" width="${tam}" height="${tam}" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="6.5" cy="20.5" r="2.5" fill="#60a5fa"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff"/></svg>`;
+
+// Íconos chicos que se repiten: la flecha de las piezas que son enlaces y el triángulo del Play.
+export const FLECHA = '<svg class="pieza-flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+export const PLAY = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>';
+
+// El nombre del pie, construido con un bloque por letra (alturas y colores fijos).
+const BLOQUES = [['F', '100%', '#ffffff'], ['L', '76%', '#dce6fd'], ['U', '62%', '#3b82f6'], ['Y', '88%', '#93b4f7'], ['E', '70%', '#ffffff']];
 
 const enlacesPie = (r, areas) => `
   <div class="pie-columnas">
@@ -34,6 +44,7 @@ const enlacesPie = (r, areas) => `
     <div>
       <h2>Guías</h2>
       <ul>
+        <li><a href="${r}guias/que-es-bpmn/">Qué es BPMN</a></li>
         <li><a href="${r}guias/diagrama-de-flujo/">Cómo hacer un diagrama de flujo</a></li>
         <li><a href="${r}guias/simbolos-bpmn/">Símbolos BPMN</a></li>
         <li><a href="${r}guias/diagrama-de-carriles/">Diagrama de carriles</a></li>
@@ -46,6 +57,10 @@ const enlacesPie = (r, areas) => `
         <li><a href="${REPO}/blob/main/LICENSE">Licencia MIT</a></li>
         <li><a href="${REPO}/issues">Reportar un problema</a></li>
       </ul>
+    </div>
+    <div>
+      <h2>Fluye</h2>
+      <p class="pie-frase">Programa gratis y de código abierto para hacer diagramas BPMN y de flujo en Windows, en español.</p>
     </div>
   </div>`;
 
@@ -66,6 +81,7 @@ ${base ? `<base href="${base}">` : ''}
 <title>${escapar(titulo)}</title>
 <meta name="description" content="${escapar(descripcion)}">
 ${indexar ? `<link rel="canonical" href="${url}">` : '<meta name="robots" content="noindex">'}
+${GOOGLE_VERIFICACION && ruta === '' ? `<meta name="google-site-verification" content="${escapar(GOOGLE_VERIFICACION)}">` : ''}
 <meta name="theme-color" content="#1e3a8a">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
@@ -85,23 +101,30 @@ ${datos}
 <body class="${clase}">
 <a class="saltar" href="#contenido">Ir al contenido</a>
 <header class="barra">
-  <a class="marca" href="${r}" aria-label="Fluye, inicio">${LOGO(30)}<span translate="no">Fluye</span></a>
-  <nav aria-label="Principal">
-    <a href="${r}plantillas/">Plantillas</a>
-    <a href="${r}guias/">Guías</a>
-    <a href="${r}demo/">Probar</a>
-    <a href="${REPO}">Código</a>
-  </nav>
-  <a class="boton boton-chico" href="${DESCARGA}">Descargar</a>
+  <div class="barra-fila">
+    <a class="barra-logo" href="${r}" aria-label="Fluye, inicio">${LOGO(34)}</a>
+    <div class="barra-enlaces">
+      <a class="barra-nombre" href="${r}" translate="no">Fluye</a>
+      <nav aria-label="Principal">
+        <a href="${r}plantillas/">Plantillas</a>
+        <a href="${r}guias/">Guías</a>
+        <a href="${r}demo/">Probar</a>
+        <a href="${REPO}">Código</a>
+      </nav>
+    </div>
+    <a class="barra-accion" href="${DESCARGA}">Descargar</a>
+  </div>
 </header>
 <main id="contenido">
 ${cuerpo}
 </main>
 <footer class="pie">
-  <a class="pie-marca" href="${r}">${LOGO(40)}<span translate="no">Fluye</span></a>
-  <p class="pie-frase">Programa gratis y de código abierto para hacer diagramas de flujo y procesos BPMN en Windows.</p>
+  <div class="pie-bloques" aria-hidden="true">${BLOQUES.map(([l, alto, color]) => `<span style="--alto:${alto};--fondo-letra:${color}">${l}</span>`).join('')}</div>
   ${enlacesPie(r, areas)}
-  <p class="pie-final">© 2026 Esteban Maturana · Licencia MIT · Hecho en Chile · BPMN es un estándar de la OMG.</p>
+  <div class="pie-final">
+    <p>© 2026 Esteban Maturana. Licencia MIT. Hecho en Chile. BPMN es un estándar de la OMG.</p>
+    <a class="boton" href="${DESCARGA}">Descargar gratis</a>
+  </div>
 </footer>
 <script src="${r}sitio.js" defer></script>
 </body>
@@ -120,20 +143,32 @@ export function migas(r, pasos) {
   return { html, esquema };
 }
 
-// La decisión de la portada y del final: dos caminos, uno por cada forma de usar Fluye.
+// La decisión: un rombo con la pregunta y dos caminos, uno por cada forma de usar Fluye.
 export const decision = (r, pregunta = '¿Dónde lo vas a usar?') => `
-  <div class="decision">
-    <p class="decision-pregunta"><span class="decision-rombo" aria-hidden="true"></span>${escapar(pregunta)}</p>
-    <ul class="decision-caminos">
-      <li><span class="camino-nombre">En Windows</span><span class="camino-destino"><a class="boton" href="${DESCARGA}">Descargar gratis</a><span class="camino-nota">${PESO} · Windows 10 y 11 · sin cuenta</span></span></li>
-      <li><span class="camino-nombre">En el navegador</span><span class="camino-destino"><a class="boton boton-claro" href="${r}demo/">Probar sin instalar</a><span class="camino-nota">Abre el editor aquí mismo</span></span></li>
-    </ul>
+  <div class="tablero decision-fila">
+    <div class="pieza pieza-decision decision-pregunta"><span class="decision-rombo" aria-hidden="true"></span><p class="frase">${escapar(pregunta)}</p></div>
+    <a class="pieza pieza-azul" href="${DESCARGA}"><span><span class="camino-titulo">Descargar gratis</span><span class="camino-nota">Para Windows 10 y 11. Pesa ${PESO} y no pide cuenta.</span></span>${FLECHA}</a>
+    <a class="pieza pieza-tarea" href="${r}demo/"><span><span class="camino-titulo">Probar sin instalar</span><span class="camino-nota">Abre el editor aquí mismo, en el navegador.</span></span>${FLECHA}</a>
   </div>`;
 
-// Visor real de Fluye con una plantilla, en un marco. Se carga al acercarse (loading=lazy) salvo en la portada.
-// archivo: ruta del .bpmn desde la raíz del sitio (el visor está en visor/, de ahí el ../).
-export const visor = (r, { archivo, titulo, alto = 560, perezoso = true }) => `
-  <figure class="ventana">
-    <iframe src="${r}visor/?archivo=${encodeURIComponent('../' + archivo)}&amp;titulo=${encodeURIComponent(titulo)}" title="Diagrama interactivo: ${escapar(titulo)}" style="height:${alto}px" ${perezoso ? 'loading="lazy"' : ''}></iframe>
-    <figcaption>Diagrama interactivo de Fluye: pulsa <strong>Play</strong> para recorrerlo paso a paso.</figcaption>
-  </figure>`;
+// "Así se hace en Fluye": las tres pantallas de siempre (dibujar, probar, compartir), para guías e índices.
+export const enFluye = (r) => `
+  <div class="tablero en-fluye">
+    <figure class="pieza en-fluye-editor entra"><img src="${r}imagenes/editor.png" width="1440" height="860" loading="lazy" alt="El editor de Fluye con un proceso de compras en dos carriles y el panel que resume el diagrama."><figcaption><strong>Dibújalo.</strong> Arrastra figuras desde la paleta; las flechas se trazan solas y el panel avisa qué falta.</figcaption></figure>
+    <figure class="pieza en-fluye-play entra" style="--i:1"><img src="${r}imagenes/play.png" width="1440" height="860" loading="lazy" alt="El Play de Fluye detenido en la decisión ¿Se aprueba?, con la bitácora del recorrido."><figcaption><strong>Pruébalo.</strong> El Play recorre el proceso y se detiene en cada decisión.</figcaption></figure>
+    <figure class="pieza en-fluye-celular entra" style="--i:2"><img src="${r}imagenes/celular.png" width="780" height="1688" loading="lazy" alt="La página web que exporta Fluye, abierta en un celular."><figcaption><strong>Compártelo.</strong> Como página web, PDF o Word.</figcaption></figure>
+  </div>`;
+
+// Dirección del visor de Fluye con una plantilla. archivo: ruta del .bpmn desde la raíz del sitio (el visor está en
+// visor/, de ahí el ../). Con play, el recorrido parte solo al abrirlo.
+export const urlVisor = (r, archivo, titulo, play = true) =>
+  `${r}visor/?archivo=${encodeURIComponent('../' + archivo)}&titulo=${encodeURIComponent(titulo)}${play ? '&play=1' : ''}`;
+
+// La vista de un proceso con el botón del Play. Sin JavaScript lleva al visor en su propia página; con JavaScript
+// (sitio.js) lo abre a pantalla completa encima de la página.
+export const vistaPlay = (r, { archivo, titulo, imagen, alt, clase = '', nota = '', perezosa = true }) => `
+  <a class="pieza vista-play ${clase}" href="${escapar(urlVisor(r, archivo, titulo))}" data-play data-titulo="${escapar(titulo)}">
+    <img src="${imagen}" alt="${escapar(alt)}" width="1200" height="700"${perezosa ? ' loading="lazy"' : ''}>
+    <span class="vista-play-boton">${PLAY}Recorrer con el Play</span>
+    ${nota ? `<span class="vista-play-nota chico">${nota}</span>` : ''}
+  </a>`;

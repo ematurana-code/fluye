@@ -5,14 +5,16 @@
 <h1 align="center">Fluye</h1>
 
 <p align="center">
-  Modelador de procesos BPMN para Windows: simple, en español y con un <strong>Play</strong> que recorre el proceso paso a paso.<br>
-  <em>A simple BPMN process modeler for Windows, with a Play button that walks through your process step by step.</em>
+  Programa gratis y de código abierto para hacer <strong>diagramas BPMN y diagramas de flujo</strong> en Windows, en español, con un <strong>Play</strong> que recorre el proceso paso a paso.<br>
+  <em>A free, open-source BPMN modeler and flowchart maker for Windows, with a Play button that walks through your process step by step.</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/ematurana-code/fluye/releases/latest"><strong>Descargar para Windows</strong></a> ·
   <a href="https://ematurana-code.github.io/fluye/">Página del proyecto</a> ·
   <a href="https://ematurana-code.github.io/fluye/demo/">Probar en el navegador</a> ·
+  <a href="https://ematurana-code.github.io/fluye/plantillas/">Plantillas</a> ·
+  <a href="https://ematurana-code.github.io/fluye/guias/que-es-bpmn/">Qué es BPMN</a> ·
   <a href="#english">English</a>
 </p>
 
@@ -51,6 +53,7 @@ npm start              # compila y abre la app
 npm run web            # versión web de prueba en http://localhost:8095
 npm run instalador     # arma el instalador en ./instalador
 npm run sitio          # arma la página del proyecto (portada, guías y plantillas) en ./_sitio
+npm run vistas         # vuelve a generar las imágenes PNG de las plantillas (después de cambiar sus .svg)
 ```
 
 | Carpeta | Qué hay |
