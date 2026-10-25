@@ -590,9 +590,11 @@ const primero = await archivo.inicial();
 const parametros = new URLSearchParams(location.search);
 const pedida = !window.fluyeEscritorio && PLANTILLAS.find((p) => p.id === parametros.get('plantilla'));
 // ?archivo=<.bpmn del mismo sitio> abre ese archivo (lo usan las páginas en inglés, cuyas plantillas no vienen en la app).
+// Solo se aceptan archivos .bpmn del mismo sitio: la dirección se resuelve primero y se revisa su origen y su ruta.
 const archivoPedido = !window.fluyeEscritorio && !pedida && parametros.get('archivo');
-const xmlPedido = archivoPedido && /^[\w./-]+\.bpmn$/.test(archivoPedido)
-  ? await fetch(new URL(archivoPedido, location.href), { credentials: 'same-origin' }).then((r) => (r.ok ? r.text() : null)).catch(() => null)
+const urlPedida = archivoPedido ? (() => { try { return new URL(archivoPedido, location.href); } catch { return null; } })() : null;
+const xmlPedido = urlPedida && urlPedida.origin === location.origin && /^\/[\w./-]+\.bpmn$/.test(urlPedida.pathname)
+  ? await fetch(urlPedida, { credentials: 'same-origin', redirect: 'error' }).then((r) => (r.ok ? r.text() : null)).catch(() => null)
   : null;
 if (pedida && await cargar(pedida.bpmn, `${pedida.nombre}.bpmn`, null)) {
   aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
