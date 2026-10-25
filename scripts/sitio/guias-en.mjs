@@ -310,7 +310,7 @@ export function indiceGuiasEn() {
       ${html}
     </div>
     <figure class="pieza pieza-foto titular-lado titular-foto obturador">
-      <img src="${r}imagenes/play.png" width="1440" height="860" alt="Fluye's Play stopped at a decision, with the run log on the side.">
+      <img src="${r}imagenes/play.webp" width="2880" height="1800" alt="Fluye's Play stopped at a decision, with the run log on the side.">
     </figure>
   </header>
   <div class="tablero guias-tablero">

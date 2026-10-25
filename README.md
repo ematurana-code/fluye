@@ -18,7 +18,7 @@
   <a href="#english">English</a>
 </p>
 
-![Fluye: editor con el resumen del diagrama](sitio/imagenes/editor.png)
+![Fluye: editor con el resumen del diagrama](sitio/imagenes/editor.webp)
 
 ## Qué hace
 
@@ -31,7 +31,7 @@
 - **Compatible:** abre y guarda .bpmn estándar, también los que exportan otras herramientas de modelado (incluidos sus colores).
 - **Corrector ortográfico** en español, sin internet.
 
-![Play: el recorrido se detiene en una decisión](sitio/imagenes/play.png)
+![Play: el recorrido se detiene en una decisión](sitio/imagenes/play.webp)
 
 ## Instalar
 
@@ -41,7 +41,7 @@
 
 Requiere Windows 10 u 11 de 64 bits. La interfaz está en español.
 
-![Galería de plantillas](sitio/imagenes/galeria.png)
+![Galería de plantillas](sitio/imagenes/galeria.webp)
 
 ## Para desarrolladores
 

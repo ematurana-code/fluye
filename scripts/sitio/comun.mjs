@@ -227,8 +227,8 @@ export const enFluye = (r, idioma = 'es') => {
   const e = TEXTOS[idioma].enFluye;
   return `
   <div class="tablero en-fluye">
-    <figure class="pieza en-fluye-editor entra"><img src="${r}imagenes/editor.png" width="1440" height="860" loading="lazy" alt="${escapar(e.editorAlt)}"><figcaption>${e.editor}</figcaption></figure>
-    <figure class="pieza en-fluye-play entra" style="--i:1"><img src="${r}imagenes/play.png" width="1440" height="860" loading="lazy" alt="${escapar(e.playAlt)}"><figcaption>${e.play}</figcaption></figure>
+    <figure class="pieza en-fluye-editor entra"><img src="${r}imagenes/editor.webp" width="2880" height="1800" loading="lazy" alt="${escapar(e.editorAlt)}"><figcaption>${e.editor}</figcaption></figure>
+    <figure class="pieza en-fluye-play entra" style="--i:1"><img src="${r}imagenes/play.webp" width="2880" height="1800" loading="lazy" alt="${escapar(e.playAlt)}"><figcaption>${e.play}</figcaption></figure>
     <figure class="pieza en-fluye-celular entra" style="--i:2"><img src="${r}imagenes/celular.png" width="780" height="1688" loading="lazy" alt="${escapar(e.celularAlt)}"><figcaption>${e.celular}</figcaption></figure>
   </div>`;
 };

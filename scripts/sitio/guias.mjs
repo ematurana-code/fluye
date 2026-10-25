@@ -426,7 +426,7 @@ export function indiceGuias() {
       ${html}
     </div>
     <figure class="pieza pieza-foto titular-lado titular-foto obturador">
-      <img src="../imagenes/play.png" width="1440" height="860" alt="El Play de Fluye detenido en una decisión, con la bitácora del recorrido.">
+      <img src="../imagenes/play.webp" width="2880" height="1800" alt="El Play de Fluye detenido en una decisión, con la bitácora del recorrido.">
     </figure>
   </header>
   <div class="tablero guias-tablero">

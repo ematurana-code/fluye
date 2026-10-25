@@ -5,6 +5,9 @@ import { DESCARGA, FLECHA, PESO, REPO, RUTAS, SITIO, VERSION, escapar, urlVisor 
 import { catalogo } from './plantillas.mjs';
 import { SIMBOLOS } from './guias.mjs';
 
+// Logo de Windows (cuatro cuadros) para el botón de descarga.
+const WINDOWS = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5.5 10.5 4.5v7H3zM12 4.3 21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z" fill="currentColor"/></svg>';
+
 // Las plantillas que se pueden cargar en el visor de la portada (por id, valen en los dos idiomas).
 const PARA_PROBAR = ['compras-simple', 'ti-intermedia', 'web-intermedia', 'atencion-intermedia', 'aduana-intermedia', 'rrhh-avanzada'];
 
@@ -24,8 +27,15 @@ const TX = {
     bajada: 'Fluye es un programa en español para Windows que dibuja procesos con el estándar BPMN 2.0 y los recorre paso a paso con un Play. Funciona sin internet, no pide cuenta y es de código abierto.',
     editorAlt: 'El editor de Fluye con un proceso de compras en dos carriles y el panel que resume el diagrama: 5 pasos, 1 decisión, todo en orden.',
     playAlt: 'El Play detenido en la decisión ¿Se aprueba?, que pregunta por qué camino sigue el proceso.',
-    descargar: 'Descargar gratis', descargarNota: `Para Windows 10 y 11. Pesa ${PESO} y no pide cuenta.`,
+    descargar: 'Descargar gratis', descargarNota: `Para Windows 10 y 11 (${PESO}). O pruébalo en el navegador, sin instalar ni crear una cuenta.`,
     probar: 'Probar sin instalar', probarNota: 'Abre el editor en el navegador.',
+    hechosEtiqueta: 'Fluye en cuatro datos',
+    hechos: [
+      ['Gratis y de código abierto', 'Licencia MIT, sin planes de pago ni anuncios.', 'inicio'],
+      ['Funciona sin internet', 'Tus diagramas quedan en tu computador.', 'tarea'],
+      ['Estándar BPMN 2.0', 'Archivos .bpmn que abren otros programas.', 'exclusiva'],
+      ['Play paso a paso', 'Recorre el proceso y avisa dónde se atasca.', 'fin']
+    ],
     procesoTitulo: 'Así se trabaja con Fluye',
     procesoTexto: 'Un proceso con tres responsables: tú, el programa y quienes reciben el resultado. Está dibujado con los mismos símbolos que usa Fluye; al bajar, la ficha lo recorre como en el Play.',
     piscina: 'Trabajar con Fluye', tu: 'Tú', equipo: 'Tu equipo',
@@ -100,8 +110,15 @@ const TX = {
     bajada: 'Fluye is a free Windows program that draws processes with the BPMN 2.0 standard and walks through them step by step with Play. It works offline, needs no account and is open source. Its interface is in Spanish.',
     editorAlt: 'The Fluye editor with a two-lane purchasing process and the panel that summarizes the diagram.',
     playAlt: 'Play stopped at a decision, asking which way the process goes next.',
-    descargar: 'Download free', descargarNota: `For Windows 10 and 11. ${PESO}, no account needed.`,
-    probar: 'Try it without installing', probarNota: 'Opens the editor in your browser.',
+    descargar: 'Download free', descargarNota: `For Windows 10 and 11 (${PESO}). Or try it in your browser, with nothing to install and no account.`,
+    probar: 'Try it in your browser', probarNota: 'Opens the editor in your browser.',
+    hechosEtiqueta: 'Fluye in four facts',
+    hechos: [
+      ['Free and open source', 'MIT license, no paid plans, no ads.', 'inicio'],
+      ['Works offline', 'Your diagrams stay on your computer.', 'tarea'],
+      ['BPMN 2.0 standard', '.bpmn files that open in other tools.', 'exclusiva'],
+      ['Step-by-step Play', 'Walks through the process and flags where it gets stuck.', 'fin']
+    ],
     procesoTitulo: 'How work flows with Fluye',
     procesoTexto: 'A process with three roles: you, the program and the people who get the result. It is drawn with the same symbols Fluye uses; as you scroll, the token walks through it just like Play.',
     piscina: 'Working with Fluye', tu: 'You', equipo: 'Your team',
@@ -174,21 +191,26 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
 
   const cuerpo = `
 <section class="tablero portada" aria-labelledby="titulo">
-  <div class="pieza portada-nombre entra">
+  <div class="pieza portada-texto entra">
     <div>
       <h1 id="titulo">${t.h1}</h1>
       <p class="bajada">${t.bajada}</p>
     </div>
-    <p class="nombre" translate="no">Fluye</p>
+    <div class="portada-acciones">
+      <div class="portada-botones">
+        <a class="boton boton-grande" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
+        <a class="boton boton-grande boton-tarea" href="${r}demo/">${t.probar}</a>
+      </div>
+      <p class="chico suave">${t.descargarNota}</p>
+    </div>
   </div>
-  <figure class="pieza pieza-foto portada-editor obturador">
-    <img src="${r}imagenes/editor.png" width="1440" height="860" alt="${escapar(t.editorAlt)}">
+  <figure class="pieza pieza-foto portada-foto obturador">
+    <img src="${r}imagenes/play.webp" width="2880" height="1800" alt="${escapar(t.playAlt)}" fetchpriority="high">
   </figure>
-  <figure class="pieza pieza-foto portada-play entra" style="--i:1">
-    <img src="${r}imagenes/play.png" width="1440" height="860" alt="${escapar(t.playAlt)}">
-  </figure>
-  <a class="pieza pieza-azul portada-descargar entra" style="--i:2" href="${DESCARGA}"><span><span class="camino-titulo">${t.descargar}</span><span class="camino-nota">${t.descargarNota}</span></span>${FLECHA}</a>
-  <a class="pieza pieza-tarea portada-probar entra" style="--i:3" href="${r}demo/"><span><span class="camino-titulo">${t.probar}</span><span class="camino-nota">${t.probarNota}</span></span>${FLECHA}</a>
+</section>
+
+<section class="pieza franja-datos entra" aria-label="${t.hechosEtiqueta}">
+  ${t.hechos.map(([titulo, texto, simbolo], i) => `<p class="dato-clave">${SIMBOLOS[simbolo]}<span><strong>${titulo}</strong>${texto}</span></p>`).join('\n  ')}
 </section>
 
 <section class="proceso" aria-labelledby="proceso-titulo">
@@ -247,7 +269,7 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
 
 <section class="tablero trae" aria-labelledby="trae-titulo">
   <figure class="pieza pieza-foto trae-foto entra">
-    <img src="${r}imagenes/galeria.png" width="1440" height="860" loading="lazy" alt="${escapar(t.galeriaAlt)}">
+    <img src="${r}imagenes/galeria.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.galeriaAlt)}">
   </figure>
   <div class="pieza trae-titulo entra" style="--i:1">
     <h2 id="trae-titulo">${t.traeTitulo}</h2>
@@ -369,7 +391,7 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
       applicationCategory: 'BusinessApplication', applicationSubCategory: t.app.sub,
       operatingSystem: 'Windows 10, Windows 11', softwareVersion: VERSION, inLanguage: 'es', isAccessibleForFree: true,
       license: 'https://opensource.org/licenses/MIT', downloadUrl: DESCARGA, fileSize: PESO,
-      screenshot: [`${SITIO}imagenes/editor.png`, `${SITIO}imagenes/play.png`], codeRepository: REPO,
+      screenshot: [`${SITIO}imagenes/editor.webp`, `${SITIO}imagenes/play.webp`], codeRepository: REPO,
       description: t.app.descripcion, keywords: t.app.keywords, featureList: t.app.features,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       author: { '@type': 'Person', name: 'Esteban Maturana', url: 'https://github.com/ematurana-code' }

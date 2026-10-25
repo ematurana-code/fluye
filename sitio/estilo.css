@@ -13,7 +13,7 @@
   --pieza: #ffffff;
   --pieza-2: #eef2f8;
   --tinta: #0e1630;
-  --tinta-2: #46506a;
+  --tinta-2: #3a4359;
   --azul: #1e3a8a;
   --azul-2: #152c6c;
   --hondo: #0b1a4a;
@@ -129,17 +129,21 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 }
 
 /* ---------- portada: el primer tablero ---------- */
-.portada { grid-template-rows: minmax(400px, calc(56svh - 40px)) minmax(230px, calc(44svh - 76px)); margin-top: 0; }
-.portada-nombre { grid-column: 1 / span 7; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
-.portada-nombre h1 { max-width: 18ch; }
-.portada-nombre .bajada { max-width: 54ch; margin-top: 16px; color: var(--tinta-2); }
-.nombre { font-size: var(--t-nombre); line-height: .8; font-weight: 700; letter-spacing: -0.055em; color: var(--azul); margin-left: -0.04em; }
-.portada-editor { grid-column: 8 / -1; }
-.portada-editor img { object-position: 0 0; }
-.portada-play { grid-column: 1 / span 5; }
-.portada-play img { object-position: 45% 72%; }
-.portada-descargar { grid-column: 6 / span 4; }
-.portada-probar { grid-column: 10 / -1; }
+/* Texto con los dos botones a la izquierda y, a la derecha, el Play en grande (la foto más propia de Fluye). */
+.portada { grid-template-rows: minmax(480px, calc(100svh - var(--barra) - 150px)); margin-top: 0; }
+.portada-texto { grid-column: 1 / span 5; display: flex; flex-direction: column; justify-content: space-between; gap: 36px; padding: clamp(24px, 3vw, 44px); }
+.portada-texto h1 { font-size: clamp(32px, 3.6vw, 52px); }
+.portada-texto .bajada { max-width: 46ch; margin-top: 22px; font-size: clamp(17px, 1.3vw, 19px); color: var(--tinta-2); }
+.portada-acciones { display: grid; gap: 14px; }
+.portada-botones { display: flex; flex-wrap: wrap; gap: var(--hueco); }
+.boton-grande { min-height: 56px; padding: 0 26px; font-size: var(--t-texto); }
+.portada-foto { grid-column: 6 / -1; background: var(--pieza); }
+.portada-foto img { object-position: 6% 50%; }
+/* Cuatro datos concretos bajo el inicio, cada uno con su figura de BPMN. */
+main > .franja-datos { margin-top: var(--hueco); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 32px; padding: 22px var(--relleno); }
+.dato-clave { display: flex; align-items: flex-start; gap: 12px; }
+.dato-clave .simbolo { flex: none; width: 40px; height: auto; }
+.dato-clave strong { display: block; font-size: var(--t-texto); }
 .camino-titulo { display: block; font-size: var(--t-frase); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
 .camino-nota { display: block; margin-top: 8px; font-size: var(--t-chico); }
 .pieza-azul .camino-nota { color: var(--sobre-hondo); }
@@ -474,13 +478,11 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
 
 /* ---------- tableta ---------- */
 @media (max-width: 1100px) {
-  .portada { grid-template-rows: auto auto auto; }
-  .portada-nombre { grid-column: 1 / -1; min-height: 380px; }
-  .portada-editor { grid-column: 1 / span 7; min-height: 300px; }
-  .portada-play { grid-column: 8 / -1; min-height: 300px; }
-  .portada-play img { object-position: 50% 70%; }
-  .portada-descargar { grid-column: 1 / span 6; min-height: 180px; }
-  .portada-probar { grid-column: 7 / -1; min-height: 180px; }
+  .portada { grid-template-rows: auto auto; }
+  .portada-texto { grid-column: 1 / -1; }
+  .portada-texto h1 { max-width: 18ch; }
+  .portada-foto { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
+  main > .franja-datos { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
   .prueba-visor { grid-column: 1 / -1; }
   .prueba-mando { grid-column: 1 / -1; }
   .prueba-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -517,17 +519,16 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   .barra-enlaces { grid-template-columns: 1fr; padding: 0 14px; }
   .barra-nombre { display: none; }
   .barra-enlaces nav { gap: 16px; }
-  .barra-enlaces nav a:nth-child(3), .barra-enlaces nav a:nth-child(4) { display: none; }
+  .barra-enlaces nav a:nth-child(2), .barra-enlaces nav a:nth-child(3), .barra-enlaces nav a:nth-child(4) { display: none; }
+  main > .franja-datos { grid-template-columns: 1fr; gap: 16px; }
   .barra-enlaces nav { justify-content: flex-start; gap: 14px; }
   .barra-accion { padding: 0 16px; }
   .cabeza { grid-template-columns: 1fr; margin-bottom: 20px; }
   .cabeza > :first-child, .cabeza > p { grid-column: 1; }
   .tablero { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
   .tablero > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
-  .portada-nombre { min-height: 0; gap: 36px; }
-  .portada-editor { aspect-ratio: 4 / 3; min-height: 0; }
-  .portada-descargar, .portada-probar { grid-column: span 1 !important; aspect-ratio: 1; min-height: 0; }
-  .portada-play { order: 5; aspect-ratio: 4 / 3; min-height: 0; }
+  .portada-foto { aspect-ratio: 4 / 3; }
+  .portada-botones .boton { flex: 1 1 100%; }
   .carril { min-height: 0; }
   .prueba-visor { height: 72svh; }
   .prueba-lista { grid-template-columns: 1fr; }

@@ -178,7 +178,7 @@ function decisiones(r, a, t) {
         </div>`).join('')}
       </div>
       <figure class="pieza pieza-foto decision-foto entra" style="--i:1">
-        <img src="${r}imagenes/play.png" width="1440" height="860" loading="lazy" alt="${escapar(t.playAlt)}">
+        <img src="${r}imagenes/play.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.playAlt)}">
       </figure>
     </div>
   </section>`;
@@ -271,10 +271,10 @@ export function paginaPlantilla(p, todas, idioma = 'es') {
       </div>
       <div class="adaptar-fotos">
         <figure class="pieza pieza-foto entra" style="--i:1">
-          <img src="${r}imagenes/galeria.png" width="1440" height="860" loading="lazy" alt="${escapar(t.galeriaAlt)}">
+          <img src="${r}imagenes/galeria.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.galeriaAlt)}">
         </figure>
         <figure class="pieza pieza-foto entra" style="--i:2">
-          <img src="${r}imagenes/editor.png" width="1440" height="860" loading="lazy" alt="${escapar(t.editorAlt)}">
+          <img src="${r}imagenes/editor.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.editorAlt)}">
         </figure>
       </div>
     </div>
@@ -322,7 +322,7 @@ export function indicePlantillas(todas, areas, idioma = 'es') {
       ${migasHtml}
     </div>
     <figure class="pieza pieza-foto titular-lado titular-foto obturador">
-      <img src="${r}imagenes/galeria.png" width="1440" height="860" alt="${escapar(t.galeriaIndiceAlt)}">
+      <img src="${r}imagenes/galeria.webp" width="2880" height="1800" alt="${escapar(t.galeriaIndiceAlt)}">
     </figure>
   </header>
   <div class="niveles entra" role="group" aria-label="${t.filtrar}">
