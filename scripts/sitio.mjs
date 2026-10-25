@@ -9,7 +9,7 @@ import { analizar, ruta } from './sitio/datos.mjs';
 import { DESCARGA, REPO, RUTAS, SITIO, VERSION, pagina } from './sitio/comun.mjs';
 import { portada } from './sitio/portada.mjs';
 import { NIVELES, indicePlantillas, paginaPlantilla } from './sitio/plantillas.mjs';
-import { guias, indiceGuias } from './sitio/guias.mjs';
+import { PLANTILLAS, guias, indiceGuias } from './sitio/guias.mjs';
 import { guiasEn, indiceGuiasEn } from './sitio/guias-en.mjs';
 
 const raiz = join(import.meta.dirname, '..');
@@ -69,6 +69,8 @@ const es = porId(ordenadas), en = porId(ordenadasEn);
 for (const p of ordenadas) p.alterna = `${RUTAS.en.plantillas}${en.get(p.id).ruta}/`;
 for (const p of ordenadasEn) p.alterna = `${RUTAS.es.plantillas}${es.get(p.id).ruta}/`;
 
+// Las guías y sus índices sacan de aquí las medidas y el flujo de sus ejemplos.
+Object.assign(PLANTILLAS, { es: ordenadas, en: ordenadasEn });
 const paginas = [
   portada({ plantillas: ordenadas, areas }),
   indicePlantillas(ordenadas, areas),
@@ -102,9 +104,14 @@ escribir('404.html', pagina({
 }));
 
 const hoy = new Date().toISOString().slice(0, 10);
+// Cada página repite en el sitemap su par en el otro idioma (además del hreflang de la página).
+const alternasSitemap = (p) => (p.alternas
+  ? [...['es', 'en'].map((l) => [l, p.alternas[l]]), ['x-default', p.alternas.es]]
+    .map(([l, rel]) => `\n    <xhtml:link rel="alternate" hreflang="${l}" href="${SITIO}${rel}"/>`).join('') + '\n  '
+  : '');
 escribir('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...paginas, ...paginasEn].map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${[...paginas, ...paginasEn].map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><lastmod>${hoy}</lastmod>${alternasSitemap(p)}</url>`).join('\n')}
 </urlset>
 `);
 
@@ -148,8 +155,27 @@ ${ordenadasEn.map((p) => `- [${p.nombre}](${SITIO}${RUTAS.en.plantillas}${p.ruta
 
 ## Optional
 
+- [Guías completas en un solo archivo](${SITIO}llms-full.txt): el texto entero de las guías, en español e inglés.
 - [Código fuente en GitHub](${REPO})
 - [Licencia MIT](${REPO}/blob/main/LICENSE)
+`);
+
+// llms-full.txt: el texto completo de las guías en Markdown simple, para que un asistente de IA las lea y cite sin
+// recorrer el HTML (llms.txt solo trae el índice).
+const aTexto = (html) => html
+  .replace(/<(script|style|svg|figure|nav)[\s\S]*?<\/\1>/g, '').replace(/<a [^>]*data-play[\s\S]*?<\/a>/g, '')
+  .replace(/<(strong|dt)>([\s\S]*?)<\/\1>/g, (_, e, x) => `**${x.replace(/<[^>]+>/g, '').trim()}** `).replace(/<\/(span|dd)>/g, ' ')
+  .replace(/<h([1-4])[^>]*>([\s\S]*?)<\/h\1>/g, (_, n, x) => `\n\n${'#'.repeat(+n)} ${x}\n\n`)
+  .replace(/<li[^>]*>/g, '\n- ').replace(/<\/(p|ul|ol|div|section|tr)>/g, '\n').replace(/<\/t[dh]>/g, ' | ')
+  .replace(/<[^>]+>/g, '')
+  .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+  .replace(/[ \t]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+const guiasCompletas = [...guiasHechas, ...paginasEn.filter((p) => p.ruta.startsWith(RUTAS.en.guias) && p.ruta !== RUTAS.en.guias)];
+escribir('llms-full.txt', `# Fluye: guías completas
+
+> Texto completo de las guías de Fluye (programa gratis y de código abierto para diagramas BPMN 2.0 y de flujo en Windows). Índice y datos del programa: ${SITIO}llms.txt
+
+${guiasCompletas.map((p) => `---\n\nFuente: ${SITIO}${p.ruta}\n\n${aTexto((p.cuerpo.match(/<article[\s\S]*<\/article>/) || [p.cuerpo])[0])}`).join('\n\n')}
 `);
 
 console.log(`Sitio listo en ${salida}: ${paginas.length} páginas en español y ${paginasEn.length} en inglés, ${ordenadas.length} plantillas por idioma.`);

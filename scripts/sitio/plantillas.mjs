@@ -1,7 +1,9 @@
 // Páginas de plantillas: el índice por área y una página por plantilla con la vista y el Play, quién hace qué (los
 // carriles con los pasos en orden), las decisiones, cómo empieza y termina, y plantillas parecidas. Cada página tiene
 // su propio texto, sacado del proceso. Sirve para los dos idiomas: los textos fijos salen de T.
-import { DESCARGA, FLECHA, RUTAS, SITIO, enFluye, escapar, migas, vistaPlay } from './comun.mjs';
+import { DESCARGA, FLECHA, PLAY, RUTAS, SITIO, enFluye, escapar, migas, urlVisor, vistaPlay } from './comun.mjs';
+
+const queCabe = (opciones) => opciones.find((x) => x.length <= 62) || opciones.at(-1);
 
 export const NIVELES = {
   es: {
@@ -22,7 +24,7 @@ const T = {
     tipo: { inicio: 'Inicio', fin: 'Fin', decision: 'Decisión', evento: 'Espera', tarea: 'Paso' },
     decisionesTitulo: 'Las decisiones del proceso',
     decisionesTexto: 'En cada decisión el proceso se divide. Con el Play eliges el camino y ves a dónde lleva cada respuesta.',
-    playAlt: 'El Play de Fluye detenido en una decisión, con los dos caminos posibles para elegir.',
+    probarDecisiones: 'Pruébalas con el Play', recorrer: 'Recorrer con el Play', probarDecisionesTexto: 'El recorrido se detiene en cada decisión y te deja elegir la respuesta. Así ves a dónde lleva cada camino.',
     mensajes: 'Mensajes entre pools', plazos: 'Plazos', plazoUno: 'Un evento de tiempo que espera o vence', plazosN: (n) => `${n} eventos de tiempo`,
     subprocesos: 'Subprocesos', pestanas: 'Pestañas', entreMedio: 'Entre medio',
     entreMedioTexto: (a) => `${a.pasos} pasos y ${a.decisiones === 1 ? 'una decisión' : `${a.decisiones} decisiones`}`,
@@ -46,10 +48,12 @@ const T = {
     ],
     galeriaAlt: 'La galería de plantillas de Fluye, que se abre desde Nuevo, Desde una plantilla.',
     editorAlt: 'El editor de Fluye: la paleta de figuras a la izquierda, el diagrama al centro y el panel de revisión a la derecha.',
+    playAlt: 'El Play de Fluye detenido en una decisión: eliges el camino y la bitácora anota cada paso.',
     parecidasTitulo: 'Plantillas parecidas',
     parecidasTexto: (p, hayArea, r, rutas) => `${hayArea ? `Otras del área ${escapar(p.categoria)} y otras` : 'Otras plantillas'} de nivel ${escapar(p.nivelNombre.toLowerCase())}. También puedes <a href="${r}${rutas.plantillas}">ver las 33</a> o leer <a href="${r}${rutas.guias}simbolos-bpmn/">qué significa cada símbolo</a>.`,
     nivelDe: (x) => `${x.categoria}, nivel ${x.nivelNombre.toLowerCase()}`,
-    titulo: (p) => `Diagrama de flujo: ${p.nombre} | Plantilla BPMN gratis`,
+    // Google corta cerca de los 60 caracteres: la forma más completa que quepa.
+    titulo: (p) => queCabe([`${p.nombre}: diagrama de flujo | Plantilla BPMN gratis`, `${p.nombre}: diagrama de flujo BPMN gratis`, `${p.nombre}: diagrama de flujo BPMN`, `${p.nombre} (diagrama BPMN)`, `${p.nombre} (BPMN)`]),
     descripcion: (p) => `${p.descripcion} Plantilla BPMN gratis (${p.categoria}): ${p.incluye}. Ábrela en el navegador o descárgala para Fluye.`,
     sobre: ['Diagrama de flujo', 'BPMN'], obra: (p) => `Diagrama de flujo: ${p.nombre}`, plantillasMiga: 'Plantillas',
     indiceH1: 'Plantillas de diagramas de flujo',
@@ -59,7 +63,7 @@ const T = {
     usarTitulo: 'Cómo se usa una plantilla',
     usarTexto: 'La abres en Fluye desde Nuevo, Desde una plantilla, o en el navegador desde su página. Después es tuya: la cambias, la pruebas y la compartes.',
     indiceTitulo: 'Plantillas de diagramas de flujo gratis (BPMN) | Fluye',
-    indiceDescripcion: (n) => `${n} plantillas de diagramas de flujo y procesos BPMN gratis: compras, ventas, recursos humanos, finanzas, soporte TI, logística, calidad y más. Recórrelas con el Play.`,
+    indiceDescripcion: (n) => `${n} plantillas gratis de diagramas de flujo y procesos BPMN: compras, ventas, RR. HH., finanzas, soporte TI, logística y más. Recórrelas con el Play.`,
     lista: 'Plantillas de diagramas de flujo de Fluye', vistaDe: (n) => `Vista del diagrama ${n}`
   },
   en: {
@@ -67,7 +71,7 @@ const T = {
     tipo: { inicio: 'Start', fin: 'End', decision: 'Decision', evento: 'Wait', tarea: 'Step' },
     decisionesTitulo: 'The decisions in this process',
     decisionesTexto: 'At each decision the process splits. With Play you choose the path and see where each answer leads.',
-    playAlt: 'Fluye\'s Play stopped at a decision, with both possible paths to choose from.',
+    probarDecisiones: 'Try them with Play', recorrer: 'Walk through with Play', probarDecisionesTexto: 'The walkthrough stops at each decision and lets you pick the answer, so you can see where every path leads.',
     mensajes: 'Messages between pools', plazos: 'Timers', plazoUno: 'One timer event that waits or expires', plazosN: (n) => `${n} timer events`,
     subprocesos: 'Sub-processes', pestanas: 'Tabs', entreMedio: 'In between',
     entreMedioTexto: (a) => `${a.pasos} steps and ${a.decisiones === 1 ? 'one decision' : `${a.decisiones} decisions`}`,
@@ -91,10 +95,11 @@ const T = {
     ],
     galeriaAlt: 'The Fluye template gallery, opened from New, From a template.',
     editorAlt: 'The Fluye editor: shape palette on the left, diagram in the middle and review panel on the right.',
+    playAlt: 'Fluye\'s Play stopped at a decision: you pick the path and the log records each step.',
     parecidasTitulo: 'Similar templates',
     parecidasTexto: (p, hayArea, r, rutas) => `${hayArea ? `More ${escapar(p.categoria.toLowerCase())} templates and others` : 'Other templates'} at the ${escapar(p.nivelNombre.toLowerCase())} level. You can also <a href="${r}${rutas.plantillas}">see all 33</a> or read <a href="${r}${rutas.guias}bpmn-symbols/">what each symbol means</a>.`,
     nivelDe: (x) => `${x.categoria}, ${x.nivelNombre.toLowerCase()}`,
-    titulo: (p) => `${p.nombre} flowchart | Free BPMN template`,
+    titulo: (p) => queCabe([`${p.nombre} flowchart | Free BPMN template`, `${p.nombre}: free BPMN flowchart`, `${p.nombre} BPMN flowchart`, `${p.nombre} (BPMN)`]),
     descripcion: (p) => `${p.descripcion} Free BPMN template (${p.categoria}): ${p.incluye}. Open it in your browser or download it for Fluye.`,
     sobre: ['Flowchart', 'BPMN'], obra: (p) => `${p.nombre} flowchart`, plantillasMiga: 'Templates',
     indiceH1: 'Free flowchart templates',
@@ -160,8 +165,8 @@ export function carriles({ carriles: cols, figuras, filas }, idioma = 'es') {
     </div>`;
 }
 
-// Las decisiones como rombos amarillos y, al lado, el Play detenido en una decisión.
-function decisiones(r, a, t) {
+// Las decisiones como rombos amarillos y, al lado, el botón para recorrerlas con el Play en esta misma plantilla.
+function decisiones(r, a, t, archivo, titulo) {
   const todas = a.pools.flatMap((p) => p.decisiones);
   if (!todas.length) return '';
   return `
@@ -177,9 +182,11 @@ function decisiones(r, a, t) {
           <ul>${d.caminos.map((c) => `<li><strong>${escapar(c.nombre || t.camino)}</strong>${c.destino ? `: ${escapar(c.destino)}` : ''}</li>`).join('')}</ul>
         </div>`).join('')}
       </div>
-      <figure class="pieza pieza-foto decision-foto entra" style="--i:1">
-        <img src="${r}imagenes/play.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.playAlt)}">
-      </figure>
+      <a class="pieza pieza-azul decision-play entra" style="--i:1" href="${escapar(urlVisor(r, archivo, titulo))}" data-play data-titulo="${escapar(titulo)}">
+        <span class="camino-titulo">${t.probarDecisiones}</span>
+        <span class="camino-nota">${t.probarDecisionesTexto}</span>
+        <span class="boton boton-claro">${PLAY}${t.recorrer}</span>
+      </a>
     </div>
   </section>`;
 }
@@ -248,7 +255,7 @@ export function paginaPlantilla(p, todas, idioma = 'es') {
     <div class="pieza carriles entra">${carriles(a.flujo, idioma)}</div>
   </section>
 
-  ${decisiones(r, a, t)}
+  ${decisiones(r, a, t, `${ruta}${p.ruta}.bpmn`, p.nombre)}
 
   <section aria-labelledby="bordes-titulo">
     <div class="cabeza entra">
@@ -275,6 +282,9 @@ export function paginaPlantilla(p, todas, idioma = 'es') {
         </figure>
         <figure class="pieza pieza-foto entra" style="--i:2">
           <img src="${r}imagenes/editor.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.editorAlt)}">
+        </figure>
+        <figure class="pieza pieza-foto entra" style="--i:3">
+          <img src="${r}imagenes/play.webp" width="2880" height="1800" loading="lazy" alt="${escapar(t.playAlt)}">
         </figure>
       </div>
     </div>

@@ -83,6 +83,7 @@ const TX = {
     otroLang: 'en', otroTitulo: 'Fluye in English',
     otroTexto: '<strong>Fluye</strong> is a free, open-source BPMN 2.0 process modeler and flowchart maker for Windows. Draw pools, lanes, tasks and gateways, then press Play to walk through the process token by token. The site, guides and templates are also in English; the program itself is in Spanish.',
     otroEnlaces: (r) => [[`${r}${RUTAS.en.raiz}`, 'Read the site in English'], [`${r}${RUTAS.en.plantillas}`, 'Free BPMN templates'], [`${r}${RUTAS.en.guias}what-is-bpmn/`, 'What is BPMN?']],
+    celularNota: 'Así se ve en un celular la página que exporta Fluye, con el Play.',
     celularAlt: 'La página web que exporta Fluye, abierta en un celular con el Play detenido en una decisión.',
     cierreTitulo: 'Ordena tu próximo proceso',
     cierreTexto: 'Descárgalo gratis para Windows o pruébalo ahora en el navegador. Cuando lo termines, compártelo como una página web que se abre hasta en el celular.',
@@ -166,6 +167,7 @@ const TX = {
     otroLang: 'es', otroTitulo: 'Fluye en español',
     otroTexto: '<strong>Fluye</strong> es un programa gratis y de código abierto para hacer diagramas BPMN y de flujo en Windows, en español, con un Play que recorre el proceso paso a paso.',
     otroEnlaces: (r) => [[`${r}${RUTAS.es.raiz}`, 'Ver el sitio en español'], [`${r}${RUTAS.es.plantillas}`, 'Plantillas BPMN gratis'], [`${r}${RUTAS.es.guias}que-es-bpmn/`, 'Qué es BPMN']],
+    celularNota: 'The page Fluye exports, open on a phone with Play.',
     celularAlt: 'The web page exported by Fluye, open on a phone with Play stopped at a decision.',
     cierreTitulo: 'Map your next process',
     cierreTexto: 'Download it free for Windows or try it now in your browser. When you are done, share it as a web page that opens even on a phone.',
@@ -369,9 +371,6 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
 </section>
 
 <section class="tablero cierre" aria-labelledby="cierre-titulo">
-  <div class="pieza cierre-flanco">
-    <img src="${r}imagenes/celular.png" width="780" height="1688" loading="lazy" alt="${escapar(t.celularAlt)}">
-  </div>
   <div class="pieza pieza-azul cierre-centro entra">
     <h2 id="cierre-titulo">${t.cierreTitulo}</h2>
     <p>${t.cierreTexto}</p>
@@ -380,7 +379,10 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
       <a class="boton boton-tarea" href="${r}demo/">${t.probar}</a>
     </div>
   </div>
-  <div class="pieza cierre-flanco" aria-hidden="true"></div>
+  <figure class="pieza pieza-decision cierre-celular entra" style="--i:1">
+    <figcaption>${t.celularNota}</figcaption>
+    <img src="${r}imagenes/celular.png" width="780" height="1688" loading="lazy" alt="${escapar(t.celularAlt)}">
+  </figure>
 </section>`;
 
   const url = SITIO + ruta;
@@ -392,6 +394,7 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
       operatingSystem: 'Windows 10, Windows 11', softwareVersion: VERSION, inLanguage: 'es', isAccessibleForFree: true,
       license: 'https://opensource.org/licenses/MIT', downloadUrl: DESCARGA, fileSize: PESO,
       screenshot: [`${SITIO}imagenes/editor.webp`, `${SITIO}imagenes/play.webp`], codeRepository: REPO,
+      image: `${SITIO}imagenes/icono.png`, sameAs: [REPO], datePublished: '2026-10-22', releaseNotes: `${REPO}/releases`,
       description: t.app.descripcion, keywords: t.app.keywords, featureList: t.app.features,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       author: { '@type': 'Person', name: 'Esteban Maturana', url: 'https://github.com/ematurana-code' }
@@ -400,7 +403,7 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
       '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: idioma,
       mainEntity: t.preguntas.map(([p, rta]) => ({ '@type': 'Question', name: p, acceptedAnswer: { '@type': 'Answer', text: rta } }))
     },
-    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Fluye', url, inLanguage: idioma }
+    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Fluye', url, inLanguage: idioma, publisher: { '@type': 'Person', name: 'Esteban Maturana', url: 'https://github.com/ematurana-code' } }
   ];
 
   return {

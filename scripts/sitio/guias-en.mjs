@@ -1,7 +1,7 @@
 // Guides in English: what is BPMN, how to make a flowchart, BPMN symbols and swimlane diagrams. Same layout as the
 // Spanish guides (articulo() in guias.mjs), with their own text written for English searches, not a word-for-word copy.
 import { FLECHA, RUTAS, decision, enFluye, migas } from './comun.mjs';
-import { PLANTILLAS, articulo, ejemplo, item, secuencia } from './guias.mjs';
+import { PLANTILLAS, articulo, ejemplo, item, medidas, secuencia } from './guias.mjs';
 
 const R = '../../../';
 const P = (ruta) => `${R}${RUTAS.en.guias}${ruta}`;
@@ -24,6 +24,7 @@ function guiaBpmn() {
     titulo: 'What is BPMN? Meaning, symbols and an example | Fluye',
     h1: 'What is BPMN and what is it for',
     bajada: 'BPMN is the international standard for drawing processes. What it stands for, where it comes from, its basic shapes, how it differs from a flowchart and how to get started for free.',
+    descripcion: 'What BPMN is and stands for, its basic shapes, how it differs from a flowchart and how to get started for free, with an example.',
     cuerpo: `
   <section class="bloque" aria-labelledby="meaning">
     <h2 id="meaning">What BPMN stands for</h2>
@@ -295,7 +296,7 @@ export function guiasEn(plantillas) {
 
 export function indiceGuiasEn() {
   const ruta = RUTAS.en.guias, r = '../../';
-  const imagen = (plantilla, titulo) => `<span class="guia-imagen"><img src="${r}${RUTAS.en.plantillas}${plantilla}/vista.png" width="1600" height="840" loading="lazy" alt="Example diagram for the guide: ${titulo}"></span>`;
+  const imagen = (plantilla, titulo) => `<span class="guia-imagen"><img src="${r}${RUTAS.en.plantillas}${plantilla}/vista.png" ${medidas(plantilla, 'en')} loading="lazy" alt="Example diagram for the guide: ${titulo}"></span>`;
   const { html, esquema } = migas(r, [{ nombre: 'Home', ruta: RUTAS.en.raiz }, { nombre: 'Guides', ruta }], 'en');
   return {
     ruta, idioma: 'en', alternas: { es: RUTAS.es.guias, en: ruta },
