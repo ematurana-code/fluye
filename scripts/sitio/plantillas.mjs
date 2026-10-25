@@ -118,6 +118,10 @@ const lista = (cosas, y) => cosas.length > 1 ? `${cosas.slice(0, -1).join(', ')}
 const corto = (texto, max = 158) => (texto.length <= max ? texto : `${texto.slice(0, max - 1).replace(/\s+\S*$/, '')}…`);
 
 // La lista de plantillas por área con la vista del diagrama fija al lado (la cambia sitio.js al pasar por cada nombre).
+// El nivel como tres barras (una, dos o tres llenas), para que la lista quepa en tres columnas; el nombre del nivel
+// queda para los lectores de pantalla y en la leyenda de arriba.
+const marcaNivel = (nivel, nombre = '') => `<span class="marca-nivel marca-${nivel}"${nombre ? '' : ' aria-hidden="true"'}><i></i><i></i><i></i>${nombre ? `<span class="oculto">${escapar(nombre)}</span>` : ''}</span>`;
+
 export function catalogo(r, plantillas, areas, { titulo = 'h3', idioma = 'es' } = {}) {
   const t = T[idioma], base = `${r}${RUTAS[idioma].plantillas}`;
   const p = plantillas.find((x) => x.id === 'compras-simple') || plantillas[0];
@@ -127,11 +131,12 @@ export function catalogo(r, plantillas, areas, { titulo = 'h3', idioma = 'es' } 
       <div class="pieza catalogo-imagen"><img src="${base}${p.ruta}/vista.png" width="1200" height="700" loading="lazy" alt="${escapar(t.vistaDe(p.nombre))}" data-catalogo-imagen></div>
       <div class="pieza pieza-2 catalogo-ficha"><p class="frase" data-catalogo-nombre>${escapar(p.nombre)}</p><p data-catalogo-texto>${escapar(p.descripcion)}</p></div>
     </div>
-    <div class="pieza catalogo-listas">${areas.map((a) => `
+    <div class="pieza catalogo-listas">
+      <p class="catalogo-leyenda chico">${Object.keys(NIVELES[idioma]).map((k) => `<span>${marcaNivel(k)}${NIVELES[idioma][k].nombre}</span>`).join('')}</p>${areas.map((a) => `
       <section class="catalogo-area entra" id="${a.ruta}" aria-labelledby="area-${a.ruta}">
         <${titulo} id="area-${a.ruta}" class="frase">${escapar(a.nombre)}</${titulo}>
         <ul>${plantillas.filter((x) => x.categoria === a.nombre).map((x) => `
-          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}"><span>${escapar(x.nombre)}</span><span>${escapar(x.nivelNombre)}</span></a></li>`).join('')}
+          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}"><span>${escapar(x.nombre)}</span>${marcaNivel(x.nivel, x.nivelNombre)}</a></li>`).join('')}
         </ul>
       </section>`).join('')}
     </div>
