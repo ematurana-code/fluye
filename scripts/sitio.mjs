@@ -51,6 +51,9 @@ async function leerPlantillas(idioma) {
     escribir(`${destino}${item.ruta}/${item.ruta}.bpmn`, xml);
     escribir(`${destino}${item.ruta}/vista.svg`, readFileSync(join(carpeta, `${p.id}.svg`), 'utf8'));
     cpSync(join(carpeta, `${p.id}.png`), join(salida, destino, item.ruta, 'vista.png'));
+    // Medidas reales de la imagen (ancho y alto de la cabecera PNG), para que la página reserve su espacio exacto.
+    const png = readFileSync(join(carpeta, `${p.id}.png`));
+    Object.assign(item, { vistaAncho: png.readUInt32BE(16), vistaAlto: png.readUInt32BE(20) });
     lista.push(item);
   }
   const areas = [...new Set(lista.map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, idioma)).map((nombre) => ({ nombre, ruta: ruta(nombre) }));

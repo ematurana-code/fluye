@@ -13,14 +13,18 @@ const TG = {
     descargar: 'Descargar Fluye gratis', descargarNota: 'Para Windows 10 y 11. Es gratis, no pide cuenta y funciona sin internet.',
     probar: 'Probar sin instalar', probarNota: 'El editor completo en el navegador, con las mismas plantillas y el Play.',
     empezar: 'Haz tu diagrama en Fluye', empezarTexto: 'Gratis, en español y sin crear una cuenta.', pregunta: '¿Cómo quieres empezar?',
-    ejemploAlt: (n) => `Diagrama BPMN de ejemplo: ${n}`
+    ejemploAlt: (n) => `Diagrama BPMN de ejemplo: ${n}`,
+    playAlt: 'El Play de Fluye detenido en una decisión, con la bitácora del recorrido al costado.',
+    ejemploNota: (n) => `Abre el ejemplo de esta guía: ${n}.`
   },
   en: {
     inicio: 'Home', guias: 'Guides', enFluye: 'How it\'s done in Fluye', indice: 'In this guide', verPlantilla: 'View the template',
     descargar: 'Download Fluye free', descargarNota: 'For Windows 10 and 11. Free, no account needed, works offline. Interface in Spanish.',
     probar: 'Try it without installing', probarNota: 'The full editor in your browser, with the same templates and Play.',
     empezar: 'Make your diagram in Fluye', empezarTexto: 'Free, open source and no account needed.', pregunta: 'How do you want to start?',
-    ejemploAlt: (n) => `Example BPMN diagram: ${n}`
+    ejemploAlt: (n) => `Example BPMN diagram: ${n}`,
+    playAlt: 'Fluye\'s Play stopped at a decision, with the run log on the side.',
+    ejemploNota: (n) => `Opens this guide's example: ${n}.`
   }
 };
 
@@ -92,7 +96,7 @@ export function articulo({ ruta: corta, titulo, h1, bajada, cuerpo, ejemplo: [ej
       <p class="bajada">${escapar(bajada)}</p>
       ${html}
     </div>
-    ${vistaPlay(r, { archivo: `${plantilla}${ejemploRuta}.bpmn`, titulo: ejemploTitulo, imagen: `${r}${plantilla}vista.png`, alt: tg.ejemploAlt(ejemploTitulo), clase: 'titular-lado entra', perezosa: false, idioma })}
+    ${vistaPlay(r, { archivo: `${plantilla}${ejemploRuta}.bpmn`, titulo: ejemploTitulo, imagen: `${r}imagenes/play.webp`, alt: tg.playAlt, clase: 'titular-lado entra', nota: tg.ejemploNota(ejemploTitulo), perezosa: false, idioma, foto: true, ancho: 2880, alto: 1800 })}
   </header>
   <div class="tablero articulo">
     <div class="articulo-texto pila">${secciones.replaceAll('<section class="bloque"', '<section class="pieza entra"')}

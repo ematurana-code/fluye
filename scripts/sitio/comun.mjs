@@ -240,9 +240,13 @@ export const urlVisor = (r, archivo, titulo, play = true) =>
 
 // La vista de un proceso con el botón del Play. Sin JavaScript lleva al visor en su propia página; con JavaScript
 // (sitio.js) lo abre a pantalla completa encima de la página.
-export const vistaPlay = (r, { archivo, titulo, imagen, alt, clase = '', nota = '', perezosa = true, idioma = 'es' }) => `
-  <a class="pieza vista-play ${clase}" href="${escapar(urlVisor(r, archivo, titulo))}" data-play data-titulo="${escapar(titulo)}">
-    <img src="${imagen}" alt="${escapar(alt)}" width="1200" height="700"${perezosa ? ' loading="lazy"' : ''}>
-    <span class="vista-play-boton">${PLAY}${TEXTOS[idioma].recorrer}</span>
-    ${nota ? `<span class="vista-play-nota chico">${nota}</span>` : ''}
+// La imagen va en su propio marco (al formato del diagrama, o una captura que lo llena con foto: true) y el botón en una
+// franja debajo, para que nunca tape el diagrama.
+export const vistaPlay = (r, { archivo, titulo, imagen, alt, clase = '', nota = '', perezosa = true, idioma = 'es', foto = false, ancho = 1600, alto = 840 }) => `
+  <a class="pieza vista-play${foto ? ' vista-foto' : ''} ${clase}" href="${escapar(urlVisor(r, archivo, titulo))}" data-play data-titulo="${escapar(titulo)}">
+    <span class="vista-play-imagen" data-ui><img src="${imagen}" alt="${escapar(alt)}" width="${ancho}" height="${alto}"${perezosa ? ' loading="lazy"' : ''}></span>
+    <span class="vista-play-pie">
+      <span class="vista-play-boton">${PLAY}${TEXTOS[idioma].recorrer}</span>
+      ${nota ? `<span class="vista-play-nota chico">${nota}</span>` : ''}
+    </span>
   </a>`;

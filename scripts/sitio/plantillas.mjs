@@ -126,7 +126,7 @@ export function catalogo(r, plantillas, areas, { titulo = 'h3', idioma = 'es' } 
       <section class="catalogo-area entra" id="${a.ruta}" aria-labelledby="area-${a.ruta}">
         <${titulo} id="area-${a.ruta}" class="frase">${escapar(a.nombre)}</${titulo}>
         <ul>${plantillas.filter((x) => x.categoria === a.nombre).map((x) => `
-          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}"><span>${escapar(x.nombre)}</span><span>${escapar(x.nivelNombre)}</span><span class="catalogo-detalle">${escapar(x.descripcion)} ${t.trae} ${escapar(x.incluye)}.</span></a></li>`).join('')}
+          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}"><span>${escapar(x.nombre)}</span><span>${escapar(x.nivelNombre)}</span></a></li>`).join('')}
         </ul>
       </section>`).join('')}
     </div>
@@ -232,7 +232,7 @@ export function paginaPlantilla(p, todas, idioma = 'es') {
   </header>
 
   <div class="tablero plantilla-cuerpo">
-    ${vistaPlay(r, { archivo: `${ruta}${p.ruta}.bpmn`, titulo: p.nombre, imagen: 'vista.png', alt: t.diagramaAlt(p.nombre), clase: 'plantilla-vista entra', nota: t.notaPlay, perezosa: false, idioma })}
+    ${vistaPlay(r, { archivo: `${ruta}${p.ruta}.bpmn`, titulo: p.nombre, imagen: 'vista.png', alt: t.diagramaAlt(p.nombre), clase: 'plantilla-vista entra', nota: t.notaPlay, perezosa: false, idioma, ancho: p.vistaAncho, alto: p.vistaAlto })}
     <div class="plantilla-acciones">
       <a class="pieza pieza-azul entra" style="--i:1" href="${escapar(abrir)}"><span><span class="camino-titulo">${t.abrir}</span><span class="camino-nota">${t.abrirNota}</span></span>${FLECHA}</a>
       <a class="pieza entra" style="--i:2" href="${p.ruta}.bpmn" download><span><span class="camino-titulo">${t.bajar}</span><span class="camino-nota suave">${t.bajarNota}</span></span>${FLECHA}</a>
