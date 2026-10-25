@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="logistica_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="logistica_simple_colab0">
+    <bpmn:participant id="logistica_simple_pool_empresa" name="Company" processRef="logistica_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="logistica_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="logistica_simple_carriles_empresa">
+      <bpmn:lane id="logistica_simple_carril_bod" name="Warehouse">
+        <bpmn:flowNodeRef>logistica_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_alm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_fin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_simple_dif</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="logistica_simple_ini" name="A truck arrives">
+      <bpmn:outgoing>logistica_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:manualTask id="logistica_simple_rev" name="Count and check against the delivery note">
+      <bpmn:incoming>logistica_simple_f0_0</bpmn:incoming>
+      <bpmn:outgoing>logistica_simple_f0_1</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="logistica_simple_dec" name="Matches the delivery note?">
+      <bpmn:incoming>logistica_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>logistica_simple_f0_2</bpmn:outgoing>
+      <bpmn:outgoing>logistica_simple_f0_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="logistica_simple_uni">
+      <bpmn:incoming>logistica_simple_f0_2</bpmn:incoming>
+      <bpmn:incoming>logistica_simple_f0_4</bpmn:incoming>
+      <bpmn:outgoing>logistica_simple_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="logistica_simple_alm" name="Store in its location">
+      <bpmn:incoming>logistica_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>logistica_simple_f0_6</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="logistica_simple_fin" name="Goods stored">
+      <bpmn:incoming>logistica_simple_f0_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="logistica_simple_dif" name="Note the discrepancy on the delivery note">
+      <bpmn:incoming>logistica_simple_f0_3</bpmn:incoming>
+      <bpmn:outgoing>logistica_simple_f0_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="logistica_simple_f0_0" sourceRef="logistica_simple_ini" targetRef="logistica_simple_rev" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_1" sourceRef="logistica_simple_rev" targetRef="logistica_simple_dec" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_2" name="Yes" sourceRef="logistica_simple_dec" targetRef="logistica_simple_uni" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_3" name="No" sourceRef="logistica_simple_dec" targetRef="logistica_simple_dif" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_4" sourceRef="logistica_simple_dif" targetRef="logistica_simple_uni" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_5" sourceRef="logistica_simple_uni" targetRef="logistica_simple_alm" />
+    <bpmn:sequenceFlow id="logistica_simple_f0_6" sourceRef="logistica_simple_alm" targetRef="logistica_simple_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="logistica_simple_diagrama0" name="Goods receipt">
+    <bpmndi:BPMNPlane id="logistica_simple_plano0" bpmnElement="logistica_simple_colab0">
+      <bpmndi:BPMNShape id="DI_logistica_simple_pool_empresa" bpmnElement="logistica_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_carril_bod" bpmnElement="logistica_simple_carril_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_ini" bpmnElement="logistica_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_rev" bpmnElement="logistica_simple_rev">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_dec" bpmnElement="logistica_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_uni" bpmnElement="logistica_simple_uni" isMarkerVisible="false">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_alm" bpmnElement="logistica_simple_alm">
+        <dc:Bounds x="830" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_fin" bpmnElement="logistica_simple_fin">
+        <dc:Bounds x="1042" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_simple_dif" bpmnElement="logistica_simple_dif">
+        <dc:Bounds x="490" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_0" bpmnElement="logistica_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_1" bpmnElement="logistica_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_2" bpmnElement="logistica_simple_f0_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_3" bpmnElement="logistica_simple_f0_3">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_4" bpmnElement="logistica_simple_f0_4">
+        <di:waypoint x="610" y="255" />
+        <di:waypoint x="720" y="255" />
+        <di:waypoint x="720" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_5" bpmnElement="logistica_simple_f0_5">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="830" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_simple_f0_6" bpmnElement="logistica_simple_f0_6">
+        <di:waypoint x="950" y="135" />
+        <di:waypoint x="1042" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

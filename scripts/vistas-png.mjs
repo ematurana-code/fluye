@@ -1,12 +1,13 @@
 // Convierte la vista previa de cada plantilla (plantillas/<id>.svg) en una imagen PNG de 1600 x 840 con fondo
 // blanco (plantillas/<id>.png). La usa la página del proyecto: imagen de cada plantilla, vista previa al compartir el
 // enlace en redes (que no aceptan SVG) y Google Imágenes. Se corre con Electron:
-//   node_modules/electron/dist/electron.exe scripts/vistas-png.mjs
+//   node_modules/electron/dist/electron.exe scripts/vistas-png.mjs [--en]
 import { app, BrowserWindow } from 'electron';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const carpeta = join(import.meta.dirname, '..', 'plantillas');
+// Con --en convierte las plantillas en inglés (plantillas/en).
+const carpeta = join(import.meta.dirname, '..', 'plantillas', ...(process.argv.includes('--en') ? ['en'] : []));
 const ANCHO = 1600, ALTO = 840;
 
 app.disableHardwareAcceleration();

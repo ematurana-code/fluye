@@ -1,10 +1,28 @@
 // Guías para quien busca cómo hacer diagramas: qué es BPMN, diagrama de flujo, símbolos BPMN y diagrama de carriles.
 // Texto propio, figuras dibujadas como en Fluye y un ejemplo para recorrer con el Play en cada una.
-import { DESCARGA, FLECHA, PLAY, SITIO, decision, enFluye, escapar, migas, urlVisor, vistaPlay } from './comun.mjs';
+import { DESCARGA, FLECHA, PLAY, RUTAS, SITIO, decision, enFluye, escapar, migas, urlVisor, vistaPlay } from './comun.mjs';
 import { carriles } from './plantillas.mjs';
 
-// Las plantillas con su análisis (las pasa guias()); los ejemplos de cada guía salen de ahí.
-let PLANTILLAS = [];
+// Las plantillas con su análisis, por idioma (las pasan guias() y guiasEn()); los ejemplos de cada guía salen de ahí.
+export const PLANTILLAS = { es: [], en: [] };
+
+// Textos fijos del armado de una guía.
+const TG = {
+  es: {
+    inicio: 'Inicio', guias: 'Guías', enFluye: 'Así se hace en Fluye', indice: 'En esta guía', verPlantilla: 'Ver la plantilla',
+    descargar: 'Descargar Fluye gratis', descargarNota: 'Para Windows 10 y 11. Es gratis, no pide cuenta y funciona sin internet.',
+    probar: 'Probar sin instalar', probarNota: 'El editor completo en el navegador, con las mismas plantillas y el Play.',
+    empezar: 'Haz tu diagrama en Fluye', empezarTexto: 'Gratis, en español y sin crear una cuenta.', pregunta: '¿Cómo quieres empezar?',
+    ejemploAlt: (n) => `Diagrama BPMN de ejemplo: ${n}`
+  },
+  en: {
+    inicio: 'Home', guias: 'Guides', enFluye: 'How it\'s done in Fluye', indice: 'In this guide', verPlantilla: 'View the template',
+    descargar: 'Download Fluye free', descargarNota: 'For Windows 10 and 11. Free, no account needed, works offline. Interface in Spanish.',
+    probar: 'Try it without installing', probarNota: 'The full editor in your browser, with the same templates and Play.',
+    empezar: 'Make your diagram in Fluye', empezarTexto: 'Free, open source and no account needed.', pregunta: 'How do you want to start?',
+    ejemploAlt: (n) => `Example BPMN diagram: ${n}`
+  }
+};
 
 // Figuras de BPMN con los colores de Fluye (inicio verde, fin rojo, decisión amarilla, tarea azul).
 const S = (contenido, w = 72, h = 52) => `<svg class="simbolo" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true" focusable="false">${contenido}</svg>`;
@@ -35,31 +53,37 @@ export const SIMBOLOS = {
   carril: S('<rect x="2" y="6" width="68" height="40" fill="#fff" stroke="#1e3a8a" stroke-width="2"/><rect x="2" y="6" width="12" height="40" fill="#eef2ff" stroke="#1e3a8a" stroke-width="2"/><path d="M14 26h56" stroke="#1e3a8a" stroke-width="1.6"/><path d="M14 6v40" stroke="#1e3a8a" stroke-width="1.6"/>', 72, 52)
 };
 
-const item = (simbolo, nombre, texto) => `<div><dt>${SIMBOLOS[simbolo]}<span>${escapar(nombre)}</span></dt><dd>${texto}</dd></div>`;
+export const item = (simbolo, nombre, texto) => `<div><dt>${SIMBOLOS[simbolo]}<span>${escapar(nombre)}</span></dt><dd>${texto}</dd></div>`;
 
 // Pasos en orden, dibujados como tareas unidas por flechas.
-const secuencia = (pasos) => `<ol class="secuencia">${pasos.map(([t, d]) => `<li><strong>${escapar(t)}</strong><span>${escapar(d)}</span></li>`).join('')}</ol>`;
+export const secuencia = (pasos) => `<ol class="secuencia">${pasos.map(([t, d]) => `<li><strong>${escapar(t)}</strong><span>${escapar(d)}</span></li>`).join('')}</ol>`;
 
 // Ejemplo de una plantilla dentro de una guía: sus carriles con los pasos en orden y el botón del Play.
-const ejemplo = (r, ruta, titulo) => {
-  const p = PLANTILLAS.find((x) => x.ruta === ruta);
-  return `<div class="carriles ejemplo-carriles">${carriles(p.analisis.flujo)}</div>
-    <p class="ejemplo-acciones"><a class="boton" href="${escapar(urlVisor(r, `plantillas/${ruta}/${ruta}.bpmn`, titulo))}" data-play data-titulo="${escapar(titulo)}">${PLAY}Recorrer con el Play</a><a class="boton boton-tarea" href="${r}plantillas/${ruta}/">Ver la plantilla</a></p>`;
+export const ejemplo = (r, ruta, titulo, idioma = 'es') => {
+  const p = PLANTILLAS[idioma].find((x) => x.ruta === ruta);
+  const base = `${RUTAS[idioma].plantillas}${ruta}/`;
+  return `<div class="carriles ejemplo-carriles">${carriles(p.analisis.flujo, idioma)}</div>
+    <p class="ejemplo-acciones"><a class="boton" href="${escapar(urlVisor(r, `${base}${ruta}.bpmn`, titulo))}" data-play data-titulo="${escapar(titulo)}">${PLAY}${idioma === 'es' ? 'Recorrer con el Play' : 'Walk through with Play'}</a><a class="boton boton-tarea" href="${r}${base}">${TG[idioma].verPlantilla}</a></p>`;
 };
 
 // Cada guía: el título y, al lado, su ejemplo listo para el Play; las secciones como piezas; al costado, el índice y
-// los caminos para empezar; al final, las pantallas de Fluye y la decisión.
-function articulo({ ruta, titulo, h1, bajada, cuerpo, ejemplo: [ejemploRuta, ejemploTitulo], esquemaExtra = [] }) {
-  const r = '../../';
-  const { html, esquema } = migas(r, [{ nombre: 'Inicio', ruta: '' }, { nombre: 'Guías', ruta: 'guias/' }, { nombre: h1, ruta }]);
+// los caminos para empezar; al final, las pantallas de Fluye y la decisión. ruta: relativa a la carpeta de guías del
+// idioma; alterna: la ruta completa de la misma guía en el otro idioma.
+export function articulo({ ruta: corta, titulo, h1, bajada, cuerpo, ejemplo: [ejemploRuta, ejemploTitulo], esquemaExtra = [], idioma = 'es', alterna }) {
+  const tg = TG[idioma], rutas = RUTAS[idioma];
+  const ruta = `${rutas.guias}${corta}`;
+  const r = '../'.repeat(ruta.split('/').filter(Boolean).length);
+  const plantilla = `${rutas.plantillas}${ejemploRuta}/`;
+  const { html, esquema } = migas(r, [{ nombre: tg.inicio, ruta: rutas.raiz }, { nombre: tg.guias, ruta: rutas.guias }, { nombre: h1, ruta }], idioma);
   const secciones = `${cuerpo}
   <section class="pieza pieza-2 entra" aria-labelledby="en-fluye">
-    <h2 id="en-fluye">Así se hace en Fluye</h2>
-    ${enFluye(r)}
+    <h2 id="en-fluye">${tg.enFluye}</h2>
+    ${enFluye(r, idioma)}
   </section>`;
   const indice = [...secciones.matchAll(/<h2 id="([^"]+)">([^<]+)<\/h2>/g)].map(([, id, texto]) => `<a href="#${id}">${texto}</a>`).join('');
   return {
-    ruta, titulo, descripcion: bajada, imagen: `plantillas/${ejemploRuta}/vista.png`,
+    ruta, idioma, alternas: idioma === 'es' ? { es: ruta, en: alterna } : { es: alterna, en: ruta },
+    titulo, descripcion: bajada, imagen: `${plantilla}vista.png`,
     cuerpo: `
 <article class="guia">
   <header class="tablero titular titular-grande">
@@ -68,27 +92,27 @@ function articulo({ ruta, titulo, h1, bajada, cuerpo, ejemplo: [ejemploRuta, eje
       <p class="bajada">${escapar(bajada)}</p>
       ${html}
     </div>
-    ${vistaPlay(r, { archivo: `plantillas/${ejemploRuta}/${ejemploRuta}.bpmn`, titulo: ejemploTitulo, imagen: `${r}plantillas/${ejemploRuta}/vista.png`, alt: `Diagrama BPMN de ejemplo: ${ejemploTitulo}`, clase: 'titular-lado entra', perezosa: false })}
+    ${vistaPlay(r, { archivo: `${plantilla}${ejemploRuta}.bpmn`, titulo: ejemploTitulo, imagen: `${r}${plantilla}vista.png`, alt: tg.ejemploAlt(ejemploTitulo), clase: 'titular-lado entra', perezosa: false, idioma })}
   </header>
   <div class="tablero articulo">
     <div class="articulo-texto pila">${secciones.replaceAll('<section class="bloque"', '<section class="pieza entra"')}
     </div>
-    <aside class="articulo-lado" aria-label="En esta guía">
-      <nav class="pieza pieza-tarea indice-guia" aria-labelledby="indice-titulo"><h2 id="indice-titulo">En esta guía</h2>${indice}</nav>
-      <a class="pieza pieza-azul" href="${DESCARGA}"><span><span class="camino-titulo">Descargar Fluye gratis</span><span class="camino-nota">Para Windows 10 y 11. Es gratis, no pide cuenta y funciona sin internet.</span></span>${FLECHA}</a>
-      <a class="pieza pieza-2" href="${r}demo/"><span><span class="camino-titulo">Probar sin instalar</span><span class="camino-nota suave">El editor completo en el navegador, con las mismas plantillas y el Play.</span></span>${FLECHA}</a>
+    <aside class="articulo-lado" aria-label="${tg.indice}">
+      <nav class="pieza pieza-tarea indice-guia" aria-labelledby="indice-titulo"><h2 id="indice-titulo">${tg.indice}</h2>${indice}</nav>
+      <a class="pieza pieza-azul" href="${DESCARGA}"><span><span class="camino-titulo">${tg.descargar}</span><span class="camino-nota">${tg.descargarNota}</span></span>${FLECHA}</a>
+      <a class="pieza pieza-2" href="${r}demo/"><span><span class="camino-titulo">${tg.probar}</span><span class="camino-nota suave">${tg.probarNota}</span></span>${FLECHA}</a>
     </aside>
   </div>
   <section aria-labelledby="empezar-titulo">
     <div class="cabeza entra">
-      <h2 id="empezar-titulo">Haz tu diagrama en Fluye</h2>
-      <p>Gratis, en español y sin crear una cuenta.</p>
+      <h2 id="empezar-titulo">${tg.empezar}</h2>
+      <p>${tg.empezarTexto}</p>
     </div>
-    ${decision(r, '¿Cómo quieres empezar?')}
+    ${decision(r, tg.pregunta, idioma)}
   </section>
 </article>`,
     esquema: [esquema, {
-      '@context': 'https://schema.org', '@type': 'Article', headline: h1, description: bajada, inLanguage: 'es', url: SITIO + ruta,
+      '@context': 'https://schema.org', '@type': 'Article', headline: h1, description: bajada, inLanguage: idioma, url: SITIO + ruta,
       author: { '@type': 'Person', name: 'Esteban Maturana' }, publisher: { '@type': 'Organization', name: 'Fluye' }, dateModified: new Date().toISOString().slice(0, 10)
     }, ...esquemaExtra]
   };
@@ -106,7 +130,7 @@ function guiaFlujo() {
     ['Compártelo', 'Exporta a PDF o Word para el manual, a imagen para una presentación o a una página web con el Play para que otros lo recorran.']
   ];
   return articulo({
-    ruta: 'guias/diagrama-de-flujo/', ejemplo: ['solicitud-de-compra', 'Solicitud de compra'],
+    ruta: 'diagrama-de-flujo/', alterna: 'en/guides/how-to-make-a-flowchart/', ejemplo: ['solicitud-de-compra', 'Solicitud de compra'],
     titulo: 'Cómo hacer un diagrama de flujo paso a paso (con ejemplo) | Fluye',
     h1: 'Cómo hacer un diagrama de flujo',
     bajada: 'Qué es un diagrama de flujo, qué símbolos usa y siete pasos para hacer uno que se entienda a la primera, con un ejemplo que puedes recorrer aquí mismo.',
@@ -162,7 +186,7 @@ function guiaFlujo() {
 function guiaSimbolos() {
   const r = '../../';
   return articulo({
-    ruta: 'guias/simbolos-bpmn/', ejemplo: ['inicio-de-sesion-con-bloqueo-por-intentos', 'Inicio de sesión con bloqueo por intentos'],
+    ruta: 'simbolos-bpmn/', alterna: 'en/guides/bpmn-symbols/', ejemplo: ['inicio-de-sesion-con-bloqueo-por-intentos', 'Inicio de sesión con bloqueo por intentos'],
     titulo: 'Símbolos BPMN: qué significa cada figura | Fluye',
     h1: 'Símbolos BPMN y su significado',
     bajada: 'Los símbolos del estándar BPMN 2.0 explicados en español: eventos, tareas, decisiones, flujos, pools, carriles y artefactos, con el dibujo de cada uno.',
@@ -253,7 +277,7 @@ function guiaCarriles() {
     ['Recórrelo con el Play', 'Mientras la ficha avanza, Fluye ilumina el carril activo: se ve de un vistazo quién tiene el trabajo en cada momento.']
   ];
   return articulo({
-    ruta: 'guias/diagrama-de-carriles/', ejemplo: ['ticket-de-mesa-de-ayuda', 'Ticket de mesa de ayuda'],
+    ruta: 'diagrama-de-carriles/', alterna: 'en/guides/swimlane-diagram/', ejemplo: ['ticket-de-mesa-de-ayuda', 'Ticket de mesa de ayuda'],
     titulo: 'Diagrama de carriles (swimlane): qué es y cómo hacerlo | Fluye',
     h1: 'Qué es un diagrama de carriles',
     bajada: 'El diagrama de carriles (swimlane) muestra quién hace cada paso de un proceso. Qué es, cuándo usarlo, la diferencia entre pool y carril, y cómo hacer uno en seis pasos.',
@@ -317,7 +341,7 @@ function guiaBpmn() {
     ['¿Qué programa sirve para hacer diagramas BPMN?', 'Cualquier modelador que guarde archivos .bpmn. Fluye es una opción gratis y en español para Windows, que también se puede probar en el navegador y recorre el proceso paso a paso con un Play.']
   ];
   return articulo({
-    ruta: 'guias/que-es-bpmn/', ejemplo: ['solicitud-de-vacaciones', 'Solicitud de vacaciones'],
+    ruta: 'que-es-bpmn/', alterna: 'en/guides/what-is-bpmn/', ejemplo: ['solicitud-de-vacaciones', 'Solicitud de vacaciones'],
     titulo: 'Qué es BPMN: significado, símbolos y ejemplo | Fluye',
     h1: 'Qué es BPMN y para qué sirve',
     bajada: 'BPMN es el estándar internacional para dibujar procesos. Qué significa, de dónde viene, sus figuras básicas, en qué se diferencia de un diagrama de flujo y cómo empezar gratis.',
@@ -381,7 +405,7 @@ function guiaBpmn() {
 }
 
 export function guias(plantillas) {
-  PLANTILLAS = plantillas;
+  PLANTILLAS.es = plantillas;
   return [guiaBpmn(), guiaFlujo(), guiaSimbolos(), guiaCarriles()];
 }
 
@@ -390,7 +414,7 @@ export function indiceGuias() {
   const r = '../';
   const { html, esquema } = migas(r, [{ nombre: 'Inicio', ruta: '' }, { nombre: 'Guías', ruta: 'guias/' }]);
   return {
-    ruta: 'guias/',
+    ruta: 'guias/', idioma: 'es', alternas: { es: 'guias/', en: 'en/guides/' },
     titulo: 'Guías para hacer diagramas de flujo y BPMN | Fluye',
     descripcion: 'Guías en español para entender qué es BPMN, hacer diagramas de flujo, conocer los símbolos BPMN y armar diagramas de carriles, con ejemplos interactivos.',
     cuerpo: `

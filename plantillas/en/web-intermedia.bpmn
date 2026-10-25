@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="web_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="web_intermedia_colab0">
+    <bpmn:participant id="web_intermedia_pool_sistema" name="Web system" processRef="web_intermedia_proceso_sistema" />
+  </bpmn:collaboration>
+  <bpmn:process id="web_intermedia_proceso_sistema" isExecutable="false">
+    <bpmn:laneSet id="web_intermedia_carriles_sistema">
+      <bpmn:lane id="web_intermedia_carril_usu" name="User">
+        <bpmn:flowNodeRef>web_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_ing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_pan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="web_intermedia_carril_web" name="Web system">
+        <bpmn:flowNodeRef>web_intermedia_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_err</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_ses</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="web_intermedia_carril_seg" name="Security">
+        <bpmn:flowNodeRef>web_intermedia_bit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_sum</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_int</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_blo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_intermedia_fbl</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_intermedia_ini" name="Wants to log in">
+      <bpmn:outgoing>web_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="web_intermedia_ing" name="Enter username and password">
+      <bpmn:incoming>web_intermedia_f0_0</bpmn:incoming>
+      <bpmn:incoming>web_intermedia_f0_15</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="web_intermedia_val" name="Validate the credentials">
+      <bpmn:incoming>web_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="web_intermedia_dec" name="Correct?">
+      <bpmn:incoming>web_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>web_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="web_intermedia_err" name="Show an error message">
+      <bpmn:incoming>web_intermedia_f0_13</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_15</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:parallelGateway id="web_intermedia_par">
+      <bpmn:incoming>web_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_5</bpmn:outgoing>
+      <bpmn:outgoing>web_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="web_intermedia_ses" name="Create the secure session">
+      <bpmn:incoming>web_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="web_intermedia_bit" name="Log the access">
+      <bpmn:documentation>Date, time, IP address and browser of the login.</bpmn:documentation>
+      <bpmn:incoming>web_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:parallelGateway id="web_intermedia_jun">
+      <bpmn:incoming>web_intermedia_f0_7</bpmn:incoming>
+      <bpmn:incoming>web_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="web_intermedia_pan" name="View the main dashboard">
+      <bpmn:incoming>web_intermedia_f0_9</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="web_intermedia_fin" name="Logged in">
+      <bpmn:incoming>web_intermedia_f0_10</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="web_intermedia_sum" name="Count a failed attempt">
+      <bpmn:incoming>web_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="web_intermedia_int" name="More than 3 attempts?">
+      <bpmn:incoming>web_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_12</bpmn:outgoing>
+      <bpmn:outgoing>web_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="web_intermedia_blo" name="Lock the account for 15 minutes">
+      <bpmn:documentation>Protects the account if someone tries to guess the password.</bpmn:documentation>
+      <bpmn:incoming>web_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>web_intermedia_f0_14</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="web_intermedia_fbl" name="Account locked">
+      <bpmn:incoming>web_intermedia_f0_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="web_intermedia_f0_0" sourceRef="web_intermedia_ini" targetRef="web_intermedia_ing" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_1" sourceRef="web_intermedia_ing" targetRef="web_intermedia_val" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_2" sourceRef="web_intermedia_val" targetRef="web_intermedia_dec" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_3" name="Yes" sourceRef="web_intermedia_dec" targetRef="web_intermedia_par" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_4" name="No" sourceRef="web_intermedia_dec" targetRef="web_intermedia_sum" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_5" sourceRef="web_intermedia_par" targetRef="web_intermedia_ses" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_6" sourceRef="web_intermedia_par" targetRef="web_intermedia_bit" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_7" sourceRef="web_intermedia_ses" targetRef="web_intermedia_jun" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_8" sourceRef="web_intermedia_bit" targetRef="web_intermedia_jun" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_9" sourceRef="web_intermedia_jun" targetRef="web_intermedia_pan" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_10" sourceRef="web_intermedia_pan" targetRef="web_intermedia_fin" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_11" sourceRef="web_intermedia_sum" targetRef="web_intermedia_int" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_12" name="Yes" sourceRef="web_intermedia_int" targetRef="web_intermedia_blo" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_13" name="No" sourceRef="web_intermedia_int" targetRef="web_intermedia_err" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_14" sourceRef="web_intermedia_blo" targetRef="web_intermedia_fbl" />
+    <bpmn:sequenceFlow id="web_intermedia_f0_15" sourceRef="web_intermedia_err" targetRef="web_intermedia_ing" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="web_intermedia_diagrama0" name="Login">
+    <bpmndi:BPMNPlane id="web_intermedia_plano0" bpmnElement="web_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_web_intermedia_pool_sistema" bpmnElement="web_intermedia_pool_sistema" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1770" height="690" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_carril_usu" bpmnElement="web_intermedia_carril_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1740" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_carril_web" bpmnElement="web_intermedia_carril_web" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1740" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_carril_seg" bpmnElement="web_intermedia_carril_seg" isHorizontal="true">
+        <dc:Bounds x="110" y="480" width="1740" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_ini" bpmnElement="web_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_ing" bpmnElement="web_intermedia_ing">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_val" bpmnElement="web_intermedia_val">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_dec" bpmnElement="web_intermedia_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_err" bpmnElement="web_intermedia_err">
+        <dc:Bounds x="830" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_par" bpmnElement="web_intermedia_par">
+        <dc:Bounds x="1037" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_ses" bpmnElement="web_intermedia_ses">
+        <dc:Bounds x="1170" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_bit" bpmnElement="web_intermedia_bit">
+        <dc:Bounds x="1170" y="523" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_jun" bpmnElement="web_intermedia_jun">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_pan" bpmnElement="web_intermedia_pan">
+        <dc:Bounds x="1510" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_fin" bpmnElement="web_intermedia_fin">
+        <dc:Bounds x="1722" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_sum" bpmnElement="web_intermedia_sum">
+        <dc:Bounds x="660" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_int" bpmnElement="web_intermedia_int" isMarkerVisible="false">
+        <dc:Bounds x="867" y="652" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_blo" bpmnElement="web_intermedia_blo">
+        <dc:Bounds x="1000" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_intermedia_fbl" bpmnElement="web_intermedia_fbl">
+        <dc:Bounds x="1212" y="657" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_0" bpmnElement="web_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_1" bpmnElement="web_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_2" bpmnElement="web_intermedia_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="697" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_3" bpmnElement="web_intermedia_f0_3">
+        <di:waypoint x="743" y="285" />
+        <di:waypoint x="1037" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_4" bpmnElement="web_intermedia_f0_4">
+        <di:waypoint x="720" y="308" />
+        <di:waypoint x="720" y="643" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_5" bpmnElement="web_intermedia_f0_5">
+        <di:waypoint x="1083" y="285" />
+        <di:waypoint x="1170" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_6" bpmnElement="web_intermedia_f0_6">
+        <di:waypoint x="1060" y="308" />
+        <di:waypoint x="1060" y="555" />
+        <di:waypoint x="1170" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_7" bpmnElement="web_intermedia_f0_7">
+        <di:waypoint x="1290" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_8" bpmnElement="web_intermedia_f0_8">
+        <di:waypoint x="1290" y="555" />
+        <di:waypoint x="1400" y="555" />
+        <di:waypoint x="1400" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_9" bpmnElement="web_intermedia_f0_9">
+        <di:waypoint x="1400" y="262" />
+        <di:waypoint x="1400" y="135" />
+        <di:waypoint x="1510" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_10" bpmnElement="web_intermedia_f0_10">
+        <di:waypoint x="1630" y="135" />
+        <di:waypoint x="1722" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_11" bpmnElement="web_intermedia_f0_11">
+        <di:waypoint x="780" y="675" />
+        <di:waypoint x="867" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_12" bpmnElement="web_intermedia_f0_12">
+        <di:waypoint x="913" y="675" />
+        <di:waypoint x="1000" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_13" bpmnElement="web_intermedia_f0_13">
+        <di:waypoint x="890" y="652" />
+        <di:waypoint x="890" y="437" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_14" bpmnElement="web_intermedia_f0_14">
+        <di:waypoint x="1120" y="675" />
+        <di:waypoint x="1212" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_intermedia_f0_15" bpmnElement="web_intermedia_f0_15">
+        <di:waypoint x="830" y="405" />
+        <di:waypoint x="380" y="405" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

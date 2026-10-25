@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="atencion_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="atencion_avanzada_colab0">
+    <bpmn:participant id="atencion_avanzada_pool_cliente" name="Customer" processRef="atencion_avanzada_proceso_cliente" />
+    <bpmn:participant id="atencion_avanzada_pool_empresa" name="Company" processRef="atencion_avanzada_proceso_empresa" />
+    <bpmn:participant id="atencion_avanzada_pool_tecnico" name="External repair service" processRef="atencion_avanzada_proceso_tecnico" />
+    <bpmn:messageFlow id="atencion_avanzada_m0_0" name="Claim" sourceRef="atencion_avanzada_c_rec" targetRef="atencion_avanzada_e_ini" />
+    <bpmn:messageFlow id="atencion_avanzada_m0_1" name="Product" sourceRef="atencion_avanzada_e_env" targetRef="atencion_avanzada_s_ini" />
+    <bpmn:messageFlow id="atencion_avanzada_m0_2" name="Report" sourceRef="atencion_avanzada_s_inf" targetRef="atencion_avanzada_e_inf" />
+    <bpmn:messageFlow id="atencion_avanzada_m0_3" name="Answer" sourceRef="atencion_avanzada_e_avi" targetRef="atencion_avanzada_c_res" />
+  </bpmn:collaboration>
+  <bpmn:process id="atencion_avanzada_proceso_cliente" isExecutable="false">
+    <bpmn:laneSet id="atencion_avanzada_carriles_cliente">
+      <bpmn:lane id="atencion_avanzada_carril_cli" name="Customer">
+        <bpmn:flowNodeRef>atencion_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_c_rec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_c_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="atencion_avanzada_c_ini" name="The product fails">
+      <bpmn:outgoing>atencion_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="atencion_avanzada_c_rec" name="File the warranty claim">
+      <bpmn:incoming>atencion_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="atencion_avanzada_c_res" name="Receives the answer">
+      <bpmn:incoming>atencion_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="atencion_avanzada_c_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="atencion_avanzada_c_fin" name="Case closed">
+      <bpmn:incoming>atencion_avanzada_f0_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_0" sourceRef="atencion_avanzada_c_ini" targetRef="atencion_avanzada_c_rec" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_1" sourceRef="atencion_avanzada_c_rec" targetRef="atencion_avanzada_c_res" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_2" sourceRef="atencion_avanzada_c_res" targetRef="atencion_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="atencion_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="atencion_avanzada_carriles_empresa">
+      <bpmn:lane id="atencion_avanzada_carril_ate" name="Customer service">
+        <bpmn:flowNodeRef>atencion_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_cot</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="atencion_avanzada_carril_log" name="Logistics">
+        <bpmn:flowNodeRef>atencion_avanzada_e_ret</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_e_inf</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="atencion_avanzada_e_ini" name="Claim arrives">
+      <bpmn:outgoing>atencion_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="atencion_avanzada_e_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="atencion_avanzada_e_rev" name="Check the warranty">
+      <bpmn:incoming>atencion_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="atencion_avanzada_e_dec" name="Under warranty?">
+      <bpmn:incoming>atencion_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:outgoing>atencion_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="atencion_avanzada_e_cot" name="Quote the repair">
+      <bpmn:incoming>atencion_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="atencion_avanzada_e_ret" name="Collect the product">
+      <bpmn:incoming>atencion_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="atencion_avanzada_e_env" name="Send to the repair service">
+      <bpmn:incoming>atencion_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="atencion_avanzada_e_esp" name="Wait for the diagnosis (5 days)">
+      <bpmn:incoming>atencion_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_9</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="atencion_avanzada_e_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="atencion_avanzada_e_inf" name="Technical report arrives">
+      <bpmn:incoming>atencion_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="atencion_avanzada_e_inf_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="atencion_avanzada_e_uni">
+      <bpmn:incoming>atencion_avanzada_f0_10</bpmn:incoming>
+      <bpmn:incoming>atencion_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="atencion_avanzada_e_avi" name="Notify the client">
+      <bpmn:incoming>atencion_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_13</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="atencion_avanzada_e_avi_def" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="atencion_avanzada_e_fin" name="Warranty closed">
+      <bpmn:incoming>atencion_avanzada_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_3" sourceRef="atencion_avanzada_e_ini" targetRef="atencion_avanzada_e_rev" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_4" sourceRef="atencion_avanzada_e_rev" targetRef="atencion_avanzada_e_dec" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_5" name="No" sourceRef="atencion_avanzada_e_dec" targetRef="atencion_avanzada_e_cot" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_6" name="Yes" sourceRef="atencion_avanzada_e_dec" targetRef="atencion_avanzada_e_ret" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_7" sourceRef="atencion_avanzada_e_ret" targetRef="atencion_avanzada_e_env" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_8" sourceRef="atencion_avanzada_e_env" targetRef="atencion_avanzada_e_esp" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_9" sourceRef="atencion_avanzada_e_esp" targetRef="atencion_avanzada_e_inf" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_10" sourceRef="atencion_avanzada_e_inf" targetRef="atencion_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_11" sourceRef="atencion_avanzada_e_cot" targetRef="atencion_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_12" sourceRef="atencion_avanzada_e_uni" targetRef="atencion_avanzada_e_avi" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_13" sourceRef="atencion_avanzada_e_avi" targetRef="atencion_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmn:process id="atencion_avanzada_proceso_tecnico" isExecutable="false">
+    <bpmn:laneSet id="atencion_avanzada_carriles_tecnico">
+      <bpmn:lane id="atencion_avanzada_carril_tec" name="Repair service">
+        <bpmn:flowNodeRef>atencion_avanzada_s_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_s_dia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_s_inf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_s_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="atencion_avanzada_s_ini" name="Receives the product">
+      <bpmn:outgoing>atencion_avanzada_f0_14</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="atencion_avanzada_s_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:subProcess id="atencion_avanzada_s_dia" name="Diagnosis and repair">
+      <bpmn:documentation>The details are in the "Diagnosis and repair" tab.</bpmn:documentation>
+      <bpmn:incoming>atencion_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:userTask id="atencion_avanzada_s_inf" name="Send the technical report">
+      <bpmn:incoming>atencion_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f0_16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="atencion_avanzada_s_fin" name="Repair case closed">
+      <bpmn:incoming>atencion_avanzada_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_14" sourceRef="atencion_avanzada_s_ini" targetRef="atencion_avanzada_s_dia" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_15" sourceRef="atencion_avanzada_s_dia" targetRef="atencion_avanzada_s_inf" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f0_16" sourceRef="atencion_avanzada_s_inf" targetRef="atencion_avanzada_s_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="atencion_avanzada_colab1">
+    <bpmn:participant id="atencion_avanzada_pool_diagnostico" name="Repair service" processRef="atencion_avanzada_proceso_diagnostico" />
+  </bpmn:collaboration>
+  <bpmn:process id="atencion_avanzada_proceso_diagnostico" isExecutable="false">
+    <bpmn:laneSet id="atencion_avanzada_carriles_diagnostico">
+      <bpmn:lane id="atencion_avanzada_carril_d_tec" name="Technician">
+        <bpmn:flowNodeRef>atencion_avanzada_d_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_dia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_rep</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_ok</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_cam</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_avanzada_d_no</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="atencion_avanzada_d_ini" name="Product arrives">
+      <bpmn:outgoing>atencion_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="atencion_avanzada_d_dia" name="Diagnose the fault">
+      <bpmn:incoming>atencion_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="atencion_avanzada_d_dec" name="Can it be repaired?">
+      <bpmn:incoming>atencion_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:outgoing>atencion_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="atencion_avanzada_d_rep" name="Repair and test">
+      <bpmn:incoming>atencion_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="atencion_avanzada_d_ok" name="Product repaired">
+      <bpmn:incoming>atencion_avanzada_f1_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="atencion_avanzada_d_cam" name="Recommend a replacement">
+      <bpmn:incoming>atencion_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>atencion_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="atencion_avanzada_d_no" name="Replacement recommended">
+      <bpmn:incoming>atencion_avanzada_f1_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_0" sourceRef="atencion_avanzada_d_ini" targetRef="atencion_avanzada_d_dia" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_1" sourceRef="atencion_avanzada_d_dia" targetRef="atencion_avanzada_d_dec" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_2" name="Yes" sourceRef="atencion_avanzada_d_dec" targetRef="atencion_avanzada_d_rep" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_3" sourceRef="atencion_avanzada_d_rep" targetRef="atencion_avanzada_d_ok" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_4" name="No" sourceRef="atencion_avanzada_d_dec" targetRef="atencion_avanzada_d_cam" />
+    <bpmn:sequenceFlow id="atencion_avanzada_f1_5" sourceRef="atencion_avanzada_d_cam" targetRef="atencion_avanzada_d_no" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="atencion_avanzada_diagrama0" name="Warranty">
+    <bpmndi:BPMNPlane id="atencion_avanzada_plano0" bpmnElement="atencion_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_pool_cliente" bpmnElement="atencion_avanzada_pool_cliente" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_pool_empresa" bpmnElement="atencion_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="1940" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_pool_tecnico" bpmnElement="atencion_avanzada_pool_tecnico" isHorizontal="true">
+        <dc:Bounds x="80" y="690" width="1940" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_carril_cli" bpmnElement="atencion_avanzada_carril_cli" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_carril_ate" bpmnElement="atencion_avanzada_carril_ate" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_carril_log" bpmnElement="atencion_avanzada_carril_log" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_carril_tec" bpmnElement="atencion_avanzada_carril_tec" isHorizontal="true">
+        <dc:Bounds x="110" y="690" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_c_ini" bpmnElement="atencion_avanzada_c_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_c_rec" bpmnElement="atencion_avanzada_c_rec">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_c_res" bpmnElement="atencion_avanzada_c_res">
+        <dc:Bounds x="1722" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_c_fin" bpmnElement="atencion_avanzada_c_fin">
+        <dc:Bounds x="1892" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_ini" bpmnElement="atencion_avanzada_e_ini">
+        <dc:Bounds x="362" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_rev" bpmnElement="atencion_avanzada_e_rev">
+        <dc:Bounds x="490" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_dec" bpmnElement="atencion_avanzada_e_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="352" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_cot" bpmnElement="atencion_avanzada_e_cot">
+        <dc:Bounds x="830" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_ret" bpmnElement="atencion_avanzada_e_ret">
+        <dc:Bounds x="830" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_env" bpmnElement="atencion_avanzada_e_env">
+        <dc:Bounds x="1000" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_esp" bpmnElement="atencion_avanzada_e_esp">
+        <dc:Bounds x="1212" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_inf" bpmnElement="atencion_avanzada_e_inf">
+        <dc:Bounds x="1382" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_uni" bpmnElement="atencion_avanzada_e_uni" isMarkerVisible="false">
+        <dc:Bounds x="1547" y="352" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_avi" bpmnElement="atencion_avanzada_e_avi">
+        <dc:Bounds x="1722" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_e_fin" bpmnElement="atencion_avanzada_e_fin">
+        <dc:Bounds x="1892" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_s_ini" bpmnElement="atencion_avanzada_s_ini">
+        <dc:Bounds x="1042" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_s_dia" bpmnElement="atencion_avanzada_s_dia" isExpanded="false">
+        <dc:Bounds x="1170" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_s_inf" bpmnElement="atencion_avanzada_s_inf">
+        <dc:Bounds x="1340" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_s_fin" bpmnElement="atencion_avanzada_s_fin">
+        <dc:Bounds x="1552" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_0" bpmnElement="atencion_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_1" bpmnElement="atencion_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="1722" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_2" bpmnElement="atencion_avanzada_f0_2">
+        <di:waypoint x="1758" y="135" />
+        <di:waypoint x="1892" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_3" bpmnElement="atencion_avanzada_f0_3">
+        <di:waypoint x="398" y="375" />
+        <di:waypoint x="490" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_4" bpmnElement="atencion_avanzada_f0_4">
+        <di:waypoint x="610" y="375" />
+        <di:waypoint x="697" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_5" bpmnElement="atencion_avanzada_f0_5">
+        <di:waypoint x="743" y="375" />
+        <di:waypoint x="830" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_6" bpmnElement="atencion_avanzada_f0_6">
+        <di:waypoint x="720" y="398" />
+        <di:waypoint x="720" y="525" />
+        <di:waypoint x="830" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_7" bpmnElement="atencion_avanzada_f0_7">
+        <di:waypoint x="950" y="525" />
+        <di:waypoint x="1000" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_8" bpmnElement="atencion_avanzada_f0_8">
+        <di:waypoint x="1120" y="525" />
+        <di:waypoint x="1212" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_9" bpmnElement="atencion_avanzada_f0_9">
+        <di:waypoint x="1248" y="525" />
+        <di:waypoint x="1382" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_10" bpmnElement="atencion_avanzada_f0_10">
+        <di:waypoint x="1418" y="525" />
+        <di:waypoint x="1570" y="525" />
+        <di:waypoint x="1570" y="398" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_11" bpmnElement="atencion_avanzada_f0_11">
+        <di:waypoint x="950" y="375" />
+        <di:waypoint x="1547" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_12" bpmnElement="atencion_avanzada_f0_12">
+        <di:waypoint x="1593" y="375" />
+        <di:waypoint x="1722" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_13" bpmnElement="atencion_avanzada_f0_13">
+        <di:waypoint x="1758" y="375" />
+        <di:waypoint x="1892" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_14" bpmnElement="atencion_avanzada_f0_14">
+        <di:waypoint x="1078" y="765" />
+        <di:waypoint x="1170" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_15" bpmnElement="atencion_avanzada_f0_15">
+        <di:waypoint x="1290" y="765" />
+        <di:waypoint x="1340" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f0_16" bpmnElement="atencion_avanzada_f0_16">
+        <di:waypoint x="1460" y="765" />
+        <di:waypoint x="1552" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_m0_0" bpmnElement="atencion_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_m0_1" bpmnElement="atencion_avanzada_m0_1">
+        <di:waypoint x="1060" y="557" />
+        <di:waypoint x="1060" y="747" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_m0_2" bpmnElement="atencion_avanzada_m0_2">
+        <di:waypoint x="1400" y="733" />
+        <di:waypoint x="1400" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_m0_3" bpmnElement="atencion_avanzada_m0_3">
+        <di:waypoint x="1740" y="357" />
+        <di:waypoint x="1740" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="atencion_avanzada_diagrama1" name="Diagnosis and repair">
+    <bpmndi:BPMNPlane id="atencion_avanzada_plano1" bpmnElement="atencion_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_pool_diagnostico" bpmnElement="atencion_avanzada_pool_diagnostico" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="920" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_carril_d_tec" bpmnElement="atencion_avanzada_carril_d_tec" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="890" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_ini" bpmnElement="atencion_avanzada_d_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_dia" bpmnElement="atencion_avanzada_d_dia">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_dec" bpmnElement="atencion_avanzada_d_dec" isMarkerVisible="false">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_rep" bpmnElement="atencion_avanzada_d_rep">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_ok" bpmnElement="atencion_avanzada_d_ok">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_cam" bpmnElement="atencion_avanzada_d_cam">
+        <dc:Bounds x="490" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_avanzada_d_no" bpmnElement="atencion_avanzada_d_no">
+        <dc:Bounds x="702" y="237" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_0" bpmnElement="atencion_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_1" bpmnElement="atencion_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_2" bpmnElement="atencion_avanzada_f1_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_3" bpmnElement="atencion_avanzada_f1_3">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_4" bpmnElement="atencion_avanzada_f1_4">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_avanzada_f1_5" bpmnElement="atencion_avanzada_f1_5">
+        <di:waypoint x="610" y="255" />
+        <di:waypoint x="702" y="255" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

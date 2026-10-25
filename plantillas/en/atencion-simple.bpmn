@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="atencion_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="atencion_simple_colab0">
+    <bpmn:participant id="atencion_simple_pool_empresa" name="Company" processRef="atencion_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="atencion_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="atencion_simple_carriles_empresa">
+      <bpmn:lane id="atencion_simple_carril_eje" name="Service agent">
+        <bpmn:flowNodeRef>atencion_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_fin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_der</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>atencion_simple_fi2</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="atencion_simple_ini" name="An inquiry arrives">
+      <bpmn:outgoing>atencion_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="atencion_simple_reg" name="Log the inquiry">
+      <bpmn:incoming>atencion_simple_f0_0</bpmn:incoming>
+      <bpmn:outgoing>atencion_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="atencion_simple_dec" name="Can it be answered right away?">
+      <bpmn:incoming>atencion_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>atencion_simple_f0_2</bpmn:outgoing>
+      <bpmn:outgoing>atencion_simple_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="atencion_simple_res" name="Answer the customer">
+      <bpmn:incoming>atencion_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>atencion_simple_f0_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="atencion_simple_fin" name="Inquiry resolved">
+      <bpmn:incoming>atencion_simple_f0_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="atencion_simple_der" name="Route to the right area">
+      <bpmn:incoming>atencion_simple_f0_4</bpmn:incoming>
+      <bpmn:outgoing>atencion_simple_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="atencion_simple_fi2" name="Inquiry routed">
+      <bpmn:incoming>atencion_simple_f0_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="atencion_simple_f0_0" sourceRef="atencion_simple_ini" targetRef="atencion_simple_reg" />
+    <bpmn:sequenceFlow id="atencion_simple_f0_1" sourceRef="atencion_simple_reg" targetRef="atencion_simple_dec" />
+    <bpmn:sequenceFlow id="atencion_simple_f0_2" name="Yes" sourceRef="atencion_simple_dec" targetRef="atencion_simple_res" />
+    <bpmn:sequenceFlow id="atencion_simple_f0_3" sourceRef="atencion_simple_res" targetRef="atencion_simple_fin" />
+    <bpmn:sequenceFlow id="atencion_simple_f0_4" name="No" sourceRef="atencion_simple_dec" targetRef="atencion_simple_der" />
+    <bpmn:sequenceFlow id="atencion_simple_f0_5" sourceRef="atencion_simple_der" targetRef="atencion_simple_fi2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="atencion_simple_diagrama0" name="Inquiry">
+    <bpmndi:BPMNPlane id="atencion_simple_plano0" bpmnElement="atencion_simple_colab0">
+      <bpmndi:BPMNShape id="DI_atencion_simple_pool_empresa" bpmnElement="atencion_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="920" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_carril_eje" bpmnElement="atencion_simple_carril_eje" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="890" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_ini" bpmnElement="atencion_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_reg" bpmnElement="atencion_simple_reg">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_dec" bpmnElement="atencion_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_res" bpmnElement="atencion_simple_res">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_fin" bpmnElement="atencion_simple_fin">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_der" bpmnElement="atencion_simple_der">
+        <dc:Bounds x="490" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_atencion_simple_fi2" bpmnElement="atencion_simple_fi2">
+        <dc:Bounds x="702" y="237" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_0" bpmnElement="atencion_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_1" bpmnElement="atencion_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_2" bpmnElement="atencion_simple_f0_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_3" bpmnElement="atencion_simple_f0_3">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_4" bpmnElement="atencion_simple_f0_4">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_atencion_simple_f0_5" bpmnElement="atencion_simple_f0_5">
+        <di:waypoint x="610" y="255" />
+        <di:waypoint x="702" y="255" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

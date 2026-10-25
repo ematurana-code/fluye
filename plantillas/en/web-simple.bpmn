@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="web_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="web_simple_colab0">
+    <bpmn:participant id="web_simple_pool_sistema" name="Web system" processRef="web_simple_proceso_sistema" />
+  </bpmn:collaboration>
+  <bpmn:process id="web_simple_proceso_sistema" isExecutable="false">
+    <bpmn:laneSet id="web_simple_carriles_sistema">
+      <bpmn:lane id="web_simple_carril_usu" name="User">
+        <bpmn:flowNodeRef>web_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_simple_ing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_simple_err</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="web_simple_carril_web" name="Web system">
+        <bpmn:flowNodeRef>web_simple_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_simple_pan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>web_simple_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="web_simple_ini" name="Wants to log in">
+      <bpmn:outgoing>web_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="web_simple_ing" name="Enter username and password">
+      <bpmn:incoming>web_simple_f0_0</bpmn:incoming>
+      <bpmn:incoming>web_simple_f0_6</bpmn:incoming>
+      <bpmn:outgoing>web_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="web_simple_val" name="Validate the credentials">
+      <bpmn:documentation>They are compared with the stored ones (the password is stored hashed).</bpmn:documentation>
+      <bpmn:incoming>web_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>web_simple_f0_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="web_simple_dec" name="Correct?">
+      <bpmn:incoming>web_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>web_simple_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>web_simple_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="web_simple_pan" name="Show the main dashboard">
+      <bpmn:incoming>web_simple_f0_3</bpmn:incoming>
+      <bpmn:outgoing>web_simple_f0_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="web_simple_fin" name="Logged in">
+      <bpmn:incoming>web_simple_f0_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="web_simple_err" name="Show an error message">
+      <bpmn:incoming>web_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>web_simple_f0_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="web_simple_f0_0" sourceRef="web_simple_ini" targetRef="web_simple_ing" />
+    <bpmn:sequenceFlow id="web_simple_f0_1" sourceRef="web_simple_ing" targetRef="web_simple_val" />
+    <bpmn:sequenceFlow id="web_simple_f0_2" sourceRef="web_simple_val" targetRef="web_simple_dec" />
+    <bpmn:sequenceFlow id="web_simple_f0_3" name="Yes" sourceRef="web_simple_dec" targetRef="web_simple_pan" />
+    <bpmn:sequenceFlow id="web_simple_f0_4" sourceRef="web_simple_pan" targetRef="web_simple_fin" />
+    <bpmn:sequenceFlow id="web_simple_f0_5" name="No" sourceRef="web_simple_dec" targetRef="web_simple_err" />
+    <bpmn:sequenceFlow id="web_simple_f0_6" sourceRef="web_simple_err" targetRef="web_simple_ing" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="web_simple_diagrama0" name="Login">
+    <bpmndi:BPMNPlane id="web_simple_plano0" bpmnElement="web_simple_colab0">
+      <bpmndi:BPMNShape id="DI_web_simple_pool_sistema" bpmnElement="web_simple_pool_sistema" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_carril_usu" bpmnElement="web_simple_carril_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_carril_web" bpmnElement="web_simple_carril_web" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_ini" bpmnElement="web_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_ing" bpmnElement="web_simple_ing">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_val" bpmnElement="web_simple_val">
+        <dc:Bounds x="490" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_dec" bpmnElement="web_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_pan" bpmnElement="web_simple_pan">
+        <dc:Bounds x="830" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_fin" bpmnElement="web_simple_fin">
+        <dc:Bounds x="1042" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_web_simple_err" bpmnElement="web_simple_err">
+        <dc:Bounds x="660" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_0" bpmnElement="web_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_1" bpmnElement="web_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="405" />
+        <di:waypoint x="490" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_2" bpmnElement="web_simple_f0_2">
+        <di:waypoint x="610" y="405" />
+        <di:waypoint x="697" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_3" bpmnElement="web_simple_f0_3">
+        <di:waypoint x="743" y="405" />
+        <di:waypoint x="830" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_4" bpmnElement="web_simple_f0_4">
+        <di:waypoint x="950" y="405" />
+        <di:waypoint x="1042" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_5" bpmnElement="web_simple_f0_5">
+        <di:waypoint x="720" y="382" />
+        <di:waypoint x="720" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_web_simple_f0_6" bpmnElement="web_simple_f0_6">
+        <di:waypoint x="660" y="255" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

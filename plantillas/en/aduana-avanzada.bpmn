@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="aduana_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="aduana_avanzada_colab0">
+    <bpmn:participant id="aduana_avanzada_pool_importador" name="Importer (client)" processRef="aduana_avanzada_proceso_importador" />
+    <bpmn:participant id="aduana_avanzada_pool_agencia" name="Customs broker" processRef="aduana_avanzada_proceso_agencia" />
+    <bpmn:participant id="aduana_avanzada_pool_aduana" name="Customs authority" processRef="aduana_avanzada_proceso_aduana" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_0" name="Documents" sourceRef="aduana_avanzada_c_env" targetRef="aduana_avanzada_a_ini" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_1" name="Declaration" sourceRef="aduana_avanzada_a_din" targetRef="aduana_avanzada_s_ini" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_2" name="Review" sourceRef="aduana_avanzada_s_val" targetRef="aduana_avanzada_a_can" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_3" name="Payment" sourceRef="aduana_avanzada_a_pag" targetRef="aduana_avanzada_s_pag" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_4" name="Authorization" sourceRef="aduana_avanzada_s_aut" targetRef="aduana_avanzada_a_aut" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_5" name="Notice" sourceRef="aduana_avanzada_a_avi" targetRef="aduana_avanzada_c_avi" />
+  </bpmn:collaboration>
+  <bpmn:process id="aduana_avanzada_proceso_importador" isExecutable="false">
+    <bpmn:laneSet id="aduana_avanzada_carriles_importador">
+      <bpmn:lane id="aduana_avanzada_carril_cli" name="Importer">
+        <bpmn:flowNodeRef>aduana_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_c_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_c_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_c_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_c_rec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_avanzada_c_ini" name="Buys goods abroad">
+      <bpmn:outgoing>aduana_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="aduana_avanzada_c_env" name="Send the documents to the broker">
+      <bpmn:incoming>aduana_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_c_esp" name="Wait for the shipment to arrive">
+      <bpmn:incoming>aduana_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="aduana_avanzada_c_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_c_avi" name="Receives the cargo-ready notice">
+      <bpmn:incoming>aduana_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_c_avi_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="aduana_avanzada_c_rec" name="Receive the goods at the warehouse">
+      <bpmn:incoming>aduana_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="aduana_avanzada_c_fin" name="Goods in the warehouse">
+      <bpmn:incoming>aduana_avanzada_f0_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_0" sourceRef="aduana_avanzada_c_ini" targetRef="aduana_avanzada_c_env" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_1" sourceRef="aduana_avanzada_c_env" targetRef="aduana_avanzada_c_esp" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_2" sourceRef="aduana_avanzada_c_esp" targetRef="aduana_avanzada_c_avi" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_3" sourceRef="aduana_avanzada_c_avi" targetRef="aduana_avanzada_c_rec" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_4" sourceRef="aduana_avanzada_c_rec" targetRef="aduana_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="aduana_avanzada_proceso_agencia" isExecutable="false">
+    <bpmn:laneSet id="aduana_avanzada_carriles_agencia">
+      <bpmn:lane id="aduana_avanzada_carril_ejec" name="Account executive">
+        <bpmn:flowNodeRef>aduana_avanzada_a_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_avanzada_carril_docu" name="Documentation">
+        <bpmn:flowNodeRef>aduana_avanzada_a_din</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_can</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_aut</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_avanzada_carril_oper" name="Operations">
+        <bpmn:flowNodeRef>aduana_avanzada_a_afo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_a_ret</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_avanzada_a_ini" name="Documents arrive">
+      <bpmn:outgoing>aduana_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_a_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="aduana_avanzada_a_rev" name="Review the documents">
+      <bpmn:incoming>aduana_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="aduana_avanzada_a_din" name="Prepare and file the declaration">
+      <bpmn:incoming>aduana_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_a_can" name="Inspection type arrives">
+      <bpmn:incoming>aduana_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_8</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_a_can_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="aduana_avanzada_a_dec" name="Which inspection?">
+      <bpmn:incoming>aduana_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_9</bpmn:outgoing>
+      <bpmn:outgoing>aduana_avanzada_f0_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:subProcess id="aduana_avanzada_a_afo" name="Physical inspection">
+      <bpmn:documentation>The details are in the "Physical inspection" tab.</bpmn:documentation>
+      <bpmn:incoming>aduana_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="aduana_avanzada_a_uni">
+      <bpmn:incoming>aduana_avanzada_f0_10</bpmn:incoming>
+      <bpmn:incoming>aduana_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="aduana_avanzada_a_pag" name="Pay duties and taxes">
+      <bpmn:incoming>aduana_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_a_aut" name="Release authorization arrives">
+      <bpmn:incoming>aduana_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_14</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_a_aut_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="aduana_avanzada_a_ret" name="Pick up the cargo from the warehouse">
+      <bpmn:incoming>aduana_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:intermediateThrowEvent id="aduana_avanzada_a_avi" name="Notify the client">
+      <bpmn:incoming>aduana_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_16</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_a_avi_def" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="aduana_avanzada_a_fin" name="Clearance completed">
+      <bpmn:incoming>aduana_avanzada_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_5" sourceRef="aduana_avanzada_a_ini" targetRef="aduana_avanzada_a_rev" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_6" sourceRef="aduana_avanzada_a_rev" targetRef="aduana_avanzada_a_din" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_7" sourceRef="aduana_avanzada_a_din" targetRef="aduana_avanzada_a_can" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_8" sourceRef="aduana_avanzada_a_can" targetRef="aduana_avanzada_a_dec" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_9" name="Physical" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_afo" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_10" name="Documentary" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_uni" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_11" sourceRef="aduana_avanzada_a_afo" targetRef="aduana_avanzada_a_uni" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_12" sourceRef="aduana_avanzada_a_uni" targetRef="aduana_avanzada_a_pag" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_13" sourceRef="aduana_avanzada_a_pag" targetRef="aduana_avanzada_a_aut" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_14" sourceRef="aduana_avanzada_a_aut" targetRef="aduana_avanzada_a_ret" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_15" sourceRef="aduana_avanzada_a_ret" targetRef="aduana_avanzada_a_avi" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_16" sourceRef="aduana_avanzada_a_avi" targetRef="aduana_avanzada_a_fin" />
+  </bpmn:process>
+  <bpmn:process id="aduana_avanzada_proceso_aduana" isExecutable="false">
+    <bpmn:laneSet id="aduana_avanzada_carriles_aduana">
+      <bpmn:lane id="aduana_avanzada_carril_sna" name="Customs">
+        <bpmn:flowNodeRef>aduana_avanzada_s_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_s_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_s_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_s_aut</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_s_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_avanzada_s_ini" name="Receives the declaration">
+      <bpmn:outgoing>aduana_avanzada_f0_17</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_s_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="aduana_avanzada_s_val" name="Validate the declaration and assign an inspection">
+      <bpmn:incoming>aduana_avanzada_f0_17</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_18</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_s_pag" name="Receives the payment">
+      <bpmn:incoming>aduana_avanzada_f0_18</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_19</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="aduana_avanzada_s_pag_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="aduana_avanzada_s_aut" name="Authorize the release">
+      <bpmn:incoming>aduana_avanzada_f0_19</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f0_20</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="aduana_avanzada_s_fin" name="Procedure closed">
+      <bpmn:incoming>aduana_avanzada_f0_20</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_17" sourceRef="aduana_avanzada_s_ini" targetRef="aduana_avanzada_s_val" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_18" sourceRef="aduana_avanzada_s_val" targetRef="aduana_avanzada_s_pag" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_19" sourceRef="aduana_avanzada_s_pag" targetRef="aduana_avanzada_s_aut" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_20" sourceRef="aduana_avanzada_s_aut" targetRef="aduana_avanzada_s_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="aduana_avanzada_colab1">
+    <bpmn:participant id="aduana_avanzada_pool_aforo" name="Physical inspection" processRef="aduana_avanzada_proceso_aforo" />
+  </bpmn:collaboration>
+  <bpmn:process id="aduana_avanzada_proceso_aforo" isExecutable="false">
+    <bpmn:laneSet id="aduana_avanzada_carriles_aforo">
+      <bpmn:lane id="aduana_avanzada_carril_f_ope" name="Operations (broker)">
+        <bpmn:flowNodeRef>aduana_avanzada_f_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_coo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_acl</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="aduana_avanzada_carril_f_fis" name="Customs officer">
+        <bpmn:flowNodeRef>aduana_avanzada_f_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_ok</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_apr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_avanzada_f_obs</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_avanzada_f_ini" name="Customs requests a physical inspection">
+      <bpmn:outgoing>aduana_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="aduana_avanzada_f_coo" name="Arrange time and place with the warehouse">
+      <bpmn:incoming>aduana_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="aduana_avanzada_f_rev" name="Examine the goods">
+      <bpmn:incoming>aduana_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f1_2</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="aduana_avanzada_f_dec" name="Does it match the declaration?">
+      <bpmn:incoming>aduana_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f1_3</bpmn:outgoing>
+      <bpmn:outgoing>aduana_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="aduana_avanzada_f_ok" name="Inspection passed">
+      <bpmn:incoming>aduana_avanzada_f1_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="aduana_avanzada_f_acl" name="Submit a clarification">
+      <bpmn:incoming>aduana_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="aduana_avanzada_f_apr" name="Review and approve the clarification">
+      <bpmn:incoming>aduana_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>aduana_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="aduana_avanzada_f_obs" name="Inspection with remarks">
+      <bpmn:incoming>aduana_avanzada_f1_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_0" sourceRef="aduana_avanzada_f_ini" targetRef="aduana_avanzada_f_coo" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_1" sourceRef="aduana_avanzada_f_coo" targetRef="aduana_avanzada_f_rev" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_2" sourceRef="aduana_avanzada_f_rev" targetRef="aduana_avanzada_f_dec" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_3" name="Yes" sourceRef="aduana_avanzada_f_dec" targetRef="aduana_avanzada_f_ok" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_4" name="No" sourceRef="aduana_avanzada_f_dec" targetRef="aduana_avanzada_f_acl" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_5" sourceRef="aduana_avanzada_f_acl" targetRef="aduana_avanzada_f_apr" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f1_6" sourceRef="aduana_avanzada_f_apr" targetRef="aduana_avanzada_f_obs" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama0" name="Import">
+    <bpmndi:BPMNPlane id="aduana_avanzada_plano0" bpmnElement="aduana_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_importador" bpmnElement="aduana_avanzada_pool_importador" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_agencia" bpmnElement="aduana_avanzada_pool_agencia" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="2450" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_aduana" bpmnElement="aduana_avanzada_pool_aduana" isHorizontal="true">
+        <dc:Bounds x="80" y="840" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_cli" bpmnElement="aduana_avanzada_carril_cli" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_ejec" bpmnElement="aduana_avanzada_carril_ejec" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_docu" bpmnElement="aduana_avanzada_carril_docu" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_oper" bpmnElement="aduana_avanzada_carril_oper" isHorizontal="true">
+        <dc:Bounds x="110" y="600" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_sna" bpmnElement="aduana_avanzada_carril_sna" isHorizontal="true">
+        <dc:Bounds x="110" y="840" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_ini" bpmnElement="aduana_avanzada_c_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_env" bpmnElement="aduana_avanzada_c_env">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_esp" bpmnElement="aduana_avanzada_c_esp">
+        <dc:Bounds x="532" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_avi" bpmnElement="aduana_avanzada_c_avi">
+        <dc:Bounds x="2062" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_rec" bpmnElement="aduana_avanzada_c_rec">
+        <dc:Bounds x="2190" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_c_fin" bpmnElement="aduana_avanzada_c_fin">
+        <dc:Bounds x="2402" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_ini" bpmnElement="aduana_avanzada_a_ini">
+        <dc:Bounds x="362" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_rev" bpmnElement="aduana_avanzada_a_rev">
+        <dc:Bounds x="490" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_din" bpmnElement="aduana_avanzada_a_din">
+        <dc:Bounds x="660" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_can" bpmnElement="aduana_avanzada_a_can">
+        <dc:Bounds x="872" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_dec" bpmnElement="aduana_avanzada_a_dec" isMarkerVisible="false">
+        <dc:Bounds x="1037" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_afo" bpmnElement="aduana_avanzada_a_afo" isExpanded="false">
+        <dc:Bounds x="1170" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_uni" bpmnElement="aduana_avanzada_a_uni" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_pag" bpmnElement="aduana_avanzada_a_pag">
+        <dc:Bounds x="1510" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_aut" bpmnElement="aduana_avanzada_a_aut">
+        <dc:Bounds x="1722" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_ret" bpmnElement="aduana_avanzada_a_ret">
+        <dc:Bounds x="1850" y="643" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_avi" bpmnElement="aduana_avanzada_a_avi">
+        <dc:Bounds x="2062" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_a_fin" bpmnElement="aduana_avanzada_a_fin">
+        <dc:Bounds x="2232" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_s_ini" bpmnElement="aduana_avanzada_s_ini">
+        <dc:Bounds x="702" y="897" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_s_val" bpmnElement="aduana_avanzada_s_val">
+        <dc:Bounds x="830" y="883" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_s_pag" bpmnElement="aduana_avanzada_s_pag">
+        <dc:Bounds x="1552" y="897" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_s_aut" bpmnElement="aduana_avanzada_s_aut">
+        <dc:Bounds x="1680" y="883" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_s_fin" bpmnElement="aduana_avanzada_s_fin">
+        <dc:Bounds x="1892" y="897" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_0" bpmnElement="aduana_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_1" bpmnElement="aduana_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="532" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_2" bpmnElement="aduana_avanzada_f0_2">
+        <di:waypoint x="568" y="135" />
+        <di:waypoint x="2062" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_3" bpmnElement="aduana_avanzada_f0_3">
+        <di:waypoint x="2098" y="135" />
+        <di:waypoint x="2190" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_4" bpmnElement="aduana_avanzada_f0_4">
+        <di:waypoint x="2310" y="135" />
+        <di:waypoint x="2402" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_5" bpmnElement="aduana_avanzada_f0_5">
+        <di:waypoint x="398" y="375" />
+        <di:waypoint x="490" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_6" bpmnElement="aduana_avanzada_f0_6">
+        <di:waypoint x="610" y="375" />
+        <di:waypoint x="635" y="375" />
+        <di:waypoint x="635" y="525" />
+        <di:waypoint x="660" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_7" bpmnElement="aduana_avanzada_f0_7">
+        <di:waypoint x="780" y="525" />
+        <di:waypoint x="872" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_8" bpmnElement="aduana_avanzada_f0_8">
+        <di:waypoint x="908" y="525" />
+        <di:waypoint x="1037" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_9" bpmnElement="aduana_avanzada_f0_9">
+        <di:waypoint x="1060" y="548" />
+        <di:waypoint x="1060" y="675" />
+        <di:waypoint x="1170" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_10" bpmnElement="aduana_avanzada_f0_10">
+        <di:waypoint x="1083" y="525" />
+        <di:waypoint x="1377" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_11" bpmnElement="aduana_avanzada_f0_11">
+        <di:waypoint x="1290" y="675" />
+        <di:waypoint x="1400" y="675" />
+        <di:waypoint x="1400" y="548" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_12" bpmnElement="aduana_avanzada_f0_12">
+        <di:waypoint x="1423" y="525" />
+        <di:waypoint x="1510" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_13" bpmnElement="aduana_avanzada_f0_13">
+        <di:waypoint x="1630" y="525" />
+        <di:waypoint x="1722" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_14" bpmnElement="aduana_avanzada_f0_14">
+        <di:waypoint x="1758" y="525" />
+        <di:waypoint x="1804" y="525" />
+        <di:waypoint x="1804" y="675" />
+        <di:waypoint x="1850" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_15" bpmnElement="aduana_avanzada_f0_15">
+        <di:waypoint x="1970" y="675" />
+        <di:waypoint x="2016" y="675" />
+        <di:waypoint x="2016" y="375" />
+        <di:waypoint x="2062" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_16" bpmnElement="aduana_avanzada_f0_16">
+        <di:waypoint x="2098" y="375" />
+        <di:waypoint x="2232" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_17" bpmnElement="aduana_avanzada_f0_17">
+        <di:waypoint x="738" y="915" />
+        <di:waypoint x="830" y="915" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_18" bpmnElement="aduana_avanzada_f0_18">
+        <di:waypoint x="950" y="915" />
+        <di:waypoint x="1552" y="915" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_19" bpmnElement="aduana_avanzada_f0_19">
+        <di:waypoint x="1588" y="915" />
+        <di:waypoint x="1680" y="915" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f0_20" bpmnElement="aduana_avanzada_f0_20">
+        <di:waypoint x="1800" y="915" />
+        <di:waypoint x="1892" y="915" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_0" bpmnElement="aduana_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_1" bpmnElement="aduana_avanzada_m0_1">
+        <di:waypoint x="720" y="557" />
+        <di:waypoint x="720" y="897" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_2" bpmnElement="aduana_avanzada_m0_2">
+        <di:waypoint x="890" y="883" />
+        <di:waypoint x="890" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_3" bpmnElement="aduana_avanzada_m0_3">
+        <di:waypoint x="1570" y="557" />
+        <di:waypoint x="1570" y="897" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_4" bpmnElement="aduana_avanzada_m0_4">
+        <di:waypoint x="1740" y="883" />
+        <di:waypoint x="1740" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_m0_5" bpmnElement="aduana_avanzada_m0_5">
+        <di:waypoint x="2080" y="357" />
+        <di:waypoint x="2080" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama1" name="Physical inspection">
+    <bpmndi:BPMNPlane id="aduana_avanzada_plano1" bpmnElement="aduana_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_aforo" bpmnElement="aduana_avanzada_pool_aforo" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1260" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_f_ope" bpmnElement="aduana_avanzada_carril_f_ope" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_carril_f_fis" bpmnElement="aduana_avanzada_carril_f_fis" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_ini" bpmnElement="aduana_avanzada_f_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_coo" bpmnElement="aduana_avanzada_f_coo">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_rev" bpmnElement="aduana_avanzada_f_rev">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_dec" bpmnElement="aduana_avanzada_f_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_ok" bpmnElement="aduana_avanzada_f_ok">
+        <dc:Bounds x="872" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_acl" bpmnElement="aduana_avanzada_f_acl">
+        <dc:Bounds x="830" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_apr" bpmnElement="aduana_avanzada_f_apr">
+        <dc:Bounds x="1000" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_avanzada_f_obs" bpmnElement="aduana_avanzada_f_obs">
+        <dc:Bounds x="1212" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_0" bpmnElement="aduana_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_1" bpmnElement="aduana_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_2" bpmnElement="aduana_avanzada_f1_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="697" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_3" bpmnElement="aduana_avanzada_f1_3">
+        <di:waypoint x="743" y="285" />
+        <di:waypoint x="872" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_4" bpmnElement="aduana_avanzada_f1_4">
+        <di:waypoint x="720" y="262" />
+        <di:waypoint x="720" y="135" />
+        <di:waypoint x="830" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_5" bpmnElement="aduana_avanzada_f1_5">
+        <di:waypoint x="950" y="135" />
+        <di:waypoint x="975" y="135" />
+        <di:waypoint x="975" y="285" />
+        <di:waypoint x="1000" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_avanzada_f1_6" bpmnElement="aduana_avanzada_f1_6">
+        <di:waypoint x="1120" y="285" />
+        <di:waypoint x="1212" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -120,6 +120,13 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 .barra-enlaces nav a:hover, .barra-enlaces nav a[aria-current] { color: var(--azul); text-decoration: underline; text-decoration-thickness: 2px; }
 .barra-accion { display: inline-flex; align-items: center; padding: 0 24px; border-radius: var(--radio); background: var(--azul); color: #fff; font-weight: 600; text-decoration: none; transition: background-color .15s; }
 .barra-accion:hover { background: var(--azul-2); color: #fff; }
+/* El cambio de idioma va al final de los enlaces, separado y en el tono suave. */
+.barra-enlaces nav a.barra-idioma { margin-left: auto; color: var(--tinta-2); font-weight: 500; }
+@media (max-width: 1100px) {
+  .barra-enlaces { grid-template-columns: auto minmax(0, 1fr); }
+  .barra-enlaces nav { justify-content: flex-end; gap: 20px; }
+  .barra-enlaces nav a:nth-child(4) { display: none; }
+}
 
 /* ---------- portada: el primer tablero ---------- */
 .portada { grid-template-rows: minmax(400px, calc(56svh - 40px)) minmax(230px, calc(44svh - 76px)); margin-top: 0; }
@@ -510,7 +517,8 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   .barra-enlaces { grid-template-columns: 1fr; padding: 0 14px; }
   .barra-nombre { display: none; }
   .barra-enlaces nav { gap: 16px; }
-  .barra-enlaces nav a:nth-child(n+3) { display: none; }
+  .barra-enlaces nav a:nth-child(3), .barra-enlaces nav a:nth-child(4) { display: none; }
+  .barra-enlaces nav { justify-content: flex-start; gap: 14px; }
   .barra-accion { padding: 0 16px; }
   .cabeza { grid-template-columns: 1fr; margin-bottom: 20px; }
   .cabeza > :first-child, .cabeza > p { grid-column: 1; }

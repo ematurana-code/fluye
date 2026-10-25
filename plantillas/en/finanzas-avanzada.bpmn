@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="finanzas_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="finanzas_avanzada_colab0">
+    <bpmn:participant id="finanzas_avanzada_pool_cliente" name="Customer" processRef="finanzas_avanzada_proceso_cliente" />
+    <bpmn:participant id="finanzas_avanzada_pool_empresa" name="Company" processRef="finanzas_avanzada_proceso_empresa" />
+    <bpmn:participant id="finanzas_avanzada_pool_banco" name="Bank" processRef="finanzas_avanzada_proceso_banco" />
+    <bpmn:messageFlow id="finanzas_avanzada_m0_0" name="Invoice" sourceRef="finanzas_avanzada_f_emi" targetRef="finanzas_avanzada_c_ini" />
+    <bpmn:messageFlow id="finanzas_avanzada_m0_1" name="Transfer" sourceRef="finanzas_avanzada_c_pag" targetRef="finanzas_avanzada_b_ini" />
+    <bpmn:messageFlow id="finanzas_avanzada_m0_2" name="Deposit notice" sourceRef="finanzas_avanzada_b_avi" targetRef="finanzas_avanzada_f_abo" />
+  </bpmn:collaboration>
+  <bpmn:process id="finanzas_avanzada_proceso_cliente" isExecutable="false">
+    <bpmn:laneSet id="finanzas_avanzada_carriles_cliente">
+      <bpmn:lane id="finanzas_avanzada_carril_cli" name="Customer">
+        <bpmn:flowNodeRef>finanzas_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_c_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_c_pag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_avanzada_c_ini" name="Receives the invoice">
+      <bpmn:outgoing>finanzas_avanzada_f0_0</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="finanzas_avanzada_c_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="finanzas_avanzada_c_rev" name="Review the invoice">
+      <bpmn:incoming>finanzas_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finanzas_avanzada_c_pag" name="Pay by bank transfer">
+      <bpmn:incoming>finanzas_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="finanzas_avanzada_c_fin" name="Invoice paid">
+      <bpmn:incoming>finanzas_avanzada_f0_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_0" sourceRef="finanzas_avanzada_c_ini" targetRef="finanzas_avanzada_c_rev" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_1" sourceRef="finanzas_avanzada_c_rev" targetRef="finanzas_avanzada_c_pag" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_2" sourceRef="finanzas_avanzada_c_pag" targetRef="finanzas_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="finanzas_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="finanzas_avanzada_carriles_empresa">
+      <bpmn:lane id="finanzas_avanzada_carril_fac" name="Billing">
+        <bpmn:flowNodeRef>finanzas_avanzada_f_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_emi</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="finanzas_avanzada_carril_cob" name="Collections">
+        <bpmn:flowNodeRef>finanzas_avanzada_f_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_ges</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_abo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_con</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_f_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_avanzada_f_ini" name="A service is delivered">
+      <bpmn:outgoing>finanzas_avanzada_f0_3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="finanzas_avanzada_f_emi" name="Issue and send the invoice">
+      <bpmn:incoming>finanzas_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="finanzas_avanzada_f_esp" name="Wait for the due date (30 days)">
+      <bpmn:incoming>finanzas_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="finanzas_avanzada_f_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="finanzas_avanzada_f_dec" name="Paid on time?">
+      <bpmn:incoming>finanzas_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_6</bpmn:outgoing>
+      <bpmn:outgoing>finanzas_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:subProcess id="finanzas_avanzada_f_ges" name="Collection follow-up">
+      <bpmn:documentation>The details are in the "Collection follow-up" tab.</bpmn:documentation>
+      <bpmn:incoming>finanzas_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="finanzas_avanzada_f_uni">
+      <bpmn:incoming>finanzas_avanzada_f0_6</bpmn:incoming>
+      <bpmn:incoming>finanzas_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="finanzas_avanzada_f_abo" name="Deposit notice arrives">
+      <bpmn:incoming>finanzas_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="finanzas_avanzada_f_abo_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="finanzas_avanzada_f_con" name="Reconcile the payment">
+      <bpmn:incoming>finanzas_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="finanzas_avanzada_f_fin" name="Collection closed">
+      <bpmn:incoming>finanzas_avanzada_f0_11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_3" sourceRef="finanzas_avanzada_f_ini" targetRef="finanzas_avanzada_f_emi" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_4" sourceRef="finanzas_avanzada_f_emi" targetRef="finanzas_avanzada_f_esp" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_5" sourceRef="finanzas_avanzada_f_esp" targetRef="finanzas_avanzada_f_dec" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_6" name="Yes" sourceRef="finanzas_avanzada_f_dec" targetRef="finanzas_avanzada_f_uni" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_7" name="No" sourceRef="finanzas_avanzada_f_dec" targetRef="finanzas_avanzada_f_ges" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_8" sourceRef="finanzas_avanzada_f_ges" targetRef="finanzas_avanzada_f_uni" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_9" sourceRef="finanzas_avanzada_f_uni" targetRef="finanzas_avanzada_f_abo" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_10" sourceRef="finanzas_avanzada_f_abo" targetRef="finanzas_avanzada_f_con" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_11" sourceRef="finanzas_avanzada_f_con" targetRef="finanzas_avanzada_f_fin" />
+  </bpmn:process>
+  <bpmn:process id="finanzas_avanzada_proceso_banco" isExecutable="false">
+    <bpmn:laneSet id="finanzas_avanzada_carriles_banco">
+      <bpmn:lane id="finanzas_avanzada_carril_ban" name="Bank">
+        <bpmn:flowNodeRef>finanzas_avanzada_b_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_b_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_b_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_avanzada_b_ini" name="Receives the transfer">
+      <bpmn:outgoing>finanzas_avanzada_f0_12</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="finanzas_avanzada_b_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="finanzas_avanzada_b_avi" name="Notify the company of the deposit">
+      <bpmn:incoming>finanzas_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="finanzas_avanzada_b_fin" name="Transfer completed">
+      <bpmn:incoming>finanzas_avanzada_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_12" sourceRef="finanzas_avanzada_b_ini" targetRef="finanzas_avanzada_b_avi" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f0_13" sourceRef="finanzas_avanzada_b_avi" targetRef="finanzas_avanzada_b_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="finanzas_avanzada_colab1">
+    <bpmn:participant id="finanzas_avanzada_pool_gestion" name="Collection follow-up" processRef="finanzas_avanzada_proceso_gestion" />
+  </bpmn:collaboration>
+  <bpmn:process id="finanzas_avanzada_proceso_gestion" isExecutable="false">
+    <bpmn:laneSet id="finanzas_avanzada_carriles_gestion">
+      <bpmn:lane id="finanzas_avanzada_carril_g_cob" name="Collections">
+        <bpmn:flowNodeRef>finanzas_avanzada_g_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_lla</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="finanzas_avanzada_carril_g_jef" name="Finance manager">
+        <bpmn:flowNodeRef>finanzas_avanzada_g_esc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_acu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finanzas_avanzada_g_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="finanzas_avanzada_g_ini" name="Invoice overdue">
+      <bpmn:outgoing>finanzas_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="finanzas_avanzada_g_lla" name="Call and send a reminder">
+      <bpmn:incoming>finanzas_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="finanzas_avanzada_g_esp" name="Wait 7 days">
+      <bpmn:incoming>finanzas_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="finanzas_avanzada_g_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="finanzas_avanzada_g_dec" name="Paid?">
+      <bpmn:incoming>finanzas_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f1_3</bpmn:outgoing>
+      <bpmn:outgoing>finanzas_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="finanzas_avanzada_g_ok" name="Payment committed">
+      <bpmn:incoming>finanzas_avanzada_f1_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="finanzas_avanzada_g_esc" name="Escalate to the manager">
+      <bpmn:incoming>finanzas_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finanzas_avanzada_g_acu" name="Agree on a payment plan">
+      <bpmn:incoming>finanzas_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>finanzas_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="finanzas_avanzada_g_fin" name="Payment plan agreed">
+      <bpmn:incoming>finanzas_avanzada_f1_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_0" sourceRef="finanzas_avanzada_g_ini" targetRef="finanzas_avanzada_g_lla" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_1" sourceRef="finanzas_avanzada_g_lla" targetRef="finanzas_avanzada_g_esp" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_2" sourceRef="finanzas_avanzada_g_esp" targetRef="finanzas_avanzada_g_dec" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_3" name="Yes" sourceRef="finanzas_avanzada_g_dec" targetRef="finanzas_avanzada_g_ok" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_4" name="No" sourceRef="finanzas_avanzada_g_dec" targetRef="finanzas_avanzada_g_esc" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_5" sourceRef="finanzas_avanzada_g_esc" targetRef="finanzas_avanzada_g_acu" />
+    <bpmn:sequenceFlow id="finanzas_avanzada_f1_6" sourceRef="finanzas_avanzada_g_acu" targetRef="finanzas_avanzada_g_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="finanzas_avanzada_diagrama0" name="Collections">
+    <bpmndi:BPMNPlane id="finanzas_avanzada_plano0" bpmnElement="finanzas_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_pool_cliente" bpmnElement="finanzas_avanzada_pool_cliente" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_pool_empresa" bpmnElement="finanzas_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="1940" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_pool_banco" bpmnElement="finanzas_avanzada_pool_banco" isHorizontal="true">
+        <dc:Bounds x="80" y="810" width="1940" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_cli" bpmnElement="finanzas_avanzada_carril_cli" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_fac" bpmnElement="finanzas_avanzada_carril_fac" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_cob" bpmnElement="finanzas_avanzada_carril_cob" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="1910" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_ban" bpmnElement="finanzas_avanzada_carril_ban" isHorizontal="true">
+        <dc:Bounds x="110" y="810" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_c_ini" bpmnElement="finanzas_avanzada_c_ini">
+        <dc:Bounds x="362" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_c_rev" bpmnElement="finanzas_avanzada_c_rev">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_c_pag" bpmnElement="finanzas_avanzada_c_pag">
+        <dc:Bounds x="1340" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_c_fin" bpmnElement="finanzas_avanzada_c_fin">
+        <dc:Bounds x="1552" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_ini" bpmnElement="finanzas_avanzada_f_ini">
+        <dc:Bounds x="192" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_emi" bpmnElement="finanzas_avanzada_f_emi">
+        <dc:Bounds x="320" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_esp" bpmnElement="finanzas_avanzada_f_esp">
+        <dc:Bounds x="532" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_dec" bpmnElement="finanzas_avanzada_f_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_ges" bpmnElement="finanzas_avanzada_f_ges" isExpanded="false">
+        <dc:Bounds x="660" y="613" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_uni" bpmnElement="finanzas_avanzada_f_uni" isMarkerVisible="false">
+        <dc:Bounds x="1037" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_abo" bpmnElement="finanzas_avanzada_f_abo">
+        <dc:Bounds x="1552" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_con" bpmnElement="finanzas_avanzada_f_con">
+        <dc:Bounds x="1680" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_f_fin" bpmnElement="finanzas_avanzada_f_fin">
+        <dc:Bounds x="1892" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_b_ini" bpmnElement="finanzas_avanzada_b_ini">
+        <dc:Bounds x="1382" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_b_avi" bpmnElement="finanzas_avanzada_b_avi">
+        <dc:Bounds x="1510" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_b_fin" bpmnElement="finanzas_avanzada_b_fin">
+        <dc:Bounds x="1722" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_0" bpmnElement="finanzas_avanzada_f0_0">
+        <di:waypoint x="398" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_1" bpmnElement="finanzas_avanzada_f0_1">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="1340" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_2" bpmnElement="finanzas_avanzada_f0_2">
+        <di:waypoint x="1460" y="135" />
+        <di:waypoint x="1552" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_3" bpmnElement="finanzas_avanzada_f0_3">
+        <di:waypoint x="228" y="375" />
+        <di:waypoint x="320" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_4" bpmnElement="finanzas_avanzada_f0_4">
+        <di:waypoint x="440" y="375" />
+        <di:waypoint x="486" y="375" />
+        <di:waypoint x="486" y="525" />
+        <di:waypoint x="532" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_5" bpmnElement="finanzas_avanzada_f0_5">
+        <di:waypoint x="568" y="525" />
+        <di:waypoint x="697" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_6" bpmnElement="finanzas_avanzada_f0_6">
+        <di:waypoint x="743" y="525" />
+        <di:waypoint x="1037" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_7" bpmnElement="finanzas_avanzada_f0_7">
+        <di:waypoint x="720" y="548" />
+        <di:waypoint x="720" y="613" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_8" bpmnElement="finanzas_avanzada_f0_8">
+        <di:waypoint x="780" y="645" />
+        <di:waypoint x="1060" y="645" />
+        <di:waypoint x="1060" y="548" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_9" bpmnElement="finanzas_avanzada_f0_9">
+        <di:waypoint x="1083" y="525" />
+        <di:waypoint x="1552" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_10" bpmnElement="finanzas_avanzada_f0_10">
+        <di:waypoint x="1588" y="525" />
+        <di:waypoint x="1680" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_11" bpmnElement="finanzas_avanzada_f0_11">
+        <di:waypoint x="1800" y="525" />
+        <di:waypoint x="1892" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_12" bpmnElement="finanzas_avanzada_f0_12">
+        <di:waypoint x="1418" y="885" />
+        <di:waypoint x="1510" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f0_13" bpmnElement="finanzas_avanzada_f0_13">
+        <di:waypoint x="1630" y="885" />
+        <di:waypoint x="1722" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_m0_0" bpmnElement="finanzas_avanzada_m0_0">
+        <di:waypoint x="380" y="343" />
+        <di:waypoint x="380" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_m0_1" bpmnElement="finanzas_avanzada_m0_1">
+        <di:waypoint x="1400" y="167" />
+        <di:waypoint x="1400" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_m0_2" bpmnElement="finanzas_avanzada_m0_2">
+        <di:waypoint x="1570" y="853" />
+        <di:waypoint x="1570" y="543" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="finanzas_avanzada_diagrama1" name="Collection follow-up">
+    <bpmndi:BPMNPlane id="finanzas_avanzada_plano1" bpmnElement="finanzas_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_pool_gestion" bpmnElement="finanzas_avanzada_pool_gestion" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_g_cob" bpmnElement="finanzas_avanzada_carril_g_cob" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_carril_g_jef" bpmnElement="finanzas_avanzada_carril_g_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_ini" bpmnElement="finanzas_avanzada_g_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_lla" bpmnElement="finanzas_avanzada_g_lla">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_esp" bpmnElement="finanzas_avanzada_g_esp">
+        <dc:Bounds x="532" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_dec" bpmnElement="finanzas_avanzada_g_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_ok" bpmnElement="finanzas_avanzada_g_ok">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_esc" bpmnElement="finanzas_avanzada_g_esc">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_acu" bpmnElement="finanzas_avanzada_g_acu">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_finanzas_avanzada_g_fin" bpmnElement="finanzas_avanzada_g_fin">
+        <dc:Bounds x="1042" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_0" bpmnElement="finanzas_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_1" bpmnElement="finanzas_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="532" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_2" bpmnElement="finanzas_avanzada_f1_2">
+        <di:waypoint x="568" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_3" bpmnElement="finanzas_avanzada_f1_3">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_4" bpmnElement="finanzas_avanzada_f1_4">
+        <di:waypoint x="720" y="158" />
+        <di:waypoint x="720" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_5" bpmnElement="finanzas_avanzada_f1_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="830" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_finanzas_avanzada_f1_6" bpmnElement="finanzas_avanzada_f1_6">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="1042" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

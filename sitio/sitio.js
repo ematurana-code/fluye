@@ -106,14 +106,18 @@ function crearReproductor() {
   const dialogo = document.createElement('dialog');
   dialogo.className = 'reproductor';
   dialogo.setAttribute('aria-labelledby', 'reproductor-titulo');
+  const ingles = document.documentElement.lang === 'en';
+  const [pantallaTxt, pestanaTxt, cerrarTxt, visorTxt] = ingles
+    ? ['Full screen', 'Open in a new tab', 'Close', 'Fluye viewer']
+    : ['Pantalla completa', 'Abrir en otra pestaña', 'Cerrar', 'Visor de Fluye'];
   dialogo.innerHTML = `
     <div class="reproductor-barra">
       <p class="reproductor-titulo" id="reproductor-titulo"></p>
-      <button type="button" class="boton boton-tarea reproductor-pantalla">Pantalla completa</button>
-      <a class="boton boton-claro reproductor-pestana" target="_blank" rel="noopener">Abrir en otra pestaña</a>
-      <button type="button" class="boton reproductor-cerrar">Cerrar</button>
+      <button type="button" class="boton boton-tarea reproductor-pantalla">${pantallaTxt}</button>
+      <a class="boton boton-claro reproductor-pestana" target="_blank" rel="noopener">${pestanaTxt}</a>
+      <button type="button" class="boton reproductor-cerrar">${cerrarTxt}</button>
     </div>
-    <iframe title="Visor de Fluye" allow="fullscreen" allowfullscreen></iframe>`;
+    <iframe title="${visorTxt}" allow="fullscreen" allowfullscreen></iframe>`;
   document.body.append(dialogo);
   const marco = dialogo.querySelector('iframe');
   const pantalla = dialogo.querySelector('.reproductor-pantalla');

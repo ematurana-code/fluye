@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="aduana_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="aduana_simple_colab0">
+    <bpmn:participant id="aduana_simple_pool_empresa" name="Importing company" processRef="aduana_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="aduana_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="aduana_simple_carriles_empresa">
+      <bpmn:lane id="aduana_simple_carril_ejec" name="Foreign trade">
+        <bpmn:flowNodeRef>aduana_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_simple_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_simple_abr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_simple_fin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>aduana_simple_ped</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="aduana_simple_ini" name="Supplier documents arrive">
+      <bpmn:outgoing>aduana_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="aduana_simple_rev" name="Check invoice, transport document and certificate of origin">
+      <bpmn:documentation>The commercial invoice, the transport document and the certificate of origin are checked for presence and consistency.</bpmn:documentation>
+      <bpmn:incoming>aduana_simple_f0_0</bpmn:incoming>
+      <bpmn:incoming>aduana_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>aduana_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="aduana_simple_dec" name="Complete and correct?">
+      <bpmn:incoming>aduana_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>aduana_simple_f0_2</bpmn:outgoing>
+      <bpmn:outgoing>aduana_simple_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="aduana_simple_abr" name="Assemble the import file">
+      <bpmn:documentation>The import file is assembled with the reviewed documents.</bpmn:documentation>
+      <bpmn:incoming>aduana_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>aduana_simple_f0_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="aduana_simple_fin" name="Ready to declare">
+      <bpmn:incoming>aduana_simple_f0_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="aduana_simple_ped" name="Request corrections from the supplier">
+      <bpmn:documentation>The supplier receives the list of what is missing or must be corrected.</bpmn:documentation>
+      <bpmn:incoming>aduana_simple_f0_4</bpmn:incoming>
+      <bpmn:outgoing>aduana_simple_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="aduana_simple_f0_0" sourceRef="aduana_simple_ini" targetRef="aduana_simple_rev" />
+    <bpmn:sequenceFlow id="aduana_simple_f0_1" sourceRef="aduana_simple_rev" targetRef="aduana_simple_dec" />
+    <bpmn:sequenceFlow id="aduana_simple_f0_2" name="Yes" sourceRef="aduana_simple_dec" targetRef="aduana_simple_abr" />
+    <bpmn:sequenceFlow id="aduana_simple_f0_3" sourceRef="aduana_simple_abr" targetRef="aduana_simple_fin" />
+    <bpmn:sequenceFlow id="aduana_simple_f0_4" name="No" sourceRef="aduana_simple_dec" targetRef="aduana_simple_ped" />
+    <bpmn:sequenceFlow id="aduana_simple_f0_5" sourceRef="aduana_simple_ped" targetRef="aduana_simple_rev" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="aduana_simple_diagrama0" name="Document review">
+    <bpmndi:BPMNPlane id="aduana_simple_plano0" bpmnElement="aduana_simple_colab0">
+      <bpmndi:BPMNShape id="DI_aduana_simple_pool_empresa" bpmnElement="aduana_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="920" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_carril_ejec" bpmnElement="aduana_simple_carril_ejec" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="890" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_ini" bpmnElement="aduana_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_rev" bpmnElement="aduana_simple_rev">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_dec" bpmnElement="aduana_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_abr" bpmnElement="aduana_simple_abr">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_fin" bpmnElement="aduana_simple_fin">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_aduana_simple_ped" bpmnElement="aduana_simple_ped">
+        <dc:Bounds x="490" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_0" bpmnElement="aduana_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_1" bpmnElement="aduana_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_2" bpmnElement="aduana_simple_f0_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_3" bpmnElement="aduana_simple_f0_3">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_4" bpmnElement="aduana_simple_f0_4">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_aduana_simple_f0_5" bpmnElement="aduana_simple_f0_5">
+        <di:waypoint x="490" y="255" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="380" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

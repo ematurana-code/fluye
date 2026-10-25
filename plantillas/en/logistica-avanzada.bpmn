@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="logistica_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="logistica_avanzada_colab0">
+    <bpmn:participant id="logistica_avanzada_pool_cliente" name="Customer" processRef="logistica_avanzada_proceso_cliente" />
+    <bpmn:participant id="logistica_avanzada_pool_empresa" name="Company" processRef="logistica_avanzada_proceso_empresa" />
+    <bpmn:participant id="logistica_avanzada_pool_transporte" name="Carrier" processRef="logistica_avanzada_proceso_transporte" />
+    <bpmn:messageFlow id="logistica_avanzada_m0_0" name="Request" sourceRef="logistica_avanzada_c_sol" targetRef="logistica_avanzada_e_ini" />
+    <bpmn:messageFlow id="logistica_avanzada_m0_1" name="Label" sourceRef="logistica_avanzada_e_eti" targetRef="logistica_avanzada_c_eti" />
+    <bpmn:messageFlow id="logistica_avanzada_m0_2" name="Package" sourceRef="logistica_avanzada_c_ent" targetRef="logistica_avanzada_t_ini" />
+    <bpmn:messageFlow id="logistica_avanzada_m0_3" name="Package" sourceRef="logistica_avanzada_t_ent" targetRef="logistica_avanzada_e_lle" />
+    <bpmn:messageFlow id="logistica_avanzada_m0_4" name="Outcome" sourceRef="logistica_avanzada_e_avi" targetRef="logistica_avanzada_c_res" />
+  </bpmn:collaboration>
+  <bpmn:process id="logistica_avanzada_proceso_cliente" isExecutable="false">
+    <bpmn:laneSet id="logistica_avanzada_carriles_cliente">
+      <bpmn:lane id="logistica_avanzada_carril_cli" name="Customer">
+        <bpmn:flowNodeRef>logistica_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_c_sol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_c_eti</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_c_ent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_c_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="logistica_avanzada_c_ini" name="Wants to return a product">
+      <bpmn:outgoing>logistica_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="logistica_avanzada_c_sol" name="Request the return">
+      <bpmn:incoming>logistica_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="logistica_avanzada_c_eti" name="Receives the shipping label">
+      <bpmn:incoming>logistica_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_c_eti_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="logistica_avanzada_c_ent" name="Hand the package to the carrier">
+      <bpmn:incoming>logistica_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_3</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:intermediateCatchEvent id="logistica_avanzada_c_res" name="Receives the outcome">
+      <bpmn:incoming>logistica_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_4</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_c_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="logistica_avanzada_c_fin" name="Return closed">
+      <bpmn:incoming>logistica_avanzada_f0_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_0" sourceRef="logistica_avanzada_c_ini" targetRef="logistica_avanzada_c_sol" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_1" sourceRef="logistica_avanzada_c_sol" targetRef="logistica_avanzada_c_eti" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_2" sourceRef="logistica_avanzada_c_eti" targetRef="logistica_avanzada_c_ent" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_3" sourceRef="logistica_avanzada_c_ent" targetRef="logistica_avanzada_c_res" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_4" sourceRef="logistica_avanzada_c_res" targetRef="logistica_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="logistica_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="logistica_avanzada_carriles_empresa">
+      <bpmn:lane id="logistica_avanzada_carril_ate" name="Customer service">
+        <bpmn:flowNodeRef>logistica_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_eti</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_nc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="logistica_avanzada_carril_bod" name="Warehouse">
+        <bpmn:flowNodeRef>logistica_avanzada_e_lle</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_e_dev</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="logistica_avanzada_e_ini" name="Request arrives">
+      <bpmn:outgoing>logistica_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_e_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="logistica_avanzada_e_eti" name="Approve and send the label">
+      <bpmn:incoming>logistica_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="logistica_avanzada_e_lle" name="Package arrives">
+      <bpmn:incoming>logistica_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_e_lle_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="logistica_avanzada_e_rev" name="Inspect the returned product">
+      <bpmn:documentation>The details are in the "Review" tab.</bpmn:documentation>
+      <bpmn:incoming>logistica_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="logistica_avanzada_e_dec" name="Is the return accepted?">
+      <bpmn:incoming>logistica_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_9</bpmn:outgoing>
+      <bpmn:outgoing>logistica_avanzada_f0_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="logistica_avanzada_e_nc" name="Issue the credit note">
+      <bpmn:incoming>logistica_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="logistica_avanzada_e_dev" name="Prepare the reshipment to the customer">
+      <bpmn:incoming>logistica_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="logistica_avanzada_e_uni">
+      <bpmn:incoming>logistica_avanzada_f0_11</bpmn:incoming>
+      <bpmn:incoming>logistica_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="logistica_avanzada_e_avi" name="Report the outcome to the customer">
+      <bpmn:incoming>logistica_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_14</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_e_avi_def" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="logistica_avanzada_e_fin" name="Return resolved">
+      <bpmn:incoming>logistica_avanzada_f0_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_5" sourceRef="logistica_avanzada_e_ini" targetRef="logistica_avanzada_e_eti" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_6" sourceRef="logistica_avanzada_e_eti" targetRef="logistica_avanzada_e_lle" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_7" sourceRef="logistica_avanzada_e_lle" targetRef="logistica_avanzada_e_rev" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_8" sourceRef="logistica_avanzada_e_rev" targetRef="logistica_avanzada_e_dec" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_9" name="Yes" sourceRef="logistica_avanzada_e_dec" targetRef="logistica_avanzada_e_nc" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_10" name="No" sourceRef="logistica_avanzada_e_dec" targetRef="logistica_avanzada_e_dev" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_11" sourceRef="logistica_avanzada_e_nc" targetRef="logistica_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_12" sourceRef="logistica_avanzada_e_dev" targetRef="logistica_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_13" sourceRef="logistica_avanzada_e_uni" targetRef="logistica_avanzada_e_avi" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_14" sourceRef="logistica_avanzada_e_avi" targetRef="logistica_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmn:process id="logistica_avanzada_proceso_transporte" isExecutable="false">
+    <bpmn:laneSet id="logistica_avanzada_carriles_transporte">
+      <bpmn:lane id="logistica_avanzada_carril_tra" name="Carrier">
+        <bpmn:flowNodeRef>logistica_avanzada_t_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_t_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_t_ent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_t_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="logistica_avanzada_t_ini" name="Receives the package">
+      <bpmn:outgoing>logistica_avanzada_f0_15</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="logistica_avanzada_t_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="logistica_avanzada_t_esp" name="Wait for the pickup route (24 h)">
+      <bpmn:incoming>logistica_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_16</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="logistica_avanzada_t_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="logistica_avanzada_t_ent" name="Deliver to the warehouse">
+      <bpmn:incoming>logistica_avanzada_f0_16</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f0_17</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="logistica_avanzada_t_fin" name="Package delivered">
+      <bpmn:incoming>logistica_avanzada_f0_17</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_15" sourceRef="logistica_avanzada_t_ini" targetRef="logistica_avanzada_t_esp" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_16" sourceRef="logistica_avanzada_t_esp" targetRef="logistica_avanzada_t_ent" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f0_17" sourceRef="logistica_avanzada_t_ent" targetRef="logistica_avanzada_t_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="logistica_avanzada_colab1">
+    <bpmn:participant id="logistica_avanzada_pool_revision" name="Returned product inspection" processRef="logistica_avanzada_proceso_revision" />
+  </bpmn:collaboration>
+  <bpmn:process id="logistica_avanzada_proceso_revision" isExecutable="false">
+    <bpmn:laneSet id="logistica_avanzada_carriles_revision">
+      <bpmn:lane id="logistica_avanzada_carril_r_bod" name="Warehouse">
+        <bpmn:flowNodeRef>logistica_avanzada_r_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_ins</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_fot</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="logistica_avanzada_carril_r_cal" name="Quality">
+        <bpmn:flowNodeRef>logistica_avanzada_r_uso</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_inf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>logistica_avanzada_r_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="logistica_avanzada_r_ini" name="Product arrives">
+      <bpmn:outgoing>logistica_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:manualTask id="logistica_avanzada_r_ins" name="Inspect the condition">
+      <bpmn:incoming>logistica_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:parallelGateway id="logistica_avanzada_r_par">
+      <bpmn:incoming>logistica_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:outgoing>logistica_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="logistica_avanzada_r_fot" name="Document with photos">
+      <bpmn:incoming>logistica_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="logistica_avanzada_r_uso" name="Check for use or damage">
+      <bpmn:incoming>logistica_avanzada_f1_3</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="logistica_avanzada_r_jun">
+      <bpmn:incoming>logistica_avanzada_f1_4</bpmn:incoming>
+      <bpmn:incoming>logistica_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="logistica_avanzada_r_inf" name="Issue the inspection report">
+      <bpmn:incoming>logistica_avanzada_f1_6</bpmn:incoming>
+      <bpmn:outgoing>logistica_avanzada_f1_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="logistica_avanzada_r_fin" name="Inspection completed">
+      <bpmn:incoming>logistica_avanzada_f1_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_0" sourceRef="logistica_avanzada_r_ini" targetRef="logistica_avanzada_r_ins" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_1" sourceRef="logistica_avanzada_r_ins" targetRef="logistica_avanzada_r_par" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_2" sourceRef="logistica_avanzada_r_par" targetRef="logistica_avanzada_r_fot" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_3" sourceRef="logistica_avanzada_r_par" targetRef="logistica_avanzada_r_uso" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_4" sourceRef="logistica_avanzada_r_fot" targetRef="logistica_avanzada_r_jun" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_5" sourceRef="logistica_avanzada_r_uso" targetRef="logistica_avanzada_r_jun" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_6" sourceRef="logistica_avanzada_r_jun" targetRef="logistica_avanzada_r_inf" />
+    <bpmn:sequenceFlow id="logistica_avanzada_f1_7" sourceRef="logistica_avanzada_r_inf" targetRef="logistica_avanzada_r_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="logistica_avanzada_diagrama0" name="Return">
+    <bpmndi:BPMNPlane id="logistica_avanzada_plano0" bpmnElement="logistica_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_pool_cliente" bpmnElement="logistica_avanzada_pool_cliente" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_pool_empresa" bpmnElement="logistica_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="2280" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_pool_transporte" bpmnElement="logistica_avanzada_pool_transporte" isHorizontal="true">
+        <dc:Bounds x="80" y="810" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_cli" bpmnElement="logistica_avanzada_carril_cli" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_ate" bpmnElement="logistica_avanzada_carril_ate" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_bod" bpmnElement="logistica_avanzada_carril_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="2250" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_tra" bpmnElement="logistica_avanzada_carril_tra" isHorizontal="true">
+        <dc:Bounds x="110" y="810" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_ini" bpmnElement="logistica_avanzada_c_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_sol" bpmnElement="logistica_avanzada_c_sol">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_eti" bpmnElement="logistica_avanzada_c_eti">
+        <dc:Bounds x="702" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_ent" bpmnElement="logistica_avanzada_c_ent">
+        <dc:Bounds x="830" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_res" bpmnElement="logistica_avanzada_c_res">
+        <dc:Bounds x="2062" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_c_fin" bpmnElement="logistica_avanzada_c_fin">
+        <dc:Bounds x="2232" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_ini" bpmnElement="logistica_avanzada_e_ini">
+        <dc:Bounds x="362" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_eti" bpmnElement="logistica_avanzada_e_eti">
+        <dc:Bounds x="660" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_lle" bpmnElement="logistica_avanzada_e_lle">
+        <dc:Bounds x="1212" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_rev" bpmnElement="logistica_avanzada_e_rev" isExpanded="false">
+        <dc:Bounds x="1340" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_dec" bpmnElement="logistica_avanzada_e_dec" isMarkerVisible="false">
+        <dc:Bounds x="1547" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_nc" bpmnElement="logistica_avanzada_e_nc">
+        <dc:Bounds x="1680" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_dev" bpmnElement="logistica_avanzada_e_dev">
+        <dc:Bounds x="1510" y="613" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_uni" bpmnElement="logistica_avanzada_e_uni" isMarkerVisible="false">
+        <dc:Bounds x="1887" y="352" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_avi" bpmnElement="logistica_avanzada_e_avi">
+        <dc:Bounds x="2062" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_e_fin" bpmnElement="logistica_avanzada_e_fin">
+        <dc:Bounds x="2232" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_t_ini" bpmnElement="logistica_avanzada_t_ini">
+        <dc:Bounds x="872" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_t_esp" bpmnElement="logistica_avanzada_t_esp">
+        <dc:Bounds x="1042" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_t_ent" bpmnElement="logistica_avanzada_t_ent">
+        <dc:Bounds x="1170" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_t_fin" bpmnElement="logistica_avanzada_t_fin">
+        <dc:Bounds x="1382" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_0" bpmnElement="logistica_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_1" bpmnElement="logistica_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="702" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_2" bpmnElement="logistica_avanzada_f0_2">
+        <di:waypoint x="738" y="135" />
+        <di:waypoint x="830" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_3" bpmnElement="logistica_avanzada_f0_3">
+        <di:waypoint x="950" y="135" />
+        <di:waypoint x="2062" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_4" bpmnElement="logistica_avanzada_f0_4">
+        <di:waypoint x="2098" y="135" />
+        <di:waypoint x="2232" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_5" bpmnElement="logistica_avanzada_f0_5">
+        <di:waypoint x="398" y="375" />
+        <di:waypoint x="660" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_6" bpmnElement="logistica_avanzada_f0_6">
+        <di:waypoint x="780" y="375" />
+        <di:waypoint x="996" y="375" />
+        <di:waypoint x="996" y="525" />
+        <di:waypoint x="1212" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_7" bpmnElement="logistica_avanzada_f0_7">
+        <di:waypoint x="1248" y="525" />
+        <di:waypoint x="1340" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_8" bpmnElement="logistica_avanzada_f0_8">
+        <di:waypoint x="1460" y="525" />
+        <di:waypoint x="1547" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_9" bpmnElement="logistica_avanzada_f0_9">
+        <di:waypoint x="1570" y="502" />
+        <di:waypoint x="1570" y="375" />
+        <di:waypoint x="1680" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_10" bpmnElement="logistica_avanzada_f0_10">
+        <di:waypoint x="1570" y="548" />
+        <di:waypoint x="1570" y="613" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_11" bpmnElement="logistica_avanzada_f0_11">
+        <di:waypoint x="1800" y="375" />
+        <di:waypoint x="1887" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_12" bpmnElement="logistica_avanzada_f0_12">
+        <di:waypoint x="1630" y="645" />
+        <di:waypoint x="1910" y="645" />
+        <di:waypoint x="1910" y="398" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_13" bpmnElement="logistica_avanzada_f0_13">
+        <di:waypoint x="1933" y="375" />
+        <di:waypoint x="2062" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_14" bpmnElement="logistica_avanzada_f0_14">
+        <di:waypoint x="2098" y="375" />
+        <di:waypoint x="2232" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_15" bpmnElement="logistica_avanzada_f0_15">
+        <di:waypoint x="908" y="885" />
+        <di:waypoint x="1042" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_16" bpmnElement="logistica_avanzada_f0_16">
+        <di:waypoint x="1078" y="885" />
+        <di:waypoint x="1170" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f0_17" bpmnElement="logistica_avanzada_f0_17">
+        <di:waypoint x="1290" y="885" />
+        <di:waypoint x="1382" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_m0_0" bpmnElement="logistica_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_m0_1" bpmnElement="logistica_avanzada_m0_1">
+        <di:waypoint x="720" y="343" />
+        <di:waypoint x="720" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_m0_2" bpmnElement="logistica_avanzada_m0_2">
+        <di:waypoint x="890" y="167" />
+        <di:waypoint x="890" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_m0_3" bpmnElement="logistica_avanzada_m0_3">
+        <di:waypoint x="1230" y="853" />
+        <di:waypoint x="1230" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_m0_4" bpmnElement="logistica_avanzada_m0_4">
+        <di:waypoint x="2080" y="357" />
+        <di:waypoint x="2080" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="logistica_avanzada_diagrama1" name="Review">
+    <bpmndi:BPMNPlane id="logistica_avanzada_plano1" bpmnElement="logistica_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_pool_revision" bpmnElement="logistica_avanzada_pool_revision" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1260" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_r_bod" bpmnElement="logistica_avanzada_carril_r_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_carril_r_cal" bpmnElement="logistica_avanzada_carril_r_cal" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_ini" bpmnElement="logistica_avanzada_r_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_ins" bpmnElement="logistica_avanzada_r_ins">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_par" bpmnElement="logistica_avanzada_r_par">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_fot" bpmnElement="logistica_avanzada_r_fot">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_uso" bpmnElement="logistica_avanzada_r_uso">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_jun" bpmnElement="logistica_avanzada_r_jun">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_inf" bpmnElement="logistica_avanzada_r_inf">
+        <dc:Bounds x="1000" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_logistica_avanzada_r_fin" bpmnElement="logistica_avanzada_r_fin">
+        <dc:Bounds x="1212" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_0" bpmnElement="logistica_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_1" bpmnElement="logistica_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_2" bpmnElement="logistica_avanzada_f1_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_3" bpmnElement="logistica_avanzada_f1_3">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_4" bpmnElement="logistica_avanzada_f1_4">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_5" bpmnElement="logistica_avanzada_f1_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_6" bpmnElement="logistica_avanzada_f1_6">
+        <di:waypoint x="890" y="158" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="1000" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_logistica_avanzada_f1_7" bpmnElement="logistica_avanzada_f1_7">
+        <di:waypoint x="1120" y="285" />
+        <di:waypoint x="1212" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

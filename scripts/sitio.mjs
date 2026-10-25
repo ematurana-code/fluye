@@ -6,10 +6,11 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { analizar, ruta } from './sitio/datos.mjs';
-import { DESCARGA, REPO, SITIO, VERSION, pagina } from './sitio/comun.mjs';
+import { DESCARGA, REPO, RUTAS, SITIO, VERSION, pagina } from './sitio/comun.mjs';
 import { portada } from './sitio/portada.mjs';
 import { NIVELES, indicePlantillas, paginaPlantilla } from './sitio/plantillas.mjs';
 import { guias, indiceGuias } from './sitio/guias.mjs';
+import { guiasEn, indiceGuiasEn } from './sitio/guias-en.mjs';
 
 const raiz = join(import.meta.dirname, '..');
 const salida = join(raiz, '_sitio');
@@ -38,20 +39,32 @@ escribir('visor/index.html', sinIndexar(readFileSync(plantillaVisor, 'utf8'))
   .replace('__FLUYE_TITULO__', () => 'Fluye')
   .replace('__FLUYE_DATOS__', () => ''));
 
-// Plantillas: datos del catálogo + lo que dice cada proceso.
-const catalogo = JSON.parse(readFileSync(join(raiz, 'plantillas', 'catalogo.json'), 'utf8'));
-const plantillas = [];
-for (const p of catalogo) {
-  const xml = readFileSync(join(raiz, 'plantillas', `${p.id}.bpmn`), 'utf8');
-  const item = { ...p, ruta: ruta(p.nombre), nivelNombre: NIVELES[p.nivel].nombre, analisis: await analizar(xml) };
-  escribir(`plantillas/${item.ruta}/${item.ruta}.bpmn`, xml);
-  escribir(`plantillas/${item.ruta}/vista.svg`, readFileSync(join(raiz, 'plantillas', `${p.id}.svg`), 'utf8'));
-  cpSync(join(raiz, 'plantillas', `${p.id}.png`), join(salida, 'plantillas', item.ruta, 'vista.png'));
-  plantillas.push(item);
+// Plantillas de un idioma: datos del catálogo + lo que dice cada proceso. Las del español están en plantillas/ y las
+// del inglés en plantillas/en/ (mismos id, textos traducidos; las genera crear-plantillas.mjs --en).
+async function leerPlantillas(idioma) {
+  const carpeta = idioma === 'en' ? join(raiz, 'plantillas', 'en') : join(raiz, 'plantillas');
+  const destino = RUTAS[idioma].plantillas;
+  const lista = [];
+  for (const p of JSON.parse(readFileSync(join(carpeta, 'catalogo.json'), 'utf8'))) {
+    const xml = readFileSync(join(carpeta, `${p.id}.bpmn`), 'utf8');
+    const item = { ...p, ruta: ruta(p.nombre), nivelNombre: NIVELES[idioma][p.nivel].nombre, analisis: await analizar(xml) };
+    escribir(`${destino}${item.ruta}/${item.ruta}.bpmn`, xml);
+    escribir(`${destino}${item.ruta}/vista.svg`, readFileSync(join(carpeta, `${p.id}.svg`), 'utf8'));
+    cpSync(join(carpeta, `${p.id}.png`), join(salida, destino, item.ruta, 'vista.png'));
+    lista.push(item);
+  }
+  const areas = [...new Set(lista.map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, idioma)).map((nombre) => ({ nombre, ruta: ruta(nombre) }));
+  const ordenadas = areas.flatMap((a) => lista.filter((p) => p.categoria === a.nombre)
+    .sort((x, y) => Object.keys(NIVELES[idioma]).indexOf(x.nivel) - Object.keys(NIVELES[idioma]).indexOf(y.nivel)));
+  return { ordenadas, areas };
 }
-const areas = [...new Set(plantillas.map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, 'es')).map((nombre) => ({ nombre, ruta: ruta(nombre) }));
-const ordenadas = areas.flatMap((a) => plantillas.filter((p) => p.categoria === a.nombre)
-  .sort((x, y) => Object.keys(NIVELES).indexOf(x.nivel) - Object.keys(NIVELES).indexOf(y.nivel)));
+const { ordenadas, areas } = await leerPlantillas('es');
+const { ordenadas: ordenadasEn, areas: areasEn } = await leerPlantillas('en');
+// Cada plantilla conoce la ruta de su par en el otro idioma (hreflang y cambio de idioma).
+const porId = (lista) => new Map(lista.map((p) => [p.id, p]));
+const es = porId(ordenadas), en = porId(ordenadasEn);
+for (const p of ordenadas) p.alterna = `${RUTAS.en.plantillas}${en.get(p.id).ruta}/`;
+for (const p of ordenadasEn) p.alterna = `${RUTAS.es.plantillas}${es.get(p.id).ruta}/`;
 
 const paginas = [
   portada({ plantillas: ordenadas, areas }),
@@ -60,7 +73,15 @@ const paginas = [
   indiceGuias(ordenadas),
   ...guias(ordenadas)
 ];
+const paginasEn = [
+  portada({ plantillas: ordenadasEn, areas: areasEn, idioma: 'en' }),
+  indicePlantillas(ordenadasEn, areasEn, 'en'),
+  ...ordenadasEn.map((p) => paginaPlantilla(p, ordenadasEn, 'en')),
+  indiceGuiasEn(),
+  ...guiasEn(ordenadasEn)
+];
 for (const p of paginas) escribir(`${p.ruta}index.html`, pagina({ ...p, areas }));
+for (const p of paginasEn) escribir(`${p.ruta}index.html`, pagina({ ...p, areas: areasEn }));
 
 // Página de error de GitHub Pages: se sirve en cualquier dirección, por eso usa <base> para sus enlaces.
 escribir('404.html', pagina({
@@ -80,7 +101,7 @@ escribir('404.html', pagina({
 const hoy = new Date().toISOString().slice(0, 10);
 escribir('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${paginas.map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}
+${[...paginas, ...paginasEn].map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}
 </urlset>
 `);
 
@@ -96,7 +117,7 @@ Datos clave:
 - Sistema: Windows 10 y 11 de 64 bits. También se puede probar en el navegador, sin instalar.
 - Notación: BPMN 2.0, el estándar de la OMG. Abre y guarda archivos .bpmn estándar, también los que exportan otras herramientas de modelado.
 - Exporta a BPMN, PNG, SVG, PDF, Word y una página web interactiva de un solo archivo que trae el Play.
-- Trae ${plantillas.length} plantillas de ${areas.length} áreas en tres niveles, revisión del diagrama mientras se dibuja y corrector ortográfico en español sin internet.
+- Trae ${ordenadas.length} plantillas de ${areas.length} áreas en tres niveles, revisión del diagrama mientras se dibuja y corrector ortográfico en español sin internet.
 - Versión actual: ${VERSION}.
 
 ## Empezar
@@ -113,10 +134,19 @@ ${guiasHechas.map((p) => `- [${p.titulo.replace(/ \| Fluye$/, '')}](${SITIO}${p.
 - [Todas las plantillas](${SITIO}plantillas/): índice por área y nivel.
 ${ordenadas.map((p) => `- [${p.nombre}](${SITIO}plantillas/${p.ruta}/): ${p.descripcion} Área ${p.categoria}, nivel ${p.nivelNombre.toLowerCase()}.`).join('\n')}
 
+## English
+
+> Fluye is free, open-source software (MIT license) for BPMN 2.0 diagrams and flowcharts on Windows 10 and 11. It draws pools, lanes, tasks, gateways and events, checks the diagram as you draw and walks through the process step by step with Play. Works offline, no account needed. The website, guides and templates are available in English; the program interface is in Spanish.
+
+- [Fluye in English](${SITIO}${RUTAS.en.raiz}): overview, live demo and FAQ.
+- [Free BPMN templates](${SITIO}${RUTAS.en.plantillas}): ${ordenadasEn.length} flowchart templates by area and level.
+${paginasEn.filter((p) => p.ruta.startsWith(RUTAS.en.guias) && p.ruta !== RUTAS.en.guias).map((p) => `- [${p.titulo.replace(/ \| Fluye$/, '')}](${SITIO}${p.ruta}): ${p.descripcion}`).join('\n')}
+${ordenadasEn.map((p) => `- [${p.nombre}](${SITIO}${RUTAS.en.plantillas}${p.ruta}/): ${p.descripcion}`).join('\n')}
+
 ## Optional
 
 - [Código fuente en GitHub](${REPO})
 - [Licencia MIT](${REPO}/blob/main/LICENSE)
 `);
 
-console.log(`Sitio listo en ${salida}: ${paginas.length} páginas, ${plantillas.length} plantillas.`);
+console.log(`Sitio listo en ${salida}: ${paginas.length} páginas en español y ${paginasEn.length} en inglés, ${ordenadas.length} plantillas por idioma.`);

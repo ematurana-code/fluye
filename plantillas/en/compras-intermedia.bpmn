@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="compras_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="compras_intermedia_colab0">
+    <bpmn:participant id="compras_intermedia_pool_empresa" name="Company" processRef="compras_intermedia_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="compras_intermedia_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="compras_intermedia_carriles_empresa">
+      <bpmn:lane id="compras_intermedia_carril_sol" name="Requester">
+        <bpmn:flowNodeRef>compras_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_intermedia_carril_cmp" name="Purchasing">
+        <bpmn:flowNodeRef>compras_intermedia_cot</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_cmpa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_lim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_oc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_fac</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_cer</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_intermedia_carril_jef" name="Manager">
+        <bpmn:flowNodeRef>compras_intermedia_aut</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="compras_intermedia_carril_bod" name="Warehouse">
+        <bpmn:flowNodeRef>compras_intermedia_rec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_con</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>compras_intermedia_rcl</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="compras_intermedia_ini" name="Request approved">
+      <bpmn:outgoing>compras_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="compras_intermedia_cot" name="Request three quotes">
+      <bpmn:incoming>compras_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="compras_intermedia_cmpa" name="Compare the quotes">
+      <bpmn:documentation>Price, delivery time and payment terms.</bpmn:documentation>
+      <bpmn:incoming>compras_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="compras_intermedia_lim" name="Over the spending limit?">
+      <bpmn:incoming>compras_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>compras_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="compras_intermedia_aut" name="Authorize the purchase">
+      <bpmn:incoming>compras_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="compras_intermedia_uni">
+      <bpmn:incoming>compras_intermedia_f0_3</bpmn:incoming>
+      <bpmn:incoming>compras_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="compras_intermedia_oc" name="Issue the purchase order">
+      <bpmn:incoming>compras_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="compras_intermedia_par">
+      <bpmn:incoming>compras_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_8</bpmn:outgoing>
+      <bpmn:outgoing>compras_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="compras_intermedia_fac" name="Record the invoice">
+      <bpmn:incoming>compras_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="compras_intermedia_rec" name="Receive and check the goods">
+      <bpmn:incoming>compras_intermedia_f0_9</bpmn:incoming>
+      <bpmn:incoming>compras_intermedia_f0_14</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="compras_intermedia_con" name="Arrived as ordered?">
+      <bpmn:incoming>compras_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_12</bpmn:outgoing>
+      <bpmn:outgoing>compras_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="compras_intermedia_rcl" name="File a claim with the supplier">
+      <bpmn:incoming>compras_intermedia_f0_13</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="compras_intermedia_jun">
+      <bpmn:incoming>compras_intermedia_f0_10</bpmn:incoming>
+      <bpmn:incoming>compras_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_15</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="compras_intermedia_cer" name="Close the purchase order">
+      <bpmn:incoming>compras_intermedia_f0_15</bpmn:incoming>
+      <bpmn:outgoing>compras_intermedia_f0_16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="compras_intermedia_fin" name="Purchase closed">
+      <bpmn:incoming>compras_intermedia_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="compras_intermedia_f0_0" sourceRef="compras_intermedia_ini" targetRef="compras_intermedia_cot" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_1" sourceRef="compras_intermedia_cot" targetRef="compras_intermedia_cmpa" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_2" sourceRef="compras_intermedia_cmpa" targetRef="compras_intermedia_lim" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_3" name="No" sourceRef="compras_intermedia_lim" targetRef="compras_intermedia_uni" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_4" name="Yes" sourceRef="compras_intermedia_lim" targetRef="compras_intermedia_aut" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_5" sourceRef="compras_intermedia_aut" targetRef="compras_intermedia_uni" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_6" sourceRef="compras_intermedia_uni" targetRef="compras_intermedia_oc" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_7" sourceRef="compras_intermedia_oc" targetRef="compras_intermedia_par" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_8" sourceRef="compras_intermedia_par" targetRef="compras_intermedia_fac" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_9" sourceRef="compras_intermedia_par" targetRef="compras_intermedia_rec" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_10" sourceRef="compras_intermedia_fac" targetRef="compras_intermedia_jun" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_11" sourceRef="compras_intermedia_rec" targetRef="compras_intermedia_con" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_12" name="Yes" sourceRef="compras_intermedia_con" targetRef="compras_intermedia_jun" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_13" name="No" sourceRef="compras_intermedia_con" targetRef="compras_intermedia_rcl" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_14" sourceRef="compras_intermedia_rcl" targetRef="compras_intermedia_rec" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_15" sourceRef="compras_intermedia_jun" targetRef="compras_intermedia_cer" />
+    <bpmn:sequenceFlow id="compras_intermedia_f0_16" sourceRef="compras_intermedia_cer" targetRef="compras_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="compras_intermedia_diagrama0" name="Purchase with quotes">
+    <bpmndi:BPMNPlane id="compras_intermedia_plano0" bpmnElement="compras_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_compras_intermedia_pool_empresa" bpmnElement="compras_intermedia_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2280" height="720" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_carril_sol" bpmnElement="compras_intermedia_carril_sol" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_carril_cmp" bpmnElement="compras_intermedia_carril_cmp" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_carril_jef" bpmnElement="compras_intermedia_carril_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="360" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_carril_bod" bpmnElement="compras_intermedia_carril_bod" isHorizontal="true">
+        <dc:Bounds x="110" y="510" width="2250" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_ini" bpmnElement="compras_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_cot" bpmnElement="compras_intermedia_cot">
+        <dc:Bounds x="320" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_cmpa" bpmnElement="compras_intermedia_cmpa">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_lim" bpmnElement="compras_intermedia_lim" isMarkerVisible="false">
+        <dc:Bounds x="697" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_aut" bpmnElement="compras_intermedia_aut">
+        <dc:Bounds x="830" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_uni" bpmnElement="compras_intermedia_uni" isMarkerVisible="false">
+        <dc:Bounds x="1037" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_oc" bpmnElement="compras_intermedia_oc">
+        <dc:Bounds x="1170" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_par" bpmnElement="compras_intermedia_par">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_fac" bpmnElement="compras_intermedia_fac">
+        <dc:Bounds x="1510" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_rec" bpmnElement="compras_intermedia_rec">
+        <dc:Bounds x="1510" y="553" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_con" bpmnElement="compras_intermedia_con" isMarkerVisible="false">
+        <dc:Bounds x="1717" y="562" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_rcl" bpmnElement="compras_intermedia_rcl">
+        <dc:Bounds x="1680" y="673" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_jun" bpmnElement="compras_intermedia_jun">
+        <dc:Bounds x="1887" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_cer" bpmnElement="compras_intermedia_cer">
+        <dc:Bounds x="2020" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_compras_intermedia_fin" bpmnElement="compras_intermedia_fin">
+        <dc:Bounds x="2232" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_0" bpmnElement="compras_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="274" y="135" />
+        <di:waypoint x="274" y="285" />
+        <di:waypoint x="320" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_1" bpmnElement="compras_intermedia_f0_1">
+        <di:waypoint x="440" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_2" bpmnElement="compras_intermedia_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="697" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_3" bpmnElement="compras_intermedia_f0_3">
+        <di:waypoint x="743" y="285" />
+        <di:waypoint x="1037" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_4" bpmnElement="compras_intermedia_f0_4">
+        <di:waypoint x="720" y="308" />
+        <di:waypoint x="720" y="435" />
+        <di:waypoint x="830" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_5" bpmnElement="compras_intermedia_f0_5">
+        <di:waypoint x="950" y="435" />
+        <di:waypoint x="1060" y="435" />
+        <di:waypoint x="1060" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_6" bpmnElement="compras_intermedia_f0_6">
+        <di:waypoint x="1083" y="285" />
+        <di:waypoint x="1170" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_7" bpmnElement="compras_intermedia_f0_7">
+        <di:waypoint x="1290" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_8" bpmnElement="compras_intermedia_f0_8">
+        <di:waypoint x="1423" y="285" />
+        <di:waypoint x="1510" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_9" bpmnElement="compras_intermedia_f0_9">
+        <di:waypoint x="1400" y="308" />
+        <di:waypoint x="1400" y="585" />
+        <di:waypoint x="1510" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_10" bpmnElement="compras_intermedia_f0_10">
+        <di:waypoint x="1630" y="285" />
+        <di:waypoint x="1887" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_11" bpmnElement="compras_intermedia_f0_11">
+        <di:waypoint x="1630" y="585" />
+        <di:waypoint x="1717" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_12" bpmnElement="compras_intermedia_f0_12">
+        <di:waypoint x="1740" y="562" />
+        <di:waypoint x="1740" y="285" />
+        <di:waypoint x="1887" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_13" bpmnElement="compras_intermedia_f0_13">
+        <di:waypoint x="1740" y="608" />
+        <di:waypoint x="1740" y="673" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_14" bpmnElement="compras_intermedia_f0_14">
+        <di:waypoint x="1680" y="705" />
+        <di:waypoint x="1570" y="705" />
+        <di:waypoint x="1570" y="617" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_15" bpmnElement="compras_intermedia_f0_15">
+        <di:waypoint x="1933" y="285" />
+        <di:waypoint x="2020" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_compras_intermedia_f0_16" bpmnElement="compras_intermedia_f0_16">
+        <di:waypoint x="2140" y="285" />
+        <di:waypoint x="2186" y="285" />
+        <di:waypoint x="2186" y="135" />
+        <di:waypoint x="2232" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

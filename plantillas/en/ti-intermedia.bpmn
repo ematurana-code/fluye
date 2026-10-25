@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="ti_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="ti_intermedia_colab0">
+    <bpmn:participant id="ti_intermedia_pool_soporte" name="IT support" processRef="ti_intermedia_proceso_soporte" />
+  </bpmn:collaboration>
+  <bpmn:process id="ti_intermedia_proceso_soporte" isExecutable="false">
+    <bpmn:laneSet id="ti_intermedia_carriles_soporte">
+      <bpmn:lane id="ti_intermedia_carril_usu" name="User">
+        <bpmn:flowNodeRef>ti_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_cre</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_pro</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ti_intermedia_carril_n1" name="Help desk (level 1)">
+        <bpmn:flowNodeRef>ti_intermedia_cla</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_int</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_re1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_fun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_rea</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_cer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ti_intermedia_carril_n2" name="Specialist (level 2)">
+        <bpmn:flowNodeRef>ti_intermedia_dia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_intermedia_doc</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_intermedia_ini" name="Has a problem">
+      <bpmn:outgoing>ti_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ti_intermedia_cre" name="Create the ticket">
+      <bpmn:incoming>ti_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_intermedia_cla" name="Classify and set priority">
+      <bpmn:incoming>ti_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_intermedia_int" name="Attempt a fix">
+      <bpmn:incoming>ti_intermedia_f0_2</bpmn:incoming>
+      <bpmn:incoming>ti_intermedia_f0_16</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ti_intermedia_re1" name="Resolved?">
+      <bpmn:incoming>ti_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_4</bpmn:outgoing>
+      <bpmn:outgoing>ti_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ti_intermedia_dia" name="Diagnose and resolve">
+      <bpmn:incoming>ti_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ti_intermedia_uni">
+      <bpmn:incoming>ti_intermedia_f0_4</bpmn:incoming>
+      <bpmn:incoming>ti_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="ti_intermedia_par">
+      <bpmn:incoming>ti_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_8</bpmn:outgoing>
+      <bpmn:outgoing>ti_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="ti_intermedia_avi" name="Notify the user">
+      <bpmn:incoming>ti_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_intermedia_doc" name="Document the solution">
+      <bpmn:documentation>Stored in the knowledge base to solve it faster next time.</bpmn:documentation>
+      <bpmn:incoming>ti_intermedia_f0_9</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="ti_intermedia_jun">
+      <bpmn:incoming>ti_intermedia_f0_10</bpmn:incoming>
+      <bpmn:incoming>ti_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="ti_intermedia_pro" name="Test the solution">
+      <bpmn:incoming>ti_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ti_intermedia_fun" name="Does the user confirm it works?">
+      <bpmn:incoming>ti_intermedia_f0_13</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_14</bpmn:outgoing>
+      <bpmn:outgoing>ti_intermedia_f0_15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ti_intermedia_rea" name="Reopen the ticket">
+      <bpmn:incoming>ti_intermedia_f0_15</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_intermedia_cer" name="Close the ticket">
+      <bpmn:incoming>ti_intermedia_f0_14</bpmn:incoming>
+      <bpmn:outgoing>ti_intermedia_f0_17</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_intermedia_fin" name="Ticket closed">
+      <bpmn:incoming>ti_intermedia_f0_17</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_intermedia_f0_0" sourceRef="ti_intermedia_ini" targetRef="ti_intermedia_cre" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_1" sourceRef="ti_intermedia_cre" targetRef="ti_intermedia_cla" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_2" sourceRef="ti_intermedia_cla" targetRef="ti_intermedia_int" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_3" sourceRef="ti_intermedia_int" targetRef="ti_intermedia_re1" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_4" name="Yes" sourceRef="ti_intermedia_re1" targetRef="ti_intermedia_uni" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_5" name="No" sourceRef="ti_intermedia_re1" targetRef="ti_intermedia_dia" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_6" sourceRef="ti_intermedia_dia" targetRef="ti_intermedia_uni" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_7" sourceRef="ti_intermedia_uni" targetRef="ti_intermedia_par" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_8" sourceRef="ti_intermedia_par" targetRef="ti_intermedia_avi" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_9" sourceRef="ti_intermedia_par" targetRef="ti_intermedia_doc" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_10" sourceRef="ti_intermedia_avi" targetRef="ti_intermedia_jun" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_11" sourceRef="ti_intermedia_doc" targetRef="ti_intermedia_jun" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_12" sourceRef="ti_intermedia_jun" targetRef="ti_intermedia_pro" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_13" sourceRef="ti_intermedia_pro" targetRef="ti_intermedia_fun" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_14" name="Yes" sourceRef="ti_intermedia_fun" targetRef="ti_intermedia_cer" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_15" name="No" sourceRef="ti_intermedia_fun" targetRef="ti_intermedia_rea" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_16" sourceRef="ti_intermedia_rea" targetRef="ti_intermedia_int" />
+    <bpmn:sequenceFlow id="ti_intermedia_f0_17" sourceRef="ti_intermedia_cer" targetRef="ti_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ti_intermedia_diagrama0" name="Help desk ticket">
+    <bpmndi:BPMNPlane id="ti_intermedia_plano0" bpmnElement="ti_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_ti_intermedia_pool_soporte" bpmnElement="ti_intermedia_pool_soporte" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2450" height="570" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_carril_usu" bpmnElement="ti_intermedia_carril_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_carril_n1" bpmnElement="ti_intermedia_carril_n1" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="2420" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_carril_n2" bpmnElement="ti_intermedia_carril_n2" isHorizontal="true">
+        <dc:Bounds x="110" y="480" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_ini" bpmnElement="ti_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_cre" bpmnElement="ti_intermedia_cre">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_cla" bpmnElement="ti_intermedia_cla">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_int" bpmnElement="ti_intermedia_int">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_re1" bpmnElement="ti_intermedia_re1" isMarkerVisible="false">
+        <dc:Bounds x="867" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_dia" bpmnElement="ti_intermedia_dia">
+        <dc:Bounds x="1000" y="523" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_uni" bpmnElement="ti_intermedia_uni" isMarkerVisible="false">
+        <dc:Bounds x="1207" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_par" bpmnElement="ti_intermedia_par">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_avi" bpmnElement="ti_intermedia_avi">
+        <dc:Bounds x="1510" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_doc" bpmnElement="ti_intermedia_doc">
+        <dc:Bounds x="1510" y="523" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_jun" bpmnElement="ti_intermedia_jun">
+        <dc:Bounds x="1717" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_pro" bpmnElement="ti_intermedia_pro">
+        <dc:Bounds x="1850" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_fun" bpmnElement="ti_intermedia_fun" isMarkerVisible="false">
+        <dc:Bounds x="2057" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_rea" bpmnElement="ti_intermedia_rea">
+        <dc:Bounds x="2020" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_cer" bpmnElement="ti_intermedia_cer">
+        <dc:Bounds x="2190" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_intermedia_fin" bpmnElement="ti_intermedia_fin">
+        <dc:Bounds x="2402" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_0" bpmnElement="ti_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_1" bpmnElement="ti_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_2" bpmnElement="ti_intermedia_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_3" bpmnElement="ti_intermedia_f0_3">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="867" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_4" bpmnElement="ti_intermedia_f0_4">
+        <di:waypoint x="913" y="285" />
+        <di:waypoint x="1207" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_5" bpmnElement="ti_intermedia_f0_5">
+        <di:waypoint x="890" y="308" />
+        <di:waypoint x="890" y="555" />
+        <di:waypoint x="1000" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_6" bpmnElement="ti_intermedia_f0_6">
+        <di:waypoint x="1120" y="555" />
+        <di:waypoint x="1230" y="555" />
+        <di:waypoint x="1230" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_7" bpmnElement="ti_intermedia_f0_7">
+        <di:waypoint x="1253" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_8" bpmnElement="ti_intermedia_f0_8">
+        <di:waypoint x="1423" y="285" />
+        <di:waypoint x="1510" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_9" bpmnElement="ti_intermedia_f0_9">
+        <di:waypoint x="1400" y="308" />
+        <di:waypoint x="1400" y="555" />
+        <di:waypoint x="1510" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_10" bpmnElement="ti_intermedia_f0_10">
+        <di:waypoint x="1630" y="285" />
+        <di:waypoint x="1717" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_11" bpmnElement="ti_intermedia_f0_11">
+        <di:waypoint x="1630" y="555" />
+        <di:waypoint x="1740" y="555" />
+        <di:waypoint x="1740" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_12" bpmnElement="ti_intermedia_f0_12">
+        <di:waypoint x="1740" y="262" />
+        <di:waypoint x="1740" y="135" />
+        <di:waypoint x="1850" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_13" bpmnElement="ti_intermedia_f0_13">
+        <di:waypoint x="1970" y="135" />
+        <di:waypoint x="2080" y="135" />
+        <di:waypoint x="2080" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_14" bpmnElement="ti_intermedia_f0_14">
+        <di:waypoint x="2103" y="285" />
+        <di:waypoint x="2190" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_15" bpmnElement="ti_intermedia_f0_15">
+        <di:waypoint x="2080" y="308" />
+        <di:waypoint x="2080" y="373" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_16" bpmnElement="ti_intermedia_f0_16">
+        <di:waypoint x="2020" y="405" />
+        <di:waypoint x="720" y="405" />
+        <di:waypoint x="720" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_intermedia_f0_17" bpmnElement="ti_intermedia_f0_17">
+        <di:waypoint x="2310" y="285" />
+        <di:waypoint x="2402" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="legal_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="legal_intermedia_colab0">
+    <bpmn:participant id="legal_intermedia_pool_empresa" name="Company" processRef="legal_intermedia_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="legal_intermedia_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="legal_intermedia_carriles_empresa">
+      <bpmn:lane id="legal_intermedia_carril_are" name="Requesting area">
+        <bpmn:flowNodeRef>legal_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_sol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="legal_intermedia_carril_leg" name="Legal">
+        <bpmn:flowNodeRef>legal_intermedia_red</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_neg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_acu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_aju</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_car</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="legal_intermedia_carril_ger" name="Management">
+        <bpmn:flowNodeRef>legal_intermedia_fir</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_intermedia_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="legal_intermedia_carril_adm" name="Administration">
+        <bpmn:flowNodeRef>legal_intermedia_reg</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="legal_intermedia_ini" name="A supplier is chosen">
+      <bpmn:outgoing>legal_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="legal_intermedia_sol" name="Request the contract from Legal">
+      <bpmn:incoming>legal_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_intermedia_red" name="Draft the contract">
+      <bpmn:incoming>legal_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_intermedia_neg" name="Negotiate with the supplier">
+      <bpmn:incoming>legal_intermedia_f0_2</bpmn:incoming>
+      <bpmn:incoming>legal_intermedia_f0_6</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="legal_intermedia_acu" name="Agreement reached?">
+      <bpmn:incoming>legal_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_4</bpmn:outgoing>
+      <bpmn:outgoing>legal_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="legal_intermedia_aju" name="Adjust the terms">
+      <bpmn:incoming>legal_intermedia_f0_5</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="legal_intermedia_par">
+      <bpmn:incoming>legal_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_7</bpmn:outgoing>
+      <bpmn:outgoing>legal_intermedia_f0_8</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="legal_intermedia_car" name="Prepare the contract file">
+      <bpmn:incoming>legal_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_intermedia_fir" name="Sign on behalf of the company">
+      <bpmn:incoming>legal_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="legal_intermedia_jun">
+      <bpmn:incoming>legal_intermedia_f0_9</bpmn:incoming>
+      <bpmn:incoming>legal_intermedia_f0_10</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_11</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="legal_intermedia_reg" name="Record in the contract system">
+      <bpmn:incoming>legal_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="legal_intermedia_avi" name="Notify the requesting area">
+      <bpmn:incoming>legal_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>legal_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="legal_intermedia_fin" name="Contract in force">
+      <bpmn:incoming>legal_intermedia_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="legal_intermedia_f0_0" sourceRef="legal_intermedia_ini" targetRef="legal_intermedia_sol" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_1" sourceRef="legal_intermedia_sol" targetRef="legal_intermedia_red" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_2" sourceRef="legal_intermedia_red" targetRef="legal_intermedia_neg" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_3" sourceRef="legal_intermedia_neg" targetRef="legal_intermedia_acu" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_4" name="Yes" sourceRef="legal_intermedia_acu" targetRef="legal_intermedia_par" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_5" name="No" sourceRef="legal_intermedia_acu" targetRef="legal_intermedia_aju" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_6" sourceRef="legal_intermedia_aju" targetRef="legal_intermedia_neg" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_7" sourceRef="legal_intermedia_par" targetRef="legal_intermedia_car" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_8" sourceRef="legal_intermedia_par" targetRef="legal_intermedia_fir" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_9" sourceRef="legal_intermedia_car" targetRef="legal_intermedia_jun" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_10" sourceRef="legal_intermedia_fir" targetRef="legal_intermedia_jun" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_11" sourceRef="legal_intermedia_jun" targetRef="legal_intermedia_reg" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_12" sourceRef="legal_intermedia_reg" targetRef="legal_intermedia_avi" />
+    <bpmn:sequenceFlow id="legal_intermedia_f0_13" sourceRef="legal_intermedia_avi" targetRef="legal_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="legal_intermedia_diagrama0" name="Supplier contract">
+    <bpmndi:BPMNPlane id="legal_intermedia_plano0" bpmnElement="legal_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_legal_intermedia_pool_empresa" bpmnElement="legal_intermedia_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="720" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_carril_are" bpmnElement="legal_intermedia_carril_are" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_carril_leg" bpmnElement="legal_intermedia_carril_leg" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1910" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_carril_ger" bpmnElement="legal_intermedia_carril_ger" isHorizontal="true">
+        <dc:Bounds x="110" y="480" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_carril_adm" bpmnElement="legal_intermedia_carril_adm" isHorizontal="true">
+        <dc:Bounds x="110" y="630" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_ini" bpmnElement="legal_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_sol" bpmnElement="legal_intermedia_sol">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_red" bpmnElement="legal_intermedia_red">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_neg" bpmnElement="legal_intermedia_neg">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_acu" bpmnElement="legal_intermedia_acu" isMarkerVisible="false">
+        <dc:Bounds x="867" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_aju" bpmnElement="legal_intermedia_aju">
+        <dc:Bounds x="830" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_par" bpmnElement="legal_intermedia_par">
+        <dc:Bounds x="1037" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_car" bpmnElement="legal_intermedia_car">
+        <dc:Bounds x="1170" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_fir" bpmnElement="legal_intermedia_fir">
+        <dc:Bounds x="1170" y="523" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_jun" bpmnElement="legal_intermedia_jun">
+        <dc:Bounds x="1377" y="532" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_reg" bpmnElement="legal_intermedia_reg">
+        <dc:Bounds x="1510" y="673" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_avi" bpmnElement="legal_intermedia_avi">
+        <dc:Bounds x="1680" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_intermedia_fin" bpmnElement="legal_intermedia_fin">
+        <dc:Bounds x="1892" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_0" bpmnElement="legal_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_1" bpmnElement="legal_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_2" bpmnElement="legal_intermedia_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_3" bpmnElement="legal_intermedia_f0_3">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="867" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_4" bpmnElement="legal_intermedia_f0_4">
+        <di:waypoint x="913" y="285" />
+        <di:waypoint x="1037" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_5" bpmnElement="legal_intermedia_f0_5">
+        <di:waypoint x="890" y="308" />
+        <di:waypoint x="890" y="373" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_6" bpmnElement="legal_intermedia_f0_6">
+        <di:waypoint x="830" y="405" />
+        <di:waypoint x="720" y="405" />
+        <di:waypoint x="720" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_7" bpmnElement="legal_intermedia_f0_7">
+        <di:waypoint x="1083" y="285" />
+        <di:waypoint x="1170" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_8" bpmnElement="legal_intermedia_f0_8">
+        <di:waypoint x="1060" y="308" />
+        <di:waypoint x="1060" y="555" />
+        <di:waypoint x="1170" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_9" bpmnElement="legal_intermedia_f0_9">
+        <di:waypoint x="1290" y="285" />
+        <di:waypoint x="1400" y="285" />
+        <di:waypoint x="1400" y="532" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_10" bpmnElement="legal_intermedia_f0_10">
+        <di:waypoint x="1290" y="555" />
+        <di:waypoint x="1377" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_11" bpmnElement="legal_intermedia_f0_11">
+        <di:waypoint x="1400" y="578" />
+        <di:waypoint x="1400" y="705" />
+        <di:waypoint x="1510" y="705" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_12" bpmnElement="legal_intermedia_f0_12">
+        <di:waypoint x="1630" y="705" />
+        <di:waypoint x="1655" y="705" />
+        <di:waypoint x="1655" y="135" />
+        <di:waypoint x="1680" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_intermedia_f0_13" bpmnElement="legal_intermedia_f0_13">
+        <di:waypoint x="1800" y="135" />
+        <di:waypoint x="1892" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

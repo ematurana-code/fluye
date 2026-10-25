@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="rrhh_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="rrhh_avanzada_colab0">
+    <bpmn:participant id="rrhh_avanzada_pool_agencia" name="Company" processRef="rrhh_avanzada_proceso_agencia" />
+    <bpmn:participant id="rrhh_avanzada_pool_consultora" name="Recruiting firm" processRef="rrhh_avanzada_proceso_consultora" />
+    <bpmn:participant id="rrhh_avanzada_pool_postulante" name="Candidate" processRef="rrhh_avanzada_proceso_postulante" />
+    <bpmn:messageFlow id="rrhh_avanzada_m0_0" name="Request" sourceRef="rrhh_avanzada_a_ped" targetRef="rrhh_avanzada_c_ini" />
+    <bpmn:messageFlow id="rrhh_avanzada_m0_1" name="Shortlist" sourceRef="rrhh_avanzada_c_env" targetRef="rrhh_avanzada_a_ter" />
+    <bpmn:messageFlow id="rrhh_avanzada_m0_2" name="Offer" sourceRef="rrhh_avanzada_a_ofe" targetRef="rrhh_avanzada_p_ini" />
+    <bpmn:messageFlow id="rrhh_avanzada_m0_3" name="Answer" sourceRef="rrhh_avanzada_p_res" targetRef="rrhh_avanzada_a_res" />
+  </bpmn:collaboration>
+  <bpmn:process id="rrhh_avanzada_proceso_agencia" isExecutable="false">
+    <bpmn:laneSet id="rrhh_avanzada_carriles_agencia">
+      <bpmn:lane id="rrhh_avanzada_carril_rh" name="Human resources">
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ped</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ter</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ofe</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ace</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_fin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_sin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="rrhh_avanzada_carril_jef" name="Manager">
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_per</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_ele</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_a_aju</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="rrhh_avanzada_a_ini" name="A position needs filling">
+      <bpmn:outgoing>rrhh_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="rrhh_avanzada_a_per" name="Define the job profile">
+      <bpmn:incoming>rrhh_avanzada_f0_0</bpmn:incoming>
+      <bpmn:incoming>rrhh_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_avanzada_a_ped" name="Request candidates from the recruiting firm">
+      <bpmn:incoming>rrhh_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="rrhh_avanzada_a_ter" name="Candidate shortlist arrives">
+      <bpmn:incoming>rrhh_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="rrhh_avanzada_a_ter_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="rrhh_avanzada_a_ent" name="Interviews">
+      <bpmn:documentation>The details are in the "Interviews" tab.</bpmn:documentation>
+      <bpmn:incoming>rrhh_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_4</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="rrhh_avanzada_a_ele" name="Candidate selected?">
+      <bpmn:incoming>rrhh_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_5</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="rrhh_avanzada_a_aju" name="Review what the candidates lacked">
+      <bpmn:incoming>rrhh_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_avanzada_a_ofe" name="Send the offer">
+      <bpmn:incoming>rrhh_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="rrhh_avanzada_a_esp" name="Wait for the answer (3 days)">
+      <bpmn:incoming>rrhh_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_9</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="rrhh_avanzada_a_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="rrhh_avanzada_a_res" name="Answer arrives">
+      <bpmn:incoming>rrhh_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="rrhh_avanzada_a_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="rrhh_avanzada_a_ace" name="Accepted?">
+      <bpmn:incoming>rrhh_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_11</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="rrhh_avanzada_a_ing" name="Start the onboarding">
+      <bpmn:incoming>rrhh_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="rrhh_avanzada_a_fin" name="Position filled">
+      <bpmn:incoming>rrhh_avanzada_f0_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="rrhh_avanzada_a_sin" name="Position unfilled">
+      <bpmn:incoming>rrhh_avanzada_f0_12</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_0" sourceRef="rrhh_avanzada_a_ini" targetRef="rrhh_avanzada_a_per" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_1" sourceRef="rrhh_avanzada_a_per" targetRef="rrhh_avanzada_a_ped" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_2" sourceRef="rrhh_avanzada_a_ped" targetRef="rrhh_avanzada_a_ter" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_3" sourceRef="rrhh_avanzada_a_ter" targetRef="rrhh_avanzada_a_ent" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_4" sourceRef="rrhh_avanzada_a_ent" targetRef="rrhh_avanzada_a_ele" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_5" name="Yes" sourceRef="rrhh_avanzada_a_ele" targetRef="rrhh_avanzada_a_ofe" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_6" name="No" sourceRef="rrhh_avanzada_a_ele" targetRef="rrhh_avanzada_a_aju" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_7" sourceRef="rrhh_avanzada_a_aju" targetRef="rrhh_avanzada_a_per" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_8" sourceRef="rrhh_avanzada_a_ofe" targetRef="rrhh_avanzada_a_esp" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_9" sourceRef="rrhh_avanzada_a_esp" targetRef="rrhh_avanzada_a_res" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_10" sourceRef="rrhh_avanzada_a_res" targetRef="rrhh_avanzada_a_ace" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_11" name="Yes" sourceRef="rrhh_avanzada_a_ace" targetRef="rrhh_avanzada_a_ing" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_12" name="No" sourceRef="rrhh_avanzada_a_ace" targetRef="rrhh_avanzada_a_sin" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_13" sourceRef="rrhh_avanzada_a_ing" targetRef="rrhh_avanzada_a_fin" />
+  </bpmn:process>
+  <bpmn:process id="rrhh_avanzada_proceso_consultora" isExecutable="false">
+    <bpmn:laneSet id="rrhh_avanzada_carriles_consultora">
+      <bpmn:lane id="rrhh_avanzada_carril_con" name="Recruiter">
+        <bpmn:flowNodeRef>rrhh_avanzada_c_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_c_bus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_c_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_c_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="rrhh_avanzada_c_ini" name="Receives the request">
+      <bpmn:outgoing>rrhh_avanzada_f0_14</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="rrhh_avanzada_c_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="rrhh_avanzada_c_bus" name="Source and assess candidates">
+      <bpmn:incoming>rrhh_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_avanzada_c_env" name="Send the shortlist">
+      <bpmn:incoming>rrhh_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="rrhh_avanzada_c_fin" name="Shortlist sent">
+      <bpmn:incoming>rrhh_avanzada_f0_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_14" sourceRef="rrhh_avanzada_c_ini" targetRef="rrhh_avanzada_c_bus" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_15" sourceRef="rrhh_avanzada_c_bus" targetRef="rrhh_avanzada_c_env" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_16" sourceRef="rrhh_avanzada_c_env" targetRef="rrhh_avanzada_c_fin" />
+  </bpmn:process>
+  <bpmn:process id="rrhh_avanzada_proceso_postulante" isExecutable="false">
+    <bpmn:laneSet id="rrhh_avanzada_carriles_postulante">
+      <bpmn:lane id="rrhh_avanzada_carril_pos" name="Selected candidate">
+        <bpmn:flowNodeRef>rrhh_avanzada_p_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_p_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_p_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_p_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="rrhh_avanzada_p_ini" name="Receives the offer">
+      <bpmn:outgoing>rrhh_avanzada_f0_17</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="rrhh_avanzada_p_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="rrhh_avanzada_p_rev" name="Review the offer">
+      <bpmn:incoming>rrhh_avanzada_f0_17</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_18</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_avanzada_p_res" name="Answer the company">
+      <bpmn:incoming>rrhh_avanzada_f0_18</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f0_19</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="rrhh_avanzada_p_fin" name="Answer sent">
+      <bpmn:incoming>rrhh_avanzada_f0_19</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_17" sourceRef="rrhh_avanzada_p_ini" targetRef="rrhh_avanzada_p_rev" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_18" sourceRef="rrhh_avanzada_p_rev" targetRef="rrhh_avanzada_p_res" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f0_19" sourceRef="rrhh_avanzada_p_res" targetRef="rrhh_avanzada_p_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="rrhh_avanzada_colab1">
+    <bpmn:participant id="rrhh_avanzada_pool_entrevistas" name="Interviews" processRef="rrhh_avanzada_proceso_entrevistas" />
+  </bpmn:collaboration>
+  <bpmn:process id="rrhh_avanzada_proceso_entrevistas" isExecutable="false">
+    <bpmn:laneSet id="rrhh_avanzada_carriles_entrevistas">
+      <bpmn:lane id="rrhh_avanzada_carril_e_rh" name="Human resources">
+        <bpmn:flowNodeRef>rrhh_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_age</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_psi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_jun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="rrhh_avanzada_carril_e_jef" name="Manager">
+        <bpmn:flowNodeRef>rrhh_avanzada_e_tec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_com</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="rrhh_avanzada_e_ini" name="Shortlist arrives">
+      <bpmn:outgoing>rrhh_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="rrhh_avanzada_e_age" name="Schedule interviews">
+      <bpmn:incoming>rrhh_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="rrhh_avanzada_e_par">
+      <bpmn:incoming>rrhh_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="rrhh_avanzada_e_psi" name="Psychometric assessment">
+      <bpmn:incoming>rrhh_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_avanzada_e_tec" name="Technical interview">
+      <bpmn:incoming>rrhh_avanzada_f1_3</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="rrhh_avanzada_e_jun">
+      <bpmn:incoming>rrhh_avanzada_f1_4</bpmn:incoming>
+      <bpmn:incoming>rrhh_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="rrhh_avanzada_e_com" name="Compare candidates and choose">
+      <bpmn:incoming>rrhh_avanzada_f1_6</bpmn:incoming>
+      <bpmn:outgoing>rrhh_avanzada_f1_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="rrhh_avanzada_e_fin" name="Candidate selected">
+      <bpmn:incoming>rrhh_avanzada_f1_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_0" sourceRef="rrhh_avanzada_e_ini" targetRef="rrhh_avanzada_e_age" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_1" sourceRef="rrhh_avanzada_e_age" targetRef="rrhh_avanzada_e_par" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_2" sourceRef="rrhh_avanzada_e_par" targetRef="rrhh_avanzada_e_psi" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_3" sourceRef="rrhh_avanzada_e_par" targetRef="rrhh_avanzada_e_tec" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_4" sourceRef="rrhh_avanzada_e_psi" targetRef="rrhh_avanzada_e_jun" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_5" sourceRef="rrhh_avanzada_e_tec" targetRef="rrhh_avanzada_e_jun" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_6" sourceRef="rrhh_avanzada_e_jun" targetRef="rrhh_avanzada_e_com" />
+    <bpmn:sequenceFlow id="rrhh_avanzada_f1_7" sourceRef="rrhh_avanzada_e_com" targetRef="rrhh_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="rrhh_avanzada_diagrama0" name="Recruitment">
+    <bpmndi:BPMNPlane id="rrhh_avanzada_plano0" bpmnElement="rrhh_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_pool_agencia" bpmnElement="rrhh_avanzada_pool_agencia" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2280" height="540" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_pool_consultora" bpmnElement="rrhh_avanzada_pool_consultora" isHorizontal="true">
+        <dc:Bounds x="80" y="690" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_pool_postulante" bpmnElement="rrhh_avanzada_pool_postulante" isHorizontal="true">
+        <dc:Bounds x="80" y="930" width="2280" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_rh" bpmnElement="rrhh_avanzada_carril_rh" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2250" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_jef" bpmnElement="rrhh_avanzada_carril_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="2250" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_con" bpmnElement="rrhh_avanzada_carril_con" isHorizontal="true">
+        <dc:Bounds x="110" y="690" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_pos" bpmnElement="rrhh_avanzada_carril_pos" isHorizontal="true">
+        <dc:Bounds x="110" y="930" width="2250" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ini" bpmnElement="rrhh_avanzada_a_ini">
+        <dc:Bounds x="192" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_per" bpmnElement="rrhh_avanzada_a_per">
+        <dc:Bounds x="320" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ped" bpmnElement="rrhh_avanzada_a_ped">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ter" bpmnElement="rrhh_avanzada_a_ter">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ent" bpmnElement="rrhh_avanzada_a_ent" isExpanded="false">
+        <dc:Bounds x="1000" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ele" bpmnElement="rrhh_avanzada_a_ele" isMarkerVisible="false">
+        <dc:Bounds x="1207" y="382" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_aju" bpmnElement="rrhh_avanzada_a_aju">
+        <dc:Bounds x="1170" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ofe" bpmnElement="rrhh_avanzada_a_ofe">
+        <dc:Bounds x="1340" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_esp" bpmnElement="rrhh_avanzada_a_esp">
+        <dc:Bounds x="1552" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_res" bpmnElement="rrhh_avanzada_a_res">
+        <dc:Bounds x="1722" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ace" bpmnElement="rrhh_avanzada_a_ace" isMarkerVisible="false">
+        <dc:Bounds x="1887" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_ing" bpmnElement="rrhh_avanzada_a_ing">
+        <dc:Bounds x="2020" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_fin" bpmnElement="rrhh_avanzada_a_fin">
+        <dc:Bounds x="2232" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_a_sin" bpmnElement="rrhh_avanzada_a_sin">
+        <dc:Bounds x="2062" y="237" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_c_ini" bpmnElement="rrhh_avanzada_c_ini">
+        <dc:Bounds x="532" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_c_bus" bpmnElement="rrhh_avanzada_c_bus">
+        <dc:Bounds x="660" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_c_env" bpmnElement="rrhh_avanzada_c_env">
+        <dc:Bounds x="830" y="733" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_c_fin" bpmnElement="rrhh_avanzada_c_fin">
+        <dc:Bounds x="1042" y="747" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_p_ini" bpmnElement="rrhh_avanzada_p_ini">
+        <dc:Bounds x="1382" y="987" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_p_rev" bpmnElement="rrhh_avanzada_p_rev">
+        <dc:Bounds x="1510" y="973" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_p_res" bpmnElement="rrhh_avanzada_p_res">
+        <dc:Bounds x="1680" y="973" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_p_fin" bpmnElement="rrhh_avanzada_p_fin">
+        <dc:Bounds x="1892" y="987" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_0" bpmnElement="rrhh_avanzada_f0_0">
+        <di:waypoint x="228" y="405" />
+        <di:waypoint x="320" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_1" bpmnElement="rrhh_avanzada_f0_1">
+        <di:waypoint x="440" y="405" />
+        <di:waypoint x="465" y="405" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_2" bpmnElement="rrhh_avanzada_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_3" bpmnElement="rrhh_avanzada_f0_3">
+        <di:waypoint x="908" y="135" />
+        <di:waypoint x="954" y="135" />
+        <di:waypoint x="954" y="405" />
+        <di:waypoint x="1000" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_4" bpmnElement="rrhh_avanzada_f0_4">
+        <di:waypoint x="1120" y="405" />
+        <di:waypoint x="1207" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_5" bpmnElement="rrhh_avanzada_f0_5">
+        <di:waypoint x="1230" y="382" />
+        <di:waypoint x="1230" y="135" />
+        <di:waypoint x="1340" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_6" bpmnElement="rrhh_avanzada_f0_6">
+        <di:waypoint x="1230" y="428" />
+        <di:waypoint x="1230" y="493" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_7" bpmnElement="rrhh_avanzada_f0_7">
+        <di:waypoint x="1170" y="525" />
+        <di:waypoint x="380" y="525" />
+        <di:waypoint x="380" y="437" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_8" bpmnElement="rrhh_avanzada_f0_8">
+        <di:waypoint x="1460" y="135" />
+        <di:waypoint x="1552" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_9" bpmnElement="rrhh_avanzada_f0_9">
+        <di:waypoint x="1588" y="135" />
+        <di:waypoint x="1722" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_10" bpmnElement="rrhh_avanzada_f0_10">
+        <di:waypoint x="1758" y="135" />
+        <di:waypoint x="1887" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_11" bpmnElement="rrhh_avanzada_f0_11">
+        <di:waypoint x="1933" y="135" />
+        <di:waypoint x="2020" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_12" bpmnElement="rrhh_avanzada_f0_12">
+        <di:waypoint x="1910" y="158" />
+        <di:waypoint x="1910" y="255" />
+        <di:waypoint x="2062" y="255" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_13" bpmnElement="rrhh_avanzada_f0_13">
+        <di:waypoint x="2140" y="135" />
+        <di:waypoint x="2232" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_14" bpmnElement="rrhh_avanzada_f0_14">
+        <di:waypoint x="568" y="765" />
+        <di:waypoint x="660" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_15" bpmnElement="rrhh_avanzada_f0_15">
+        <di:waypoint x="780" y="765" />
+        <di:waypoint x="830" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_16" bpmnElement="rrhh_avanzada_f0_16">
+        <di:waypoint x="950" y="765" />
+        <di:waypoint x="1042" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_17" bpmnElement="rrhh_avanzada_f0_17">
+        <di:waypoint x="1418" y="1005" />
+        <di:waypoint x="1510" y="1005" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_18" bpmnElement="rrhh_avanzada_f0_18">
+        <di:waypoint x="1630" y="1005" />
+        <di:waypoint x="1680" y="1005" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f0_19" bpmnElement="rrhh_avanzada_f0_19">
+        <di:waypoint x="1800" y="1005" />
+        <di:waypoint x="1892" y="1005" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_m0_0" bpmnElement="rrhh_avanzada_m0_0">
+        <di:waypoint x="550" y="167" />
+        <di:waypoint x="550" y="747" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_m0_1" bpmnElement="rrhh_avanzada_m0_1">
+        <di:waypoint x="890" y="733" />
+        <di:waypoint x="890" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_m0_2" bpmnElement="rrhh_avanzada_m0_2">
+        <di:waypoint x="1400" y="167" />
+        <di:waypoint x="1400" y="987" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_m0_3" bpmnElement="rrhh_avanzada_m0_3">
+        <di:waypoint x="1740" y="973" />
+        <di:waypoint x="1740" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="rrhh_avanzada_diagrama1" name="Interviews">
+    <bpmndi:BPMNPlane id="rrhh_avanzada_plano1" bpmnElement="rrhh_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_pool_entrevistas" bpmnElement="rrhh_avanzada_pool_entrevistas" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1260" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_e_rh" bpmnElement="rrhh_avanzada_carril_e_rh" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_carril_e_jef" bpmnElement="rrhh_avanzada_carril_e_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_ini" bpmnElement="rrhh_avanzada_e_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_age" bpmnElement="rrhh_avanzada_e_age">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_par" bpmnElement="rrhh_avanzada_e_par">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_psi" bpmnElement="rrhh_avanzada_e_psi">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_tec" bpmnElement="rrhh_avanzada_e_tec">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_jun" bpmnElement="rrhh_avanzada_e_jun">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_com" bpmnElement="rrhh_avanzada_e_com">
+        <dc:Bounds x="1000" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_avanzada_e_fin" bpmnElement="rrhh_avanzada_e_fin">
+        <dc:Bounds x="1212" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_0" bpmnElement="rrhh_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_1" bpmnElement="rrhh_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_2" bpmnElement="rrhh_avanzada_f1_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_3" bpmnElement="rrhh_avanzada_f1_3">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_4" bpmnElement="rrhh_avanzada_f1_4">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_5" bpmnElement="rrhh_avanzada_f1_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_6" bpmnElement="rrhh_avanzada_f1_6">
+        <di:waypoint x="890" y="158" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="1000" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_avanzada_f1_7" bpmnElement="rrhh_avanzada_f1_7">
+        <di:waypoint x="1120" y="285" />
+        <di:waypoint x="1212" y="285" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

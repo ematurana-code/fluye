@@ -1344,7 +1344,8 @@ export function xmlPlantilla(p) {
 }
 
 /** "Qué trae" la plantilla, en palabras, para la galería. */
-export function resumenPlantilla(p) {
+export function resumenPlantilla(p, idioma = 'es') {
+  if (idioma === 'en') return resumenEn(p);
   const todos = p.diagramas.flatMap((d) => d.nodos);
   const pools = p.diagramas[0].pools.length;
   const carriles = p.diagramas[0].pools.reduce((s, x) => s + x.carriles.length, 0);
@@ -1361,4 +1362,24 @@ export function resumenPlantilla(p) {
   if (mensajes && pools === 1) partes.push(plural(mensajes, 'mensaje', 'mensajes', 'un'));
   if (p.diagramas.length > 1) partes.push(plural(p.diagramas.length, 'pestaña', 'pestañas', 'una'));
   return partes.slice(0, -1).join(', ') + (partes.length > 1 ? ' y ' : '') + partes[partes.length - 1];
+}
+
+// Lo mismo, en inglés (para plantillas/en y la página del proyecto en inglés).
+function resumenEn(p) {
+  const todos = p.diagramas.flatMap((d) => d.nodos);
+  const pools = p.diagramas[0].pools.length;
+  const carriles = p.diagramas[0].pools.reduce((s, x) => s + x.carriles.length, 0);
+  const decisiones = p.diagramas.reduce((s, d) => s + d.nodos.filter((x) => x.tipo === 'decision' && d.flujos.filter(([a]) => a === x.clave).length > 1).length, 0);
+  const paralelos = todos.filter((x) => x.tipo === 'paralelo').length / 2;
+  const plazos = todos.filter((x) => x.tipo === 'espera').length;
+  const mensajes = p.diagramas.reduce((s, d) => s + (d.mensajes || []).length, 0);
+  const plural = (k, uno, varios) => (k === 1 ? `one ${uno}` : `${k} ${varios}`);
+  const partes = [];
+  partes.push(pools > 1 ? `${pools} pools that exchange messages` : plural(carriles, 'lane', 'lanes'));
+  partes.push(plural(decisiones, 'decision', 'decisions'));
+  if (paralelos) partes.push(plural(paralelos, 'parallel split', 'parallel splits'));
+  if (plazos) partes.push(plural(plazos, 'timer', 'timers'));
+  if (mensajes && pools === 1) partes.push(plural(mensajes, 'message', 'messages'));
+  if (p.diagramas.length > 1) partes.push(plural(p.diagramas.length, 'tab', 'tabs'));
+  return partes.slice(0, -1).join(', ') + (partes.length > 1 ? ' and ' : '') + partes[partes.length - 1];
 }

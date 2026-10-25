@@ -1,0 +1,266 @@
+[
+ {
+  "id": "aduana-simple",
+  "nombre": "Shipping document review",
+  "categoria": "Foreign trade",
+  "nivel": "simple",
+  "descripcion": "Before filing an import declaration, the documents sent by the supplier are checked and anything missing is requested.",
+  "incluye": "one lane and one decision"
+ },
+ {
+  "id": "aduana-intermedia",
+  "nombre": "Import clearance",
+  "categoria": "Foreign trade",
+  "nivel": "intermedia",
+  "descripcion": "An import from start to finish: documents, declaration, customs inspection, duty payment and cargo pickup.",
+  "incluye": "4 lanes, 2 decisions and one parallel split"
+ },
+ {
+  "id": "aduana-avanzada",
+  "nombre": "Full import: client, broker and customs",
+  "categoria": "Foreign trade",
+  "nivel": "avanzada",
+  "descripcion": "The importer, its customs broker and the customs authority exchange documents and notices; the physical inspection has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one timer and 2 tabs"
+ },
+ {
+  "id": "ti-simple",
+  "nombre": "Password reset",
+  "categoria": "IT support",
+  "nivel": "simple",
+  "descripcion": "The help desk confirms who is asking for the change and issues a temporary password.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "ti-intermedia",
+  "nombre": "Help desk ticket",
+  "categoria": "IT support",
+  "nivel": "intermedia",
+  "descripcion": "From report to closure: level 1, escalation to level 2 and user confirmation before closing.",
+  "incluye": "3 lanes, 2 decisions and one parallel split"
+ },
+ {
+  "id": "ti-avanzada",
+  "nombre": "Incident with an external vendor",
+  "categoria": "IT support",
+  "nivel": "avanzada",
+  "descripcion": "The user area, IT and the vendor coordinate through notices and a response deadline (SLA); the diagnosis has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one parallel split, one timer and 2 tabs"
+ },
+ {
+  "id": "rrhh-simple",
+  "nombre": "Vacation request",
+  "categoria": "Human resources",
+  "nivel": "simple",
+  "descripcion": "The employee requests days off and the manager approves or proposes other dates.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "rrhh-intermedia",
+  "nombre": "New employee onboarding",
+  "categoria": "Human resources",
+  "nivel": "intermedia",
+  "descripcion": "Contract, benefits enrollment, equipment and induction plan in parallel, then a check that everything is ready to work.",
+  "incluye": "3 lanes, one decision and one parallel split"
+ },
+ {
+  "id": "rrhh-avanzada",
+  "nombre": "Recruitment",
+  "categoria": "Human resources",
+  "nivel": "avanzada",
+  "descripcion": "The company, a recruiting firm and the candidate exchange requests, shortlists and offers; the interviews have their own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one parallel split, one timer and 2 tabs"
+ },
+ {
+  "id": "compras-simple",
+  "nombre": "Purchase request",
+  "categoria": "Purchasing",
+  "nivel": "simple",
+  "descripcion": "Someone asks to buy something and their manager approves it or asks for changes.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "compras-intermedia",
+  "nombre": "Purchase with quotes",
+  "categoria": "Purchasing",
+  "nivel": "intermedia",
+  "descripcion": "Three quotes, authorization above the spending limit, purchase order and goods receipt.",
+  "incluye": "4 lanes, 2 decisions and one parallel split"
+ },
+ {
+  "id": "compras-avanzada",
+  "nombre": "Purchase from an external supplier",
+  "categoria": "Purchasing",
+  "nivel": "avanzada",
+  "descripcion": "The company and the supplier exchange the order, the goods, the invoice and the payment; the bidding has its own tab.",
+  "incluye": "2 pools that exchange messages, 2 decisions, 2 timers and 2 tabs"
+ },
+ {
+  "id": "finanzas-simple",
+  "nombre": "Expense report",
+  "categoria": "Finance",
+  "nivel": "simple",
+  "descripcion": "The employee submits an expense with its receipt and Finance reimburses it or asks for a correction.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "finanzas-intermedia",
+  "nombre": "Supplier invoice payment",
+  "categoria": "Finance",
+  "nivel": "intermedia",
+  "descripcion": "The invoice is matched against the purchase order, booked and approved in parallel, and Treasury pays it.",
+  "incluye": "3 lanes, one decision and one parallel split"
+ },
+ {
+  "id": "finanzas-avanzada",
+  "nombre": "Customer collections",
+  "categoria": "Finance",
+  "nivel": "avanzada",
+  "descripcion": "The company invoices, waits for the due date and reconciles the deposit reported by the bank; the collection follow-up has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, 2 timers and 2 tabs"
+ },
+ {
+  "id": "ventas-simple",
+  "nombre": "Customer quote",
+  "categoria": "Sales",
+  "nivel": "simple",
+  "descripcion": "The sales rep understands the need, prepares the quote and asks for approval if it carries a special discount.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "ventas-intermedia",
+  "nombre": "From opportunity to close",
+  "categoria": "Sales",
+  "nivel": "intermedia",
+  "descripcion": "Quote, negotiation until the customer accepts, approved contract and delivery with invoicing in parallel.",
+  "incluye": "4 lanes, one decision and one parallel split"
+ },
+ {
+  "id": "ventas-avanzada",
+  "nombre": "Sale with delivery to the customer",
+  "categoria": "Sales",
+  "nivel": "avanzada",
+  "descripcion": "The customer, the company and the carrier exchange quote, answer and delivery; order preparation has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one timer and 2 tabs"
+ },
+ {
+  "id": "atencion-simple",
+  "nombre": "Customer inquiry",
+  "categoria": "Customer service",
+  "nivel": "simple",
+  "descripcion": "The inquiry is logged and answered right away or routed to the right area.",
+  "incluye": "one lane and one decision"
+ },
+ {
+  "id": "atencion-intermedia",
+  "nombre": "Complaint handling",
+  "categoria": "Customer service",
+  "nivel": "intermedia",
+  "descripcion": "The complaint is classified, the cause is investigated while Quality records it, and a solution is proposed until the customer is satisfied.",
+  "incluye": "3 lanes, 2 decisions and one parallel split"
+ },
+ {
+  "id": "atencion-avanzada",
+  "nombre": "Warranty with repair service",
+  "categoria": "Customer service",
+  "nivel": "avanzada",
+  "descripcion": "The customer claims the warranty, the company sends the product to an external repair service and reports the outcome; the diagnosis has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one timer and 2 tabs"
+ },
+ {
+  "id": "logistica-simple",
+  "nombre": "Goods receipt",
+  "categoria": "Logistics and warehouse",
+  "nivel": "simple",
+  "descripcion": "The warehouse counts the delivery against the delivery note, records discrepancies and stores the goods.",
+  "incluye": "one lane and one decision"
+ },
+ {
+  "id": "logistica-intermedia",
+  "nombre": "Order picking and dispatch",
+  "categoria": "Logistics and warehouse",
+  "nivel": "intermedia",
+  "descripcion": "Products are picked (with restocking if out of stock), packed while the delivery note is issued in parallel, and dispatched.",
+  "incluye": "3 lanes, one decision, one parallel split and one timer"
+ },
+ {
+  "id": "logistica-avanzada",
+  "nombre": "Product returns",
+  "categoria": "Logistics and warehouse",
+  "nivel": "avanzada",
+  "descripcion": "The customer returns a product by carrier, the warehouse inspects it and the company reports the outcome; the inspection has its own tab.",
+  "incluye": "3 pools that exchange messages, one decision, one parallel split, one timer and 2 tabs"
+ },
+ {
+  "id": "legal-simple",
+  "nombre": "Contract review",
+  "categoria": "Legal and contracts",
+  "nivel": "simple",
+  "descripcion": "The area sends the draft, Legal reviews clauses and risks and approves it or asks for corrections.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "legal-intermedia",
+  "nombre": "Supplier contract",
+  "categoria": "Legal and contracts",
+  "nivel": "intermedia",
+  "descripcion": "Legal drafts and negotiates until agreement; management signs while the file is assembled and Administration records it.",
+  "incluye": "4 lanes, one decision and one parallel split"
+ },
+ {
+  "id": "legal-avanzada",
+  "nombre": "Contract signing with counterparty and notary",
+  "categoria": "Legal and contracts",
+  "nivel": "avanzada",
+  "descripcion": "The company, the counterparty and the notary exchange the contract, the answer and the deed; the negotiation of changes has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one timer and 2 tabs"
+ },
+ {
+  "id": "calidad-simple",
+  "nombre": "Nonconformity report",
+  "categoria": "Quality",
+  "nivel": "simple",
+  "descripcion": "A worker reports a problem and Quality records it with an owner or dismisses it with an explanation.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "calidad-intermedia",
+  "nombre": "Corrective action",
+  "categoria": "Quality",
+  "nivel": "intermedia",
+  "descripcion": "The root cause is analyzed, a plan is approved, the fix and training run in parallel, and it is verified that the problem does not recur.",
+  "incluye": "3 lanes, one decision and one parallel split"
+ },
+ {
+  "id": "calidad-avanzada",
+  "nombre": "External quality audit",
+  "categoria": "Quality",
+  "nivel": "avanzada",
+  "descripcion": "The company requests the audit, the auditing firm visits, reports findings and certifies after the correction period; the preparation has its own tab.",
+  "incluye": "2 pools that exchange messages, 2 decisions, one parallel split, 2 timers and 2 tabs"
+ },
+ {
+  "id": "web-simple",
+  "nombre": "Login",
+  "categoria": "Web systems",
+  "nivel": "simple",
+  "descripcion": "The user logs in with a username and password; if they are wrong, an error message is shown and they try again.",
+  "incluye": "2 lanes and one decision"
+ },
+ {
+  "id": "web-intermedia",
+  "nombre": "Login with lockout after failed attempts",
+  "categoria": "Web systems",
+  "nivel": "intermedia",
+  "descripcion": "Validates the credentials, creates the session while logging the access, and locks the account after 3 failed attempts.",
+  "incluye": "3 lanes, 2 decisions and one parallel split"
+ },
+ {
+  "id": "web-avanzada",
+  "nombre": "Online store purchase",
+  "categoria": "Web systems",
+  "nivel": "avanzada",
+  "descripcion": "The customer, the store and the payment gateway communicate to pay online; the login has its own tab.",
+  "incluye": "3 pools that exchange messages, 2 decisions, one timer and 2 tabs"
+ }
+]

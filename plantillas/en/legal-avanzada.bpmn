@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="legal_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="legal_avanzada_colab0">
+    <bpmn:participant id="legal_avanzada_pool_empresa" name="Company" processRef="legal_avanzada_proceso_empresa" />
+    <bpmn:participant id="legal_avanzada_pool_contraparte" name="Counterparty" processRef="legal_avanzada_proceso_contraparte" />
+    <bpmn:participant id="legal_avanzada_pool_notaria" name="Notary" processRef="legal_avanzada_proceso_notaria" />
+    <bpmn:messageFlow id="legal_avanzada_m0_0" name="Contract" sourceRef="legal_avanzada_e_env" targetRef="legal_avanzada_k_ini" />
+    <bpmn:messageFlow id="legal_avanzada_m0_1" name="Answer" sourceRef="legal_avanzada_k_res" targetRef="legal_avanzada_e_res" />
+    <bpmn:messageFlow id="legal_avanzada_m0_2" name="Signed contract" sourceRef="legal_avanzada_e_not" targetRef="legal_avanzada_n_ini" />
+    <bpmn:messageFlow id="legal_avanzada_m0_3" name="Deed" sourceRef="legal_avanzada_n_dev" targetRef="legal_avanzada_e_ret" />
+  </bpmn:collaboration>
+  <bpmn:process id="legal_avanzada_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="legal_avanzada_carriles_empresa">
+      <bpmn:lane id="legal_avanzada_carril_leg" name="Legal">
+        <bpmn:flowNodeRef>legal_avanzada_e_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_neg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_lis</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_arc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="legal_avanzada_carril_ger" name="Management">
+        <bpmn:flowNodeRef>legal_avanzada_e_fir</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_not</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_e_ret</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="legal_avanzada_e_ini" name="Contract approved internally">
+      <bpmn:outgoing>legal_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="legal_avanzada_e_env" name="Send the contract to the counterparty">
+      <bpmn:incoming>legal_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="legal_avanzada_e_esp" name="Response deadline (10 days)">
+      <bpmn:incoming>legal_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="legal_avanzada_e_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="legal_avanzada_e_res" name="Answer arrives">
+      <bpmn:incoming>legal_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="legal_avanzada_e_res_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="legal_avanzada_e_dec" name="Requests changes?">
+      <bpmn:incoming>legal_avanzada_f0_3</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_4</bpmn:outgoing>
+      <bpmn:outgoing>legal_avanzada_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:subProcess id="legal_avanzada_e_neg" name="Negotiate changes">
+      <bpmn:documentation>The details are in the "Negotiate changes" tab.</bpmn:documentation>
+      <bpmn:incoming>legal_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="legal_avanzada_e_uni">
+      <bpmn:incoming>legal_avanzada_f0_4</bpmn:incoming>
+      <bpmn:incoming>legal_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="legal_avanzada_e_lis" name="Finalize the contract for signing">
+      <bpmn:incoming>legal_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_e_fir" name="Sign on behalf of the company">
+      <bpmn:incoming>legal_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_e_not" name="Send to the notary">
+      <bpmn:incoming>legal_avanzada_f0_9</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_10</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="legal_avanzada_e_ret" name="Deed arrives">
+      <bpmn:incoming>legal_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_11</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="legal_avanzada_e_ret_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="legal_avanzada_e_arc" name="File it and notify the areas">
+      <bpmn:incoming>legal_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="legal_avanzada_e_fin" name="Contract in force">
+      <bpmn:incoming>legal_avanzada_f0_12</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="legal_avanzada_f0_0" sourceRef="legal_avanzada_e_ini" targetRef="legal_avanzada_e_env" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_1" sourceRef="legal_avanzada_e_env" targetRef="legal_avanzada_e_esp" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_2" sourceRef="legal_avanzada_e_esp" targetRef="legal_avanzada_e_res" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_3" sourceRef="legal_avanzada_e_res" targetRef="legal_avanzada_e_dec" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_4" name="No" sourceRef="legal_avanzada_e_dec" targetRef="legal_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_5" name="Yes" sourceRef="legal_avanzada_e_dec" targetRef="legal_avanzada_e_neg" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_6" sourceRef="legal_avanzada_e_neg" targetRef="legal_avanzada_e_uni" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_7" sourceRef="legal_avanzada_e_uni" targetRef="legal_avanzada_e_lis" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_8" sourceRef="legal_avanzada_e_lis" targetRef="legal_avanzada_e_fir" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_9" sourceRef="legal_avanzada_e_fir" targetRef="legal_avanzada_e_not" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_10" sourceRef="legal_avanzada_e_not" targetRef="legal_avanzada_e_ret" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_11" sourceRef="legal_avanzada_e_ret" targetRef="legal_avanzada_e_arc" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_12" sourceRef="legal_avanzada_e_arc" targetRef="legal_avanzada_e_fin" />
+  </bpmn:process>
+  <bpmn:process id="legal_avanzada_proceso_contraparte" isExecutable="false">
+    <bpmn:laneSet id="legal_avanzada_carriles_contraparte">
+      <bpmn:lane id="legal_avanzada_carril_con" name="Counterparty">
+        <bpmn:flowNodeRef>legal_avanzada_k_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_k_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_k_res</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_k_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="legal_avanzada_k_ini" name="Receives the contract">
+      <bpmn:outgoing>legal_avanzada_f0_13</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="legal_avanzada_k_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="legal_avanzada_k_rev" name="Review with their lawyer">
+      <bpmn:incoming>legal_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_k_res" name="Answer the company">
+      <bpmn:incoming>legal_avanzada_f0_14</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="legal_avanzada_k_fin" name="Answer sent">
+      <bpmn:incoming>legal_avanzada_f0_15</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="legal_avanzada_f0_13" sourceRef="legal_avanzada_k_ini" targetRef="legal_avanzada_k_rev" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_14" sourceRef="legal_avanzada_k_rev" targetRef="legal_avanzada_k_res" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_15" sourceRef="legal_avanzada_k_res" targetRef="legal_avanzada_k_fin" />
+  </bpmn:process>
+  <bpmn:process id="legal_avanzada_proceso_notaria" isExecutable="false">
+    <bpmn:laneSet id="legal_avanzada_carriles_notaria">
+      <bpmn:lane id="legal_avanzada_carril_not" name="Notary">
+        <bpmn:flowNodeRef>legal_avanzada_n_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_n_cit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_n_dev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_n_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="legal_avanzada_n_ini" name="Receives the signed contract">
+      <bpmn:outgoing>legal_avanzada_f0_16</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="legal_avanzada_n_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="legal_avanzada_n_cit" name="Call the counterparty to sign">
+      <bpmn:incoming>legal_avanzada_f0_16</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_17</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_n_dev" name="Notarize and return">
+      <bpmn:incoming>legal_avanzada_f0_17</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f0_18</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="legal_avanzada_n_fin" name="Deed ready">
+      <bpmn:incoming>legal_avanzada_f0_18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="legal_avanzada_f0_16" sourceRef="legal_avanzada_n_ini" targetRef="legal_avanzada_n_cit" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_17" sourceRef="legal_avanzada_n_cit" targetRef="legal_avanzada_n_dev" />
+    <bpmn:sequenceFlow id="legal_avanzada_f0_18" sourceRef="legal_avanzada_n_dev" targetRef="legal_avanzada_n_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="legal_avanzada_colab1">
+    <bpmn:participant id="legal_avanzada_pool_negociacion" name="Negotiation" processRef="legal_avanzada_proceso_negociacion" />
+  </bpmn:collaboration>
+  <bpmn:process id="legal_avanzada_proceso_negociacion" isExecutable="false">
+    <bpmn:laneSet id="legal_avanzada_carriles_negociacion">
+      <bpmn:lane id="legal_avanzada_carril_g_leg" name="Legal">
+        <bpmn:flowNodeRef>legal_avanzada_g_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_ana</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_inc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="legal_avanzada_carril_g_ger" name="Management">
+        <bpmn:flowNodeRef>legal_avanzada_g_alt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legal_avanzada_g_apr</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="legal_avanzada_g_ini" name="Counterparty requests changes">
+      <bpmn:outgoing>legal_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="legal_avanzada_g_ana" name="Analyze the requested changes">
+      <bpmn:incoming>legal_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="legal_avanzada_g_dec" name="Accepted?">
+      <bpmn:incoming>legal_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_2</bpmn:outgoing>
+      <bpmn:outgoing>legal_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="legal_avanzada_g_inc" name="Incorporate the changes">
+      <bpmn:incoming>legal_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_g_alt" name="Propose an alternative">
+      <bpmn:incoming>legal_avanzada_f1_3</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal_avanzada_g_apr" name="Approve the proposal">
+      <bpmn:incoming>legal_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="legal_avanzada_g_uni">
+      <bpmn:incoming>legal_avanzada_f1_5</bpmn:incoming>
+      <bpmn:incoming>legal_avanzada_f1_6</bpmn:incoming>
+      <bpmn:outgoing>legal_avanzada_f1_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="legal_avanzada_g_fin" name="Contract adjusted">
+      <bpmn:incoming>legal_avanzada_f1_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="legal_avanzada_f1_0" sourceRef="legal_avanzada_g_ini" targetRef="legal_avanzada_g_ana" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_1" sourceRef="legal_avanzada_g_ana" targetRef="legal_avanzada_g_dec" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_2" name="Yes" sourceRef="legal_avanzada_g_dec" targetRef="legal_avanzada_g_inc" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_3" name="No" sourceRef="legal_avanzada_g_dec" targetRef="legal_avanzada_g_alt" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_4" sourceRef="legal_avanzada_g_alt" targetRef="legal_avanzada_g_apr" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_5" sourceRef="legal_avanzada_g_apr" targetRef="legal_avanzada_g_uni" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_6" sourceRef="legal_avanzada_g_inc" targetRef="legal_avanzada_g_uni" />
+    <bpmn:sequenceFlow id="legal_avanzada_f1_7" sourceRef="legal_avanzada_g_uni" targetRef="legal_avanzada_g_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="legal_avanzada_diagrama0" name="Contract signing">
+    <bpmndi:BPMNPlane id="legal_avanzada_plano0" bpmnElement="legal_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_legal_avanzada_pool_empresa" bpmnElement="legal_avanzada_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2450" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_pool_contraparte" bpmnElement="legal_avanzada_pool_contraparte" isHorizontal="true">
+        <dc:Bounds x="80" y="570" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_pool_notaria" bpmnElement="legal_avanzada_pool_notaria" isHorizontal="true">
+        <dc:Bounds x="80" y="810" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_leg" bpmnElement="legal_avanzada_carril_leg" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2420" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_ger" bpmnElement="legal_avanzada_carril_ger" isHorizontal="true">
+        <dc:Bounds x="110" y="330" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_con" bpmnElement="legal_avanzada_carril_con" isHorizontal="true">
+        <dc:Bounds x="110" y="570" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_not" bpmnElement="legal_avanzada_carril_not" isHorizontal="true">
+        <dc:Bounds x="110" y="810" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_ini" bpmnElement="legal_avanzada_e_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_env" bpmnElement="legal_avanzada_e_env">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_esp" bpmnElement="legal_avanzada_e_esp">
+        <dc:Bounds x="532" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_res" bpmnElement="legal_avanzada_e_res">
+        <dc:Bounds x="872" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_dec" bpmnElement="legal_avanzada_e_dec" isMarkerVisible="false">
+        <dc:Bounds x="1037" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_neg" bpmnElement="legal_avanzada_e_neg" isExpanded="false">
+        <dc:Bounds x="1000" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_uni" bpmnElement="legal_avanzada_e_uni" isMarkerVisible="false">
+        <dc:Bounds x="1207" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_lis" bpmnElement="legal_avanzada_e_lis">
+        <dc:Bounds x="1340" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_fir" bpmnElement="legal_avanzada_e_fir">
+        <dc:Bounds x="1510" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_not" bpmnElement="legal_avanzada_e_not">
+        <dc:Bounds x="1680" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_ret" bpmnElement="legal_avanzada_e_ret">
+        <dc:Bounds x="2062" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_arc" bpmnElement="legal_avanzada_e_arc">
+        <dc:Bounds x="2190" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_e_fin" bpmnElement="legal_avanzada_e_fin">
+        <dc:Bounds x="2402" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_k_ini" bpmnElement="legal_avanzada_k_ini">
+        <dc:Bounds x="362" y="627" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_k_rev" bpmnElement="legal_avanzada_k_rev">
+        <dc:Bounds x="490" y="613" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_k_res" bpmnElement="legal_avanzada_k_res">
+        <dc:Bounds x="830" y="613" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_k_fin" bpmnElement="legal_avanzada_k_fin">
+        <dc:Bounds x="1042" y="627" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_n_ini" bpmnElement="legal_avanzada_n_ini">
+        <dc:Bounds x="1722" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_n_cit" bpmnElement="legal_avanzada_n_cit">
+        <dc:Bounds x="1850" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_n_dev" bpmnElement="legal_avanzada_n_dev">
+        <dc:Bounds x="2020" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_n_fin" bpmnElement="legal_avanzada_n_fin">
+        <dc:Bounds x="2232" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_0" bpmnElement="legal_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_1" bpmnElement="legal_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="532" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_2" bpmnElement="legal_avanzada_f0_2">
+        <di:waypoint x="568" y="135" />
+        <di:waypoint x="872" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_3" bpmnElement="legal_avanzada_f0_3">
+        <di:waypoint x="908" y="135" />
+        <di:waypoint x="1037" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_4" bpmnElement="legal_avanzada_f0_4">
+        <di:waypoint x="1083" y="135" />
+        <di:waypoint x="1207" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_5" bpmnElement="legal_avanzada_f0_5">
+        <di:waypoint x="1060" y="158" />
+        <di:waypoint x="1060" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_6" bpmnElement="legal_avanzada_f0_6">
+        <di:waypoint x="1120" y="255" />
+        <di:waypoint x="1230" y="255" />
+        <di:waypoint x="1230" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_7" bpmnElement="legal_avanzada_f0_7">
+        <di:waypoint x="1253" y="135" />
+        <di:waypoint x="1340" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_8" bpmnElement="legal_avanzada_f0_8">
+        <di:waypoint x="1460" y="135" />
+        <di:waypoint x="1485" y="135" />
+        <di:waypoint x="1485" y="405" />
+        <di:waypoint x="1510" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_9" bpmnElement="legal_avanzada_f0_9">
+        <di:waypoint x="1630" y="405" />
+        <di:waypoint x="1680" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_10" bpmnElement="legal_avanzada_f0_10">
+        <di:waypoint x="1800" y="405" />
+        <di:waypoint x="2062" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_11" bpmnElement="legal_avanzada_f0_11">
+        <di:waypoint x="2098" y="405" />
+        <di:waypoint x="2144" y="405" />
+        <di:waypoint x="2144" y="135" />
+        <di:waypoint x="2190" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_12" bpmnElement="legal_avanzada_f0_12">
+        <di:waypoint x="2310" y="135" />
+        <di:waypoint x="2402" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_13" bpmnElement="legal_avanzada_f0_13">
+        <di:waypoint x="398" y="645" />
+        <di:waypoint x="490" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_14" bpmnElement="legal_avanzada_f0_14">
+        <di:waypoint x="610" y="645" />
+        <di:waypoint x="830" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_15" bpmnElement="legal_avanzada_f0_15">
+        <di:waypoint x="950" y="645" />
+        <di:waypoint x="1042" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_16" bpmnElement="legal_avanzada_f0_16">
+        <di:waypoint x="1758" y="885" />
+        <di:waypoint x="1850" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_17" bpmnElement="legal_avanzada_f0_17">
+        <di:waypoint x="1970" y="885" />
+        <di:waypoint x="2020" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f0_18" bpmnElement="legal_avanzada_f0_18">
+        <di:waypoint x="2140" y="885" />
+        <di:waypoint x="2232" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_m0_0" bpmnElement="legal_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="627" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_m0_1" bpmnElement="legal_avanzada_m0_1">
+        <di:waypoint x="890" y="613" />
+        <di:waypoint x="890" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_m0_2" bpmnElement="legal_avanzada_m0_2">
+        <di:waypoint x="1740" y="437" />
+        <di:waypoint x="1740" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_m0_3" bpmnElement="legal_avanzada_m0_3">
+        <di:waypoint x="2080" y="853" />
+        <di:waypoint x="2080" y="423" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="legal_avanzada_diagrama1" name="Negotiate changes">
+    <bpmndi:BPMNPlane id="legal_avanzada_plano1" bpmnElement="legal_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_legal_avanzada_pool_negociacion" bpmnElement="legal_avanzada_pool_negociacion" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_g_leg" bpmnElement="legal_avanzada_carril_g_leg" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_carril_g_ger" bpmnElement="legal_avanzada_carril_g_ger" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_ini" bpmnElement="legal_avanzada_g_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_ana" bpmnElement="legal_avanzada_g_ana">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_dec" bpmnElement="legal_avanzada_g_dec" isMarkerVisible="false">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_inc" bpmnElement="legal_avanzada_g_inc">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_alt" bpmnElement="legal_avanzada_g_alt">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_apr" bpmnElement="legal_avanzada_g_apr">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_uni" bpmnElement="legal_avanzada_g_uni" isMarkerVisible="false">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_legal_avanzada_g_fin" bpmnElement="legal_avanzada_g_fin">
+        <dc:Bounds x="1042" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_0" bpmnElement="legal_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_1" bpmnElement="legal_avanzada_f1_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_2" bpmnElement="legal_avanzada_f1_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_3" bpmnElement="legal_avanzada_f1_3">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_4" bpmnElement="legal_avanzada_f1_4">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_5" bpmnElement="legal_avanzada_f1_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_6" bpmnElement="legal_avanzada_f1_6">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_legal_avanzada_f1_7" bpmnElement="legal_avanzada_f1_7">
+        <di:waypoint x="913" y="135" />
+        <di:waypoint x="1042" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

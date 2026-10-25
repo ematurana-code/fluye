@@ -93,6 +93,6 @@ Las sugerencias y los reportes de errores son bienvenidos en [Issues](https://gi
 - Export to BPMN, PNG, SVG, PDF, Word, and a single-file **interactive web page** that includes the Play.
 - Opens and saves standard `.bpmn` files, including those exported by other modeling tools.
 
-**Download** the Windows installer from [Releases](https://github.com/ematurana-code/fluye/releases/latest), or [try it in your browser](https://ematurana-code.github.io/fluye/demo/).
+**Download** the Windows installer from [Releases](https://github.com/ematurana-code/fluye/releases/latest), or [try it in your browser](https://ematurana-code.github.io/fluye/demo/). The [website in English](https://ematurana-code.github.io/fluye/en/) has guides ([What is BPMN?](https://ematurana-code.github.io/fluye/en/guides/what-is-bpmn/)) and [33 free BPMN templates](https://ematurana-code.github.io/fluye/en/templates/).
 
 Built with Electron, diagram-js and bpmn-moddle. Licensed under [MIT](LICENSE).

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="ventas_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="ventas_simple_colab0">
+    <bpmn:participant id="ventas_simple_pool_empresa" name="Company" processRef="ventas_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="ventas_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="ventas_simple_carriles_empresa">
+      <bpmn:lane id="ventas_simple_carril_eje" name="Sales rep">
+        <bpmn:flowNodeRef>ventas_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_ent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_pre</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_des</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ventas_simple_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ventas_simple_carril_jef" name="Sales manager">
+        <bpmn:flowNodeRef>ventas_simple_apr</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ventas_simple_ini" name="An inquiry arrives">
+      <bpmn:outgoing>ventas_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ventas_simple_ent" name="Understand the customer&#39;s need">
+      <bpmn:incoming>ventas_simple_f0_0</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ventas_simple_pre" name="Prepare the quote">
+      <bpmn:incoming>ventas_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ventas_simple_des" name="Special discount?">
+      <bpmn:incoming>ventas_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>ventas_simple_f0_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ventas_simple_apr" name="Approve the discount">
+      <bpmn:incoming>ventas_simple_f0_4</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ventas_simple_uni">
+      <bpmn:incoming>ventas_simple_f0_3</bpmn:incoming>
+      <bpmn:incoming>ventas_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ventas_simple_env" name="Send the quote">
+      <bpmn:incoming>ventas_simple_f0_6</bpmn:incoming>
+      <bpmn:outgoing>ventas_simple_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ventas_simple_fin" name="Quote sent">
+      <bpmn:incoming>ventas_simple_f0_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ventas_simple_f0_0" sourceRef="ventas_simple_ini" targetRef="ventas_simple_ent" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_1" sourceRef="ventas_simple_ent" targetRef="ventas_simple_pre" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_2" sourceRef="ventas_simple_pre" targetRef="ventas_simple_des" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_3" name="No" sourceRef="ventas_simple_des" targetRef="ventas_simple_uni" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_4" name="Yes" sourceRef="ventas_simple_des" targetRef="ventas_simple_apr" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_5" sourceRef="ventas_simple_apr" targetRef="ventas_simple_uni" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_6" sourceRef="ventas_simple_uni" targetRef="ventas_simple_env" />
+    <bpmn:sequenceFlow id="ventas_simple_f0_7" sourceRef="ventas_simple_env" targetRef="ventas_simple_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ventas_simple_diagrama0" name="Quote">
+    <bpmndi:BPMNPlane id="ventas_simple_plano0" bpmnElement="ventas_simple_colab0">
+      <bpmndi:BPMNShape id="DI_ventas_simple_pool_empresa" bpmnElement="ventas_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1260" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_carril_eje" bpmnElement="ventas_simple_carril_eje" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_carril_jef" bpmnElement="ventas_simple_carril_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1230" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_ini" bpmnElement="ventas_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_ent" bpmnElement="ventas_simple_ent">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_pre" bpmnElement="ventas_simple_pre">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_des" bpmnElement="ventas_simple_des" isMarkerVisible="false">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_apr" bpmnElement="ventas_simple_apr">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_uni" bpmnElement="ventas_simple_uni" isMarkerVisible="false">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_env" bpmnElement="ventas_simple_env">
+        <dc:Bounds x="1000" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ventas_simple_fin" bpmnElement="ventas_simple_fin">
+        <dc:Bounds x="1212" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_0" bpmnElement="ventas_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_1" bpmnElement="ventas_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_2" bpmnElement="ventas_simple_f0_2">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_3" bpmnElement="ventas_simple_f0_3">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_4" bpmnElement="ventas_simple_f0_4">
+        <di:waypoint x="720" y="158" />
+        <di:waypoint x="720" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_5" bpmnElement="ventas_simple_f0_5">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_6" bpmnElement="ventas_simple_f0_6">
+        <di:waypoint x="913" y="135" />
+        <di:waypoint x="1000" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ventas_simple_f0_7" bpmnElement="ventas_simple_f0_7">
+        <di:waypoint x="1120" y="135" />
+        <di:waypoint x="1212" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

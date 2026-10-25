@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="ti_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="ti_avanzada_colab0">
+    <bpmn:participant id="ti_avanzada_pool_area" name="User area" processRef="ti_avanzada_proceso_area" />
+    <bpmn:participant id="ti_avanzada_pool_ti" name="Company IT" processRef="ti_avanzada_proceso_ti" />
+    <bpmn:participant id="ti_avanzada_pool_proveedor" name="Vendor" processRef="ti_avanzada_proceso_proveedor" />
+    <bpmn:messageFlow id="ti_avanzada_m0_0" name="Report" sourceRef="ti_avanzada_u_rep" targetRef="ti_avanzada_t_ini" />
+    <bpmn:messageFlow id="ti_avanzada_m0_1" name="Case" sourceRef="ti_avanzada_t_cas" targetRef="ti_avanzada_p_ini" />
+    <bpmn:messageFlow id="ti_avanzada_m0_2" name="Solution" sourceRef="ti_avanzada_p_env" targetRef="ti_avanzada_t_sol" />
+    <bpmn:messageFlow id="ti_avanzada_m0_3" name="Notice" sourceRef="ti_avanzada_t_avi" targetRef="ti_avanzada_u_avi" />
+  </bpmn:collaboration>
+  <bpmn:process id="ti_avanzada_proceso_area" isExecutable="false">
+    <bpmn:laneSet id="ti_avanzada_carriles_area">
+      <bpmn:lane id="ti_avanzada_carril_usu" name="User">
+        <bpmn:flowNodeRef>ti_avanzada_u_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_u_rep</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_u_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_u_con</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_u_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_avanzada_u_ini" name="A service goes down">
+      <bpmn:outgoing>ti_avanzada_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ti_avanzada_u_rep" name="Report the incident">
+      <bpmn:incoming>ti_avanzada_f0_0</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="ti_avanzada_u_avi" name="Receives the service-restored notice">
+      <bpmn:incoming>ti_avanzada_f0_1</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ti_avanzada_u_avi_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="ti_avanzada_u_con" name="Confirm everything works">
+      <bpmn:incoming>ti_avanzada_f0_2</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_avanzada_u_fin" name="Back to normal">
+      <bpmn:incoming>ti_avanzada_f0_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_avanzada_f0_0" sourceRef="ti_avanzada_u_ini" targetRef="ti_avanzada_u_rep" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_1" sourceRef="ti_avanzada_u_rep" targetRef="ti_avanzada_u_avi" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_2" sourceRef="ti_avanzada_u_avi" targetRef="ti_avanzada_u_con" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_3" sourceRef="ti_avanzada_u_con" targetRef="ti_avanzada_u_fin" />
+  </bpmn:process>
+  <bpmn:process id="ti_avanzada_proceso_ti" isExecutable="false">
+    <bpmn:laneSet id="ti_avanzada_carriles_ti">
+      <bpmn:lane id="ti_avanzada_carril_mesa" name="Help desk">
+        <bpmn:flowNodeRef>ti_avanzada_t_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_esc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_avi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ti_avanzada_carril_infra" name="Infrastructure">
+        <bpmn:flowNodeRef>ti_avanzada_t_dia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_cas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_int</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_esp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_tie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_sol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_t_ver</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_avanzada_t_ini" name="Report arrives">
+      <bpmn:outgoing>ti_avanzada_f0_4</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ti_avanzada_t_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="ti_avanzada_t_reg" name="Log a critical incident">
+      <bpmn:incoming>ti_avanzada_f0_4</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:subProcess id="ti_avanzada_t_dia" name="Diagnosis">
+      <bpmn:documentation>The details are in the "Diagnosis" tab.</bpmn:documentation>
+      <bpmn:incoming>ti_avanzada_f0_5</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_6</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="ti_avanzada_t_dec" name="Vendor failure?">
+      <bpmn:incoming>ti_avanzada_f0_6</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_7</bpmn:outgoing>
+      <bpmn:outgoing>ti_avanzada_f0_8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ti_avanzada_t_cas" name="Open a case with the vendor">
+      <bpmn:incoming>ti_avanzada_f0_7</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_avanzada_t_int" name="Fix internally">
+      <bpmn:incoming>ti_avanzada_f0_8</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_15</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="ti_avanzada_t_esp" name="Wait for a response (4-hour SLA)">
+      <bpmn:incoming>ti_avanzada_f0_9</bpmn:incoming>
+      <bpmn:incoming>ti_avanzada_f0_13</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_10</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="ti_avanzada_t_esp_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ti_avanzada_t_tie" name="Responded in time?">
+      <bpmn:incoming>ti_avanzada_f0_10</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_11</bpmn:outgoing>
+      <bpmn:outgoing>ti_avanzada_f0_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ti_avanzada_t_esc" name="Escalate to the vendor&#39;s account manager">
+      <bpmn:incoming>ti_avanzada_f0_12</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="ti_avanzada_t_sol" name="Vendor solution arrives">
+      <bpmn:incoming>ti_avanzada_f0_11</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_14</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ti_avanzada_t_sol_def" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ti_avanzada_t_uni">
+      <bpmn:incoming>ti_avanzada_f0_14</bpmn:incoming>
+      <bpmn:incoming>ti_avanzada_f0_15</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_16</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ti_avanzada_t_ver" name="Verify the service">
+      <bpmn:incoming>ti_avanzada_f0_16</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_17</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateThrowEvent id="ti_avanzada_t_avi" name="Notify the user">
+      <bpmn:incoming>ti_avanzada_f0_17</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_18</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ti_avanzada_t_avi_def" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="ti_avanzada_t_fin" name="Incident closed">
+      <bpmn:incoming>ti_avanzada_f0_18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_avanzada_f0_4" sourceRef="ti_avanzada_t_ini" targetRef="ti_avanzada_t_reg" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_5" sourceRef="ti_avanzada_t_reg" targetRef="ti_avanzada_t_dia" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_6" sourceRef="ti_avanzada_t_dia" targetRef="ti_avanzada_t_dec" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_7" name="Yes" sourceRef="ti_avanzada_t_dec" targetRef="ti_avanzada_t_cas" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_8" name="No" sourceRef="ti_avanzada_t_dec" targetRef="ti_avanzada_t_int" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_9" sourceRef="ti_avanzada_t_cas" targetRef="ti_avanzada_t_esp" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_10" sourceRef="ti_avanzada_t_esp" targetRef="ti_avanzada_t_tie" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_11" name="Yes" sourceRef="ti_avanzada_t_tie" targetRef="ti_avanzada_t_sol" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_12" name="No" sourceRef="ti_avanzada_t_tie" targetRef="ti_avanzada_t_esc" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_13" sourceRef="ti_avanzada_t_esc" targetRef="ti_avanzada_t_esp" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_14" sourceRef="ti_avanzada_t_sol" targetRef="ti_avanzada_t_uni" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_15" sourceRef="ti_avanzada_t_int" targetRef="ti_avanzada_t_uni" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_16" sourceRef="ti_avanzada_t_uni" targetRef="ti_avanzada_t_ver" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_17" sourceRef="ti_avanzada_t_ver" targetRef="ti_avanzada_t_avi" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_18" sourceRef="ti_avanzada_t_avi" targetRef="ti_avanzada_t_fin" />
+  </bpmn:process>
+  <bpmn:process id="ti_avanzada_proceso_proveedor" isExecutable="false">
+    <bpmn:laneSet id="ti_avanzada_carriles_proveedor">
+      <bpmn:lane id="ti_avanzada_carril_prov" name="Vendor support">
+        <bpmn:flowNodeRef>ti_avanzada_p_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_p_ana</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_p_env</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_p_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_avanzada_p_ini" name="Receives the case">
+      <bpmn:outgoing>ti_avanzada_f0_19</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ti_avanzada_p_ini_def" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="ti_avanzada_p_ana" name="Analyze and apply the fix">
+      <bpmn:incoming>ti_avanzada_f0_19</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_20</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ti_avanzada_p_env" name="Send the solution">
+      <bpmn:incoming>ti_avanzada_f0_20</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f0_21</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_avanzada_p_fin" name="Case resolved">
+      <bpmn:incoming>ti_avanzada_f0_21</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_avanzada_f0_19" sourceRef="ti_avanzada_p_ini" targetRef="ti_avanzada_p_ana" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_20" sourceRef="ti_avanzada_p_ana" targetRef="ti_avanzada_p_env" />
+    <bpmn:sequenceFlow id="ti_avanzada_f0_21" sourceRef="ti_avanzada_p_env" targetRef="ti_avanzada_p_fin" />
+  </bpmn:process>
+  <bpmn:collaboration id="ti_avanzada_colab1">
+    <bpmn:participant id="ti_avanzada_pool_diagnostico" name="Diagnosis" processRef="ti_avanzada_proceso_diagnostico" />
+  </bpmn:collaboration>
+  <bpmn:process id="ti_avanzada_proceso_diagnostico" isExecutable="false">
+    <bpmn:laneSet id="ti_avanzada_carriles_diagnostico">
+      <bpmn:lane id="ti_avanzada_carril_d_inf" name="Infrastructure">
+        <bpmn:flowNodeRef>ti_avanzada_d_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_mon</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_cau</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ti_avanzada_d_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="ti_avanzada_d_ini" name="Diagnosis begins">
+      <bpmn:outgoing>ti_avanzada_f1_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="ti_avanzada_d_par">
+      <bpmn:incoming>ti_avanzada_f1_0</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f1_1</bpmn:outgoing>
+      <bpmn:outgoing>ti_avanzada_f1_2</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="ti_avanzada_d_mon" name="Check the monitoring">
+      <bpmn:incoming>ti_avanzada_f1_1</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f1_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="ti_avanzada_d_reg" name="Review logs and recent changes">
+      <bpmn:incoming>ti_avanzada_f1_2</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f1_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="ti_avanzada_d_jun">
+      <bpmn:incoming>ti_avanzada_f1_3</bpmn:incoming>
+      <bpmn:incoming>ti_avanzada_f1_4</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f1_5</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="ti_avanzada_d_cau" name="Identify the cause">
+      <bpmn:incoming>ti_avanzada_f1_5</bpmn:incoming>
+      <bpmn:outgoing>ti_avanzada_f1_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="ti_avanzada_d_fin" name="Cause identified">
+      <bpmn:incoming>ti_avanzada_f1_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ti_avanzada_f1_0" sourceRef="ti_avanzada_d_ini" targetRef="ti_avanzada_d_par" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_1" sourceRef="ti_avanzada_d_par" targetRef="ti_avanzada_d_mon" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_2" sourceRef="ti_avanzada_d_par" targetRef="ti_avanzada_d_reg" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_3" sourceRef="ti_avanzada_d_mon" targetRef="ti_avanzada_d_jun" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_4" sourceRef="ti_avanzada_d_reg" targetRef="ti_avanzada_d_jun" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_5" sourceRef="ti_avanzada_d_jun" targetRef="ti_avanzada_d_cau" />
+    <bpmn:sequenceFlow id="ti_avanzada_f1_6" sourceRef="ti_avanzada_d_cau" targetRef="ti_avanzada_d_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ti_avanzada_diagrama0" name="Incident">
+    <bpmndi:BPMNPlane id="ti_avanzada_plano0" bpmnElement="ti_avanzada_colab0">
+      <bpmndi:BPMNShape id="DI_ti_avanzada_pool_area" bpmnElement="ti_avanzada_pool_area" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_pool_ti" bpmnElement="ti_avanzada_pool_ti" isHorizontal="true">
+        <dc:Bounds x="80" y="300" width="2450" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_pool_proveedor" bpmnElement="ti_avanzada_pool_proveedor" isHorizontal="true">
+        <dc:Bounds x="80" y="810" width="2450" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_carril_usu" bpmnElement="ti_avanzada_carril_usu" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_carril_mesa" bpmnElement="ti_avanzada_carril_mesa" isHorizontal="true">
+        <dc:Bounds x="110" y="300" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_carril_infra" bpmnElement="ti_avanzada_carril_infra" isHorizontal="true">
+        <dc:Bounds x="110" y="450" width="2420" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_carril_prov" bpmnElement="ti_avanzada_carril_prov" isHorizontal="true">
+        <dc:Bounds x="110" y="810" width="2420" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_u_ini" bpmnElement="ti_avanzada_u_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_u_rep" bpmnElement="ti_avanzada_u_rep">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_u_avi" bpmnElement="ti_avanzada_u_avi">
+        <dc:Bounds x="2062" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_u_con" bpmnElement="ti_avanzada_u_con">
+        <dc:Bounds x="2190" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_u_fin" bpmnElement="ti_avanzada_u_fin">
+        <dc:Bounds x="2402" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_ini" bpmnElement="ti_avanzada_t_ini">
+        <dc:Bounds x="362" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_reg" bpmnElement="ti_avanzada_t_reg">
+        <dc:Bounds x="490" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_dia" bpmnElement="ti_avanzada_t_dia" isExpanded="false">
+        <dc:Bounds x="660" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_dec" bpmnElement="ti_avanzada_t_dec" isMarkerVisible="false">
+        <dc:Bounds x="867" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_cas" bpmnElement="ti_avanzada_t_cas">
+        <dc:Bounds x="1000" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_int" bpmnElement="ti_avanzada_t_int">
+        <dc:Bounds x="1170" y="613" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_esp" bpmnElement="ti_avanzada_t_esp">
+        <dc:Bounds x="1212" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_tie" bpmnElement="ti_avanzada_t_tie" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_esc" bpmnElement="ti_avanzada_t_esc">
+        <dc:Bounds x="1340" y="343" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_sol" bpmnElement="ti_avanzada_t_sol">
+        <dc:Bounds x="1552" y="507" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_uni" bpmnElement="ti_avanzada_t_uni" isMarkerVisible="false">
+        <dc:Bounds x="1717" y="502" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_ver" bpmnElement="ti_avanzada_t_ver">
+        <dc:Bounds x="1850" y="493" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_avi" bpmnElement="ti_avanzada_t_avi">
+        <dc:Bounds x="2062" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_t_fin" bpmnElement="ti_avanzada_t_fin">
+        <dc:Bounds x="2232" y="357" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_p_ini" bpmnElement="ti_avanzada_p_ini">
+        <dc:Bounds x="1042" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_p_ana" bpmnElement="ti_avanzada_p_ana">
+        <dc:Bounds x="1170" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_p_env" bpmnElement="ti_avanzada_p_env">
+        <dc:Bounds x="1510" y="853" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_p_fin" bpmnElement="ti_avanzada_p_fin">
+        <dc:Bounds x="1722" y="867" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_0" bpmnElement="ti_avanzada_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_1" bpmnElement="ti_avanzada_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="2062" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_2" bpmnElement="ti_avanzada_f0_2">
+        <di:waypoint x="2098" y="135" />
+        <di:waypoint x="2190" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_3" bpmnElement="ti_avanzada_f0_3">
+        <di:waypoint x="2310" y="135" />
+        <di:waypoint x="2402" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_4" bpmnElement="ti_avanzada_f0_4">
+        <di:waypoint x="398" y="375" />
+        <di:waypoint x="490" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_5" bpmnElement="ti_avanzada_f0_5">
+        <di:waypoint x="610" y="375" />
+        <di:waypoint x="635" y="375" />
+        <di:waypoint x="635" y="525" />
+        <di:waypoint x="660" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_6" bpmnElement="ti_avanzada_f0_6">
+        <di:waypoint x="780" y="525" />
+        <di:waypoint x="867" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_7" bpmnElement="ti_avanzada_f0_7">
+        <di:waypoint x="913" y="525" />
+        <di:waypoint x="1000" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_8" bpmnElement="ti_avanzada_f0_8">
+        <di:waypoint x="890" y="548" />
+        <di:waypoint x="890" y="645" />
+        <di:waypoint x="1170" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_9" bpmnElement="ti_avanzada_f0_9">
+        <di:waypoint x="1120" y="525" />
+        <di:waypoint x="1212" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_10" bpmnElement="ti_avanzada_f0_10">
+        <di:waypoint x="1248" y="525" />
+        <di:waypoint x="1377" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_11" bpmnElement="ti_avanzada_f0_11">
+        <di:waypoint x="1423" y="525" />
+        <di:waypoint x="1552" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_12" bpmnElement="ti_avanzada_f0_12">
+        <di:waypoint x="1400" y="502" />
+        <di:waypoint x="1400" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_13" bpmnElement="ti_avanzada_f0_13">
+        <di:waypoint x="1340" y="375" />
+        <di:waypoint x="1230" y="375" />
+        <di:waypoint x="1230" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_14" bpmnElement="ti_avanzada_f0_14">
+        <di:waypoint x="1588" y="525" />
+        <di:waypoint x="1717" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_15" bpmnElement="ti_avanzada_f0_15">
+        <di:waypoint x="1290" y="645" />
+        <di:waypoint x="1740" y="645" />
+        <di:waypoint x="1740" y="548" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_16" bpmnElement="ti_avanzada_f0_16">
+        <di:waypoint x="1763" y="525" />
+        <di:waypoint x="1850" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_17" bpmnElement="ti_avanzada_f0_17">
+        <di:waypoint x="1970" y="525" />
+        <di:waypoint x="2016" y="525" />
+        <di:waypoint x="2016" y="375" />
+        <di:waypoint x="2062" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_18" bpmnElement="ti_avanzada_f0_18">
+        <di:waypoint x="2098" y="375" />
+        <di:waypoint x="2232" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_19" bpmnElement="ti_avanzada_f0_19">
+        <di:waypoint x="1078" y="885" />
+        <di:waypoint x="1170" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_20" bpmnElement="ti_avanzada_f0_20">
+        <di:waypoint x="1290" y="885" />
+        <di:waypoint x="1510" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f0_21" bpmnElement="ti_avanzada_f0_21">
+        <di:waypoint x="1630" y="885" />
+        <di:waypoint x="1722" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_m0_0" bpmnElement="ti_avanzada_m0_0">
+        <di:waypoint x="380" y="167" />
+        <di:waypoint x="380" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_m0_1" bpmnElement="ti_avanzada_m0_1">
+        <di:waypoint x="1060" y="557" />
+        <di:waypoint x="1060" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_m0_2" bpmnElement="ti_avanzada_m0_2">
+        <di:waypoint x="1570" y="853" />
+        <di:waypoint x="1570" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_m0_3" bpmnElement="ti_avanzada_m0_3">
+        <di:waypoint x="2080" y="357" />
+        <di:waypoint x="2080" y="153" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="ti_avanzada_diagrama1" name="Diagnosis">
+    <bpmndi:BPMNPlane id="ti_avanzada_plano1" bpmnElement="ti_avanzada_colab1">
+      <bpmndi:BPMNShape id="DI_ti_avanzada_pool_diagnostico" bpmnElement="ti_avanzada_pool_diagnostico" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_carril_d_inf" bpmnElement="ti_avanzada_carril_d_inf" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_ini" bpmnElement="ti_avanzada_d_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_par" bpmnElement="ti_avanzada_d_par">
+        <dc:Bounds x="357" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_mon" bpmnElement="ti_avanzada_d_mon">
+        <dc:Bounds x="490" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_reg" bpmnElement="ti_avanzada_d_reg">
+        <dc:Bounds x="490" y="223" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_jun" bpmnElement="ti_avanzada_d_jun">
+        <dc:Bounds x="697" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_cau" bpmnElement="ti_avanzada_d_cau">
+        <dc:Bounds x="830" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ti_avanzada_d_fin" bpmnElement="ti_avanzada_d_fin">
+        <dc:Bounds x="1042" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_0" bpmnElement="ti_avanzada_f1_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="357" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_1" bpmnElement="ti_avanzada_f1_1">
+        <di:waypoint x="403" y="135" />
+        <di:waypoint x="490" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_2" bpmnElement="ti_avanzada_f1_2">
+        <di:waypoint x="380" y="158" />
+        <di:waypoint x="380" y="255" />
+        <di:waypoint x="490" y="255" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_3" bpmnElement="ti_avanzada_f1_3">
+        <di:waypoint x="610" y="135" />
+        <di:waypoint x="697" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_4" bpmnElement="ti_avanzada_f1_4">
+        <di:waypoint x="610" y="255" />
+        <di:waypoint x="720" y="255" />
+        <di:waypoint x="720" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_5" bpmnElement="ti_avanzada_f1_5">
+        <di:waypoint x="743" y="135" />
+        <di:waypoint x="830" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_ti_avanzada_f1_6" bpmnElement="ti_avanzada_f1_6">
+        <di:waypoint x="950" y="135" />
+        <di:waypoint x="1042" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

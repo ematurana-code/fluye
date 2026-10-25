@@ -587,8 +587,16 @@ crearPropiedades($('#propiedades'), modeler, { alPlay: () => $('#btn-play').clic
 
 const primero = await archivo.inicial();
 // En la versión web (la demo de la página del proyecto), ?plantilla=<id> abre esa plantilla de la galería.
-const pedida = !window.fluyeEscritorio && PLANTILLAS.find((p) => p.id === new URLSearchParams(location.search).get('plantilla'));
+const parametros = new URLSearchParams(location.search);
+const pedida = !window.fluyeEscritorio && PLANTILLAS.find((p) => p.id === parametros.get('plantilla'));
+// ?archivo=<.bpmn del mismo sitio> abre ese archivo (lo usan las páginas en inglés, cuyas plantillas no vienen en la app).
+const archivoPedido = !window.fluyeEscritorio && !pedida && parametros.get('archivo');
+const xmlPedido = archivoPedido && /^[\w./-]+\.bpmn$/.test(archivoPedido)
+  ? await fetch(new URL(archivoPedido, location.href), { credentials: 'same-origin' }).then((r) => (r.ok ? r.text() : null)).catch(() => null)
+  : null;
 if (pedida && await cargar(pedida.bpmn, `${pedida.nombre}.bpmn`, null)) {
+  aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
+} else if (xmlPedido && await cargar(xmlPedido, archivoPedido.split('/').pop(), null)) {
   aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
 } else if (!(primero && await cargar(primero.contenido, primero.nombre, primero.ruta))) {
   await modeler.nuevo('Proceso 1');

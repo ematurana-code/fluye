@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="calidad_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="calidad_simple_colab0">
+    <bpmn:participant id="calidad_simple_pool_empresa" name="Company" processRef="calidad_simple_proceso_empresa" />
+  </bpmn:collaboration>
+  <bpmn:process id="calidad_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="calidad_simple_carriles_empresa">
+      <bpmn:lane id="calidad_simple_carril_tra" name="Worker">
+        <bpmn:flowNodeRef>calidad_simple_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_rep</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="calidad_simple_carril_cal" name="Quality">
+        <bpmn:flowNodeRef>calidad_simple_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_fin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_cer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calidad_simple_fi2</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="calidad_simple_ini" name="Spots a problem">
+      <bpmn:outgoing>calidad_simple_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="calidad_simple_rep" name="Report the nonconformity">
+      <bpmn:incoming>calidad_simple_f0_0</bpmn:incoming>
+      <bpmn:outgoing>calidad_simple_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="calidad_simple_rev" name="Review the report">
+      <bpmn:incoming>calidad_simple_f0_1</bpmn:incoming>
+      <bpmn:outgoing>calidad_simple_f0_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="calidad_simple_dec" name="Is it a real nonconformity?">
+      <bpmn:incoming>calidad_simple_f0_2</bpmn:incoming>
+      <bpmn:outgoing>calidad_simple_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>calidad_simple_f0_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="calidad_simple_reg" name="Record it and assign an owner">
+      <bpmn:incoming>calidad_simple_f0_3</bpmn:incoming>
+      <bpmn:outgoing>calidad_simple_f0_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="calidad_simple_fin" name="Nonconformity recorded">
+      <bpmn:incoming>calidad_simple_f0_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="calidad_simple_cer" name="Close with an explanation">
+      <bpmn:incoming>calidad_simple_f0_5</bpmn:incoming>
+      <bpmn:outgoing>calidad_simple_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="calidad_simple_fi2" name="Report dismissed">
+      <bpmn:incoming>calidad_simple_f0_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="calidad_simple_f0_0" sourceRef="calidad_simple_ini" targetRef="calidad_simple_rep" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_1" sourceRef="calidad_simple_rep" targetRef="calidad_simple_rev" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_2" sourceRef="calidad_simple_rev" targetRef="calidad_simple_dec" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_3" name="Yes" sourceRef="calidad_simple_dec" targetRef="calidad_simple_reg" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_4" sourceRef="calidad_simple_reg" targetRef="calidad_simple_fin" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_5" name="No" sourceRef="calidad_simple_dec" targetRef="calidad_simple_cer" />
+    <bpmn:sequenceFlow id="calidad_simple_f0_6" sourceRef="calidad_simple_cer" targetRef="calidad_simple_fi2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="calidad_simple_diagrama0" name="Nonconformity">
+    <bpmndi:BPMNPlane id="calidad_simple_plano0" bpmnElement="calidad_simple_colab0">
+      <bpmndi:BPMNShape id="DI_calidad_simple_pool_empresa" bpmnElement="calidad_simple_pool_empresa" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1090" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_carril_tra" bpmnElement="calidad_simple_carril_tra" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1060" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_carril_cal" bpmnElement="calidad_simple_carril_cal" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1060" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_ini" bpmnElement="calidad_simple_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_rep" bpmnElement="calidad_simple_rep">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_rev" bpmnElement="calidad_simple_rev">
+        <dc:Bounds x="490" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_dec" bpmnElement="calidad_simple_dec" isMarkerVisible="false">
+        <dc:Bounds x="697" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_reg" bpmnElement="calidad_simple_reg">
+        <dc:Bounds x="830" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_fin" bpmnElement="calidad_simple_fin">
+        <dc:Bounds x="1042" y="267" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_cer" bpmnElement="calidad_simple_cer">
+        <dc:Bounds x="660" y="373" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_calidad_simple_fi2" bpmnElement="calidad_simple_fi2">
+        <dc:Bounds x="872" y="387" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_0" bpmnElement="calidad_simple_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_1" bpmnElement="calidad_simple_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="465" y="135" />
+        <di:waypoint x="465" y="285" />
+        <di:waypoint x="490" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_2" bpmnElement="calidad_simple_f0_2">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="697" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_3" bpmnElement="calidad_simple_f0_3">
+        <di:waypoint x="743" y="285" />
+        <di:waypoint x="830" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_4" bpmnElement="calidad_simple_f0_4">
+        <di:waypoint x="950" y="285" />
+        <di:waypoint x="1042" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_5" bpmnElement="calidad_simple_f0_5">
+        <di:waypoint x="720" y="308" />
+        <di:waypoint x="720" y="373" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_calidad_simple_f0_6" bpmnElement="calidad_simple_f0_6">
+        <di:waypoint x="780" y="405" />
+        <di:waypoint x="872" y="405" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

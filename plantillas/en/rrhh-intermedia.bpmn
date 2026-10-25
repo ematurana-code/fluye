@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="rrhh_intermedia_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
+  <bpmn:collaboration id="rrhh_intermedia_colab0">
+    <bpmn:participant id="rrhh_intermedia_pool_agencia" name="Company" processRef="rrhh_intermedia_proceso_agencia" />
+  </bpmn:collaboration>
+  <bpmn:process id="rrhh_intermedia_proceso_agencia" isExecutable="false">
+    <bpmn:laneSet id="rrhh_intermedia_carriles_agencia">
+      <bpmn:lane id="rrhh_intermedia_carril_rh" name="Human resources">
+        <bpmn:flowNodeRef>rrhh_intermedia_ini</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_con</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_par</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_afi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_jun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_cer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_fin</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="rrhh_intermedia_carril_jef" name="Manager">
+        <bpmn:flowNodeRef>rrhh_intermedia_pla</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_ind</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_uni</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_tod</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="rrhh_intermedia_carril_ti" name="IT support">
+        <bpmn:flowNodeRef>rrhh_intermedia_equ</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>rrhh_intermedia_com</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="rrhh_intermedia_ini" name="A person is hired">
+      <bpmn:outgoing>rrhh_intermedia_f0_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="rrhh_intermedia_con" name="Sign the contract and collect documents">
+      <bpmn:incoming>rrhh_intermedia_f0_0</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="rrhh_intermedia_par">
+      <bpmn:incoming>rrhh_intermedia_f0_1</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_2</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_intermedia_f0_3</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_intermedia_f0_4</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="rrhh_intermedia_afi" name="Enroll in pension, health and insurance plans">
+      <bpmn:incoming>rrhh_intermedia_f0_2</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_intermedia_pla" name="Prepare the induction plan">
+      <bpmn:incoming>rrhh_intermedia_f0_3</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_intermedia_equ" name="Set up computer and accounts">
+      <bpmn:incoming>rrhh_intermedia_f0_4</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="rrhh_intermedia_jun">
+      <bpmn:incoming>rrhh_intermedia_f0_5</bpmn:incoming>
+      <bpmn:incoming>rrhh_intermedia_f0_6</bpmn:incoming>
+      <bpmn:incoming>rrhh_intermedia_f0_7</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_8</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="rrhh_intermedia_ind" name="Welcome and run the induction">
+      <bpmn:incoming>rrhh_intermedia_f0_8</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="rrhh_intermedia_uni">
+      <bpmn:incoming>rrhh_intermedia_f0_9</bpmn:incoming>
+      <bpmn:incoming>rrhh_intermedia_f0_13</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="rrhh_intermedia_tod" name="Has everything needed to work?">
+      <bpmn:incoming>rrhh_intermedia_f0_10</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_11</bpmn:outgoing>
+      <bpmn:outgoing>rrhh_intermedia_f0_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="rrhh_intermedia_com" name="Complete what is missing">
+      <bpmn:incoming>rrhh_intermedia_f0_12</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="rrhh_intermedia_cer" name="Close the onboarding">
+      <bpmn:incoming>rrhh_intermedia_f0_11</bpmn:incoming>
+      <bpmn:outgoing>rrhh_intermedia_f0_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="rrhh_intermedia_fin" name="Employee onboarded">
+      <bpmn:incoming>rrhh_intermedia_f0_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_0" sourceRef="rrhh_intermedia_ini" targetRef="rrhh_intermedia_con" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_1" sourceRef="rrhh_intermedia_con" targetRef="rrhh_intermedia_par" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_2" sourceRef="rrhh_intermedia_par" targetRef="rrhh_intermedia_afi" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_3" sourceRef="rrhh_intermedia_par" targetRef="rrhh_intermedia_pla" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_4" sourceRef="rrhh_intermedia_par" targetRef="rrhh_intermedia_equ" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_5" sourceRef="rrhh_intermedia_afi" targetRef="rrhh_intermedia_jun" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_6" sourceRef="rrhh_intermedia_pla" targetRef="rrhh_intermedia_jun" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_7" sourceRef="rrhh_intermedia_equ" targetRef="rrhh_intermedia_jun" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_8" sourceRef="rrhh_intermedia_jun" targetRef="rrhh_intermedia_ind" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_9" sourceRef="rrhh_intermedia_ind" targetRef="rrhh_intermedia_uni" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_10" sourceRef="rrhh_intermedia_uni" targetRef="rrhh_intermedia_tod" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_11" name="Yes" sourceRef="rrhh_intermedia_tod" targetRef="rrhh_intermedia_cer" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_12" name="No" sourceRef="rrhh_intermedia_tod" targetRef="rrhh_intermedia_com" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_13" sourceRef="rrhh_intermedia_com" targetRef="rrhh_intermedia_uni" />
+    <bpmn:sequenceFlow id="rrhh_intermedia_f0_14" sourceRef="rrhh_intermedia_cer" targetRef="rrhh_intermedia_fin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="rrhh_intermedia_diagrama0" name="Onboarding">
+    <bpmndi:BPMNPlane id="rrhh_intermedia_plano0" bpmnElement="rrhh_intermedia_colab0">
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_pool_agencia" bpmnElement="rrhh_intermedia_pool_agencia" isHorizontal="true">
+        <dc:Bounds x="80" y="60" width="1940" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_carril_rh" bpmnElement="rrhh_intermedia_carril_rh" isHorizontal="true">
+        <dc:Bounds x="110" y="60" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_carril_jef" bpmnElement="rrhh_intermedia_carril_jef" isHorizontal="true">
+        <dc:Bounds x="110" y="210" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_carril_ti" bpmnElement="rrhh_intermedia_carril_ti" isHorizontal="true">
+        <dc:Bounds x="110" y="360" width="1910" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_ini" bpmnElement="rrhh_intermedia_ini">
+        <dc:Bounds x="192" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_con" bpmnElement="rrhh_intermedia_con">
+        <dc:Bounds x="320" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_par" bpmnElement="rrhh_intermedia_par">
+        <dc:Bounds x="527" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_afi" bpmnElement="rrhh_intermedia_afi">
+        <dc:Bounds x="660" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_pla" bpmnElement="rrhh_intermedia_pla">
+        <dc:Bounds x="660" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_equ" bpmnElement="rrhh_intermedia_equ">
+        <dc:Bounds x="660" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_jun" bpmnElement="rrhh_intermedia_jun">
+        <dc:Bounds x="867" y="112" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_ind" bpmnElement="rrhh_intermedia_ind">
+        <dc:Bounds x="1000" y="253" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_uni" bpmnElement="rrhh_intermedia_uni" isMarkerVisible="false">
+        <dc:Bounds x="1207" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_tod" bpmnElement="rrhh_intermedia_tod" isMarkerVisible="false">
+        <dc:Bounds x="1377" y="262" width="46" height="46" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_com" bpmnElement="rrhh_intermedia_com">
+        <dc:Bounds x="1340" y="403" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_cer" bpmnElement="rrhh_intermedia_cer">
+        <dc:Bounds x="1680" y="103" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_rrhh_intermedia_fin" bpmnElement="rrhh_intermedia_fin">
+        <dc:Bounds x="1892" y="117" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_0" bpmnElement="rrhh_intermedia_f0_0">
+        <di:waypoint x="228" y="135" />
+        <di:waypoint x="320" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_1" bpmnElement="rrhh_intermedia_f0_1">
+        <di:waypoint x="440" y="135" />
+        <di:waypoint x="527" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_2" bpmnElement="rrhh_intermedia_f0_2">
+        <di:waypoint x="573" y="135" />
+        <di:waypoint x="660" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_3" bpmnElement="rrhh_intermedia_f0_3">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="285" />
+        <di:waypoint x="660" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_4" bpmnElement="rrhh_intermedia_f0_4">
+        <di:waypoint x="550" y="158" />
+        <di:waypoint x="550" y="435" />
+        <di:waypoint x="660" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_5" bpmnElement="rrhh_intermedia_f0_5">
+        <di:waypoint x="780" y="135" />
+        <di:waypoint x="867" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_6" bpmnElement="rrhh_intermedia_f0_6">
+        <di:waypoint x="780" y="285" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_7" bpmnElement="rrhh_intermedia_f0_7">
+        <di:waypoint x="780" y="435" />
+        <di:waypoint x="890" y="435" />
+        <di:waypoint x="890" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_8" bpmnElement="rrhh_intermedia_f0_8">
+        <di:waypoint x="890" y="158" />
+        <di:waypoint x="890" y="285" />
+        <di:waypoint x="1000" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_9" bpmnElement="rrhh_intermedia_f0_9">
+        <di:waypoint x="1120" y="285" />
+        <di:waypoint x="1207" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_10" bpmnElement="rrhh_intermedia_f0_10">
+        <di:waypoint x="1253" y="285" />
+        <di:waypoint x="1377" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_11" bpmnElement="rrhh_intermedia_f0_11">
+        <di:waypoint x="1400" y="262" />
+        <di:waypoint x="1400" y="135" />
+        <di:waypoint x="1680" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_12" bpmnElement="rrhh_intermedia_f0_12">
+        <di:waypoint x="1400" y="308" />
+        <di:waypoint x="1400" y="403" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_13" bpmnElement="rrhh_intermedia_f0_13">
+        <di:waypoint x="1340" y="435" />
+        <di:waypoint x="1230" y="435" />
+        <di:waypoint x="1230" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_rrhh_intermedia_f0_14" bpmnElement="rrhh_intermedia_f0_14">
+        <di:waypoint x="1800" y="135" />
+        <di:waypoint x="1892" y="135" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
