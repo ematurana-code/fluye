@@ -25,7 +25,7 @@
 - **Dibuja procesos con BPMN 2.0**, el estándar de la OMG: pools, carriles, tareas, decisiones, paralelos, eventos, mensajes entre pools, subprocesos, documentos y notas.
 - **Play paso a paso:** recorre el proceso como si fuera de verdad. En cada decisión preguntas qué camino sigue (o lo dejas al azar), y avisa si algo se atasca: un paso sin salida, un paralelo que nunca se junta o un mensaje que nunca llega.
 - **Revisión mientras dibujas:** el panel avisa qué falta (inicio, fin, pasos sueltos, decisiones sin pregunta) y te lleva al elemento con un clic.
-- **33 plantillas** de 11 áreas (compras, finanzas, recursos humanos, soporte TI, ventas, logística, aduana y más), en tres niveles: simple, intermedia y avanzada.
+- **33 plantillas** de 11 áreas (compras, finanzas, recursos humanos, soporte TI, ventas, logística, comercio exterior y más), en tres niveles: simple, intermedia y avanzada.
 - **Varios diagramas por archivo**, cada uno en su pestaña. Un subproceso se abre en su propia pestaña para dibujar lo que pasa adentro.
 - **Exporta** a BPMN, PNG, SVG, PDF, Word (documentación con la ficha de cada paso) y a una **página web interactiva**: un solo archivo .html que cualquiera abre en el navegador, con el Play incluido.
 - **Compatible:** abre y guarda .bpmn estándar, también los que exportan otras herramientas de modelado (incluidos sus colores).

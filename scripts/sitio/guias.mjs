@@ -270,7 +270,7 @@ function guiaCarriles() {
       ${item('pool', 'Pool', 'Un participante completo con su propio proceso: tu empresa, un cliente, un proveedor. Entre pools no hay flechas normales, solo mensajes.')}
       ${item('carril', 'Carril', 'Un responsable dentro de un pool: un cargo, un área o un sistema. Entre carriles del mismo pool el flujo es directo.')}
     </dl>
-    <p>Regla práctica: si el otro lado no sigue tus reglas ni tu sistema (un cliente, el banco, la Aduana), va en otro pool. Si es parte de tu organización, va en un carril.</p>
+    <p>Regla práctica: si el otro lado no sigue tus reglas ni tu sistema (un cliente, el banco, la aduana), va en otro pool. Si es parte de tu organización, va en un carril.</p>
   </section>
 
   <section class="bloque" aria-labelledby="pasos">

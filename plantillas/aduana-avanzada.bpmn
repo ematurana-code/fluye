@@ -2,13 +2,13 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="aduana_avanzada_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
   <bpmn:collaboration id="aduana_avanzada_colab0">
     <bpmn:participant id="aduana_avanzada_pool_importador" name="Importador (cliente)" processRef="aduana_avanzada_proceso_importador" />
-    <bpmn:participant id="aduana_avanzada_pool_agencia" name="Agencia de aduana" processRef="aduana_avanzada_proceso_agencia" />
-    <bpmn:participant id="aduana_avanzada_pool_aduana" name="Servicio Nacional de Aduanas" processRef="aduana_avanzada_proceso_aduana" />
+    <bpmn:participant id="aduana_avanzada_pool_agencia" name="Agente de aduana" processRef="aduana_avanzada_proceso_agencia" />
+    <bpmn:participant id="aduana_avanzada_pool_aduana" name="Autoridad aduanera" processRef="aduana_avanzada_proceso_aduana" />
     <bpmn:messageFlow id="aduana_avanzada_m0_0" name="Documentos" sourceRef="aduana_avanzada_c_env" targetRef="aduana_avanzada_a_ini" />
-    <bpmn:messageFlow id="aduana_avanzada_m0_1" name="DIN" sourceRef="aduana_avanzada_a_din" targetRef="aduana_avanzada_s_ini" />
-    <bpmn:messageFlow id="aduana_avanzada_m0_2" name="Canal" sourceRef="aduana_avanzada_s_val" targetRef="aduana_avanzada_a_can" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_1" name="Declaración" sourceRef="aduana_avanzada_a_din" targetRef="aduana_avanzada_s_ini" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_2" name="Revisión" sourceRef="aduana_avanzada_s_val" targetRef="aduana_avanzada_a_can" />
     <bpmn:messageFlow id="aduana_avanzada_m0_3" name="Pago" sourceRef="aduana_avanzada_a_pag" targetRef="aduana_avanzada_s_pag" />
-    <bpmn:messageFlow id="aduana_avanzada_m0_4" name="Levante" sourceRef="aduana_avanzada_s_aut" targetRef="aduana_avanzada_a_aut" />
+    <bpmn:messageFlow id="aduana_avanzada_m0_4" name="Autorización" sourceRef="aduana_avanzada_s_aut" targetRef="aduana_avanzada_a_aut" />
     <bpmn:messageFlow id="aduana_avanzada_m0_5" name="Aviso" sourceRef="aduana_avanzada_a_avi" targetRef="aduana_avanzada_c_avi" />
   </bpmn:collaboration>
   <bpmn:process id="aduana_avanzada_proceso_importador" isExecutable="false">
@@ -25,11 +25,11 @@
     <bpmn:startEvent id="aduana_avanzada_c_ini" name="Compra mercadería en el extranjero">
       <bpmn:outgoing>aduana_avanzada_f0_0</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="aduana_avanzada_c_env" name="Enviar los documentos a la agencia">
+    <bpmn:userTask id="aduana_avanzada_c_env" name="Enviar los documentos al agente">
       <bpmn:incoming>aduana_avanzada_f0_0</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_1</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:intermediateCatchEvent id="aduana_avanzada_c_esp" name="Esperar el arribo de la nave">
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_c_esp" name="Esperar la llegada del embarque">
       <bpmn:incoming>aduana_avanzada_f0_1</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_2</bpmn:outgoing>
       <bpmn:timerEventDefinition id="aduana_avanzada_c_esp_def" />
@@ -81,22 +81,22 @@
       <bpmn:incoming>aduana_avanzada_f0_5</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_6</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="aduana_avanzada_a_din" name="Confeccionar y enviar la DIN">
+    <bpmn:userTask id="aduana_avanzada_a_din" name="Preparar y presentar la declaración">
       <bpmn:incoming>aduana_avanzada_f0_6</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_7</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:intermediateCatchEvent id="aduana_avanzada_a_can" name="Llega el canal de aforo">
+    <bpmn:intermediateCatchEvent id="aduana_avanzada_a_can" name="Llega el tipo de revisión">
       <bpmn:incoming>aduana_avanzada_f0_7</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_8</bpmn:outgoing>
       <bpmn:messageEventDefinition id="aduana_avanzada_a_can_def" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:exclusiveGateway id="aduana_avanzada_a_dec" name="¿Qué canal?">
+    <bpmn:exclusiveGateway id="aduana_avanzada_a_dec" name="¿Qué revisión?">
       <bpmn:incoming>aduana_avanzada_f0_8</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_9</bpmn:outgoing>
       <bpmn:outgoing>aduana_avanzada_f0_10</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:subProcess id="aduana_avanzada_a_afo" name="Aforo físico">
-      <bpmn:documentation>El detalle está en la pestaña "Aforo físico".</bpmn:documentation>
+    <bpmn:subProcess id="aduana_avanzada_a_afo" name="Revisión física">
+      <bpmn:documentation>El detalle está en la pestaña "Revisión física".</bpmn:documentation>
       <bpmn:incoming>aduana_avanzada_f0_9</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_11</bpmn:outgoing>
     </bpmn:subProcess>
@@ -105,7 +105,7 @@
       <bpmn:incoming>aduana_avanzada_f0_11</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_12</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="aduana_avanzada_a_pag" name="Pagar derechos e IVA">
+    <bpmn:userTask id="aduana_avanzada_a_pag" name="Pagar aranceles e impuestos">
       <bpmn:incoming>aduana_avanzada_f0_12</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_13</bpmn:outgoing>
     </bpmn:userTask>
@@ -114,7 +114,7 @@
       <bpmn:outgoing>aduana_avanzada_f0_14</bpmn:outgoing>
       <bpmn:messageEventDefinition id="aduana_avanzada_a_aut_def" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:manualTask id="aduana_avanzada_a_ret" name="Retirar la carga del almacén">
+    <bpmn:manualTask id="aduana_avanzada_a_ret" name="Retirar la carga del depósito">
       <bpmn:incoming>aduana_avanzada_f0_14</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_15</bpmn:outgoing>
     </bpmn:manualTask>
@@ -130,8 +130,8 @@
     <bpmn:sequenceFlow id="aduana_avanzada_f0_6" sourceRef="aduana_avanzada_a_rev" targetRef="aduana_avanzada_a_din" />
     <bpmn:sequenceFlow id="aduana_avanzada_f0_7" sourceRef="aduana_avanzada_a_din" targetRef="aduana_avanzada_a_can" />
     <bpmn:sequenceFlow id="aduana_avanzada_f0_8" sourceRef="aduana_avanzada_a_can" targetRef="aduana_avanzada_a_dec" />
-    <bpmn:sequenceFlow id="aduana_avanzada_f0_9" name="Rojo" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_afo" />
-    <bpmn:sequenceFlow id="aduana_avanzada_f0_10" name="Verde" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_uni" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_9" name="Física" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_afo" />
+    <bpmn:sequenceFlow id="aduana_avanzada_f0_10" name="Documental" sourceRef="aduana_avanzada_a_dec" targetRef="aduana_avanzada_a_uni" />
     <bpmn:sequenceFlow id="aduana_avanzada_f0_11" sourceRef="aduana_avanzada_a_afo" targetRef="aduana_avanzada_a_uni" />
     <bpmn:sequenceFlow id="aduana_avanzada_f0_12" sourceRef="aduana_avanzada_a_uni" targetRef="aduana_avanzada_a_pag" />
     <bpmn:sequenceFlow id="aduana_avanzada_f0_13" sourceRef="aduana_avanzada_a_pag" targetRef="aduana_avanzada_a_aut" />
@@ -149,11 +149,11 @@
         <bpmn:flowNodeRef>aduana_avanzada_s_fin</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="aduana_avanzada_s_ini" name="Recibe la DIN">
+    <bpmn:startEvent id="aduana_avanzada_s_ini" name="Recibe la declaración">
       <bpmn:outgoing>aduana_avanzada_f0_17</bpmn:outgoing>
       <bpmn:messageEventDefinition id="aduana_avanzada_s_ini_def" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="aduana_avanzada_s_val" name="Validar la DIN y asignar canal">
+    <bpmn:serviceTask id="aduana_avanzada_s_val" name="Validar la declaración y asignar revisión">
       <bpmn:incoming>aduana_avanzada_f0_17</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f0_18</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -175,16 +175,16 @@
     <bpmn:sequenceFlow id="aduana_avanzada_f0_20" sourceRef="aduana_avanzada_s_aut" targetRef="aduana_avanzada_s_fin" />
   </bpmn:process>
   <bpmn:collaboration id="aduana_avanzada_colab1">
-    <bpmn:participant id="aduana_avanzada_pool_aforo" name="Aforo físico" processRef="aduana_avanzada_proceso_aforo" />
+    <bpmn:participant id="aduana_avanzada_pool_aforo" name="Revisión física" processRef="aduana_avanzada_proceso_aforo" />
   </bpmn:collaboration>
   <bpmn:process id="aduana_avanzada_proceso_aforo" isExecutable="false">
     <bpmn:laneSet id="aduana_avanzada_carriles_aforo">
-      <bpmn:lane id="aduana_avanzada_carril_f_ope" name="Operaciones (agencia)">
+      <bpmn:lane id="aduana_avanzada_carril_f_ope" name="Operaciones (agente)">
         <bpmn:flowNodeRef>aduana_avanzada_f_ini</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_avanzada_f_coo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_avanzada_f_acl</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="aduana_avanzada_carril_f_fis" name="Fiscalizador de Aduana">
+      <bpmn:lane id="aduana_avanzada_carril_f_fis" name="Inspector de aduana">
         <bpmn:flowNodeRef>aduana_avanzada_f_rev</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_avanzada_f_dec</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_avanzada_f_ok</bpmn:flowNodeRef>
@@ -192,10 +192,10 @@
         <bpmn:flowNodeRef>aduana_avanzada_f_obs</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="aduana_avanzada_f_ini" name="Aduana asigna canal rojo">
+    <bpmn:startEvent id="aduana_avanzada_f_ini" name="La aduana pide revisión física">
       <bpmn:outgoing>aduana_avanzada_f1_0</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="aduana_avanzada_f_coo" name="Coordinar hora y lugar con el almacén">
+    <bpmn:userTask id="aduana_avanzada_f_coo" name="Coordinar hora y lugar con el depósito">
       <bpmn:incoming>aduana_avanzada_f1_0</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f1_1</bpmn:outgoing>
     </bpmn:userTask>
@@ -203,12 +203,12 @@
       <bpmn:incoming>aduana_avanzada_f1_1</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f1_2</bpmn:outgoing>
     </bpmn:manualTask>
-    <bpmn:exclusiveGateway id="aduana_avanzada_f_dec" name="¿Coincide con la DIN?">
+    <bpmn:exclusiveGateway id="aduana_avanzada_f_dec" name="¿Coincide con la declaración?">
       <bpmn:incoming>aduana_avanzada_f1_2</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f1_3</bpmn:outgoing>
       <bpmn:outgoing>aduana_avanzada_f1_4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="aduana_avanzada_f_ok" name="Aforo conforme">
+    <bpmn:endEvent id="aduana_avanzada_f_ok" name="Revisión conforme">
       <bpmn:incoming>aduana_avanzada_f1_3</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="aduana_avanzada_f_acl" name="Presentar una aclaración">
@@ -219,7 +219,7 @@
       <bpmn:incoming>aduana_avanzada_f1_5</bpmn:incoming>
       <bpmn:outgoing>aduana_avanzada_f1_6</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="aduana_avanzada_f_obs" name="Aforo con observación">
+    <bpmn:endEvent id="aduana_avanzada_f_obs" name="Revisión con observación">
       <bpmn:incoming>aduana_avanzada_f1_6</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="aduana_avanzada_f1_0" sourceRef="aduana_avanzada_f_ini" targetRef="aduana_avanzada_f_coo" />
@@ -230,7 +230,7 @@
     <bpmn:sequenceFlow id="aduana_avanzada_f1_5" sourceRef="aduana_avanzada_f_acl" targetRef="aduana_avanzada_f_apr" />
     <bpmn:sequenceFlow id="aduana_avanzada_f1_6" sourceRef="aduana_avanzada_f_apr" targetRef="aduana_avanzada_f_obs" />
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama0" name="Despacho">
+  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama0" name="Importación">
     <bpmndi:BPMNPlane id="aduana_avanzada_plano0" bpmnElement="aduana_avanzada_colab0">
       <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_importador" bpmnElement="aduana_avanzada_pool_importador" isHorizontal="true">
         <dc:Bounds x="80" y="60" width="2450" height="150" />
@@ -443,7 +443,7 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama1" name="Aforo físico">
+  <bpmndi:BPMNDiagram id="aduana_avanzada_diagrama1" name="Revisión física">
     <bpmndi:BPMNPlane id="aduana_avanzada_plano1" bpmnElement="aduana_avanzada_colab1">
       <bpmndi:BPMNShape id="DI_aduana_avanzada_pool_aforo" bpmnElement="aduana_avanzada_pool_aforo" isHorizontal="true">
         <dc:Bounds x="80" y="60" width="1260" height="300" />

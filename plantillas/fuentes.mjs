@@ -9,120 +9,121 @@
 const n = (clave, tipo, nombre, carril, col, fila = 0, doc = '') => ({ clave, tipo, nombre, carril, col, fila, doc });
 
 export const PLANTILLAS = [
-  // ---------------------------------------------------------------- Aduana
+  // ---------------------------------------------------------------- Comercio exterior
+  // Procesos de importación como se hacen en cualquier país: nada de siglas ni organismos de uno en particular.
   {
-    id: 'aduana-simple', categoria: 'Aduana', nivel: 'simple',
+    id: 'aduana-simple', categoria: 'Comercio exterior', nivel: 'simple',
     nombre: 'Revisión de documentos de embarque',
-    descripcion: 'Antes de despachar, el ejecutivo revisa que el cliente envió todo y pide lo que falta.',
+    descripcion: 'Antes de declarar una importación, se revisa que el proveedor envió todos los documentos y se pide lo que falta.',
     diagramas: [{
       nombre: 'Revisión de documentos',
-      pools: [{ id: 'agencia', nombre: 'Agencia de aduana', carriles: [{ id: 'ejec', nombre: 'Ejecutivo de cuenta' }] }],
+      pools: [{ id: 'empresa', nombre: 'Empresa importadora', carriles: [{ id: 'ejec', nombre: 'Comercio exterior' }] }],
       nodos: [
-        n('ini', 'inicio', 'Llegan los documentos del cliente', 'ejec', 0),
-        n('rev', 'usuario', 'Revisar factura, BL y certificado de origen', 'ejec', 1, 0, 'Se revisa que la factura, el conocimiento de embarque (BL) y el certificado de origen estén y coincidan entre sí.'),
+        n('ini', 'inicio', 'Llegan los documentos del proveedor', 'ejec', 0),
+        n('rev', 'usuario', 'Revisar factura, documento de transporte y certificado de origen', 'ejec', 1, 0, 'Se revisa que la factura comercial, el documento de transporte y el certificado de origen estén y coincidan entre sí.'),
         n('dec', 'decision', '¿Están completos y correctos?', 'ejec', 2),
-        n('abr', 'usuario', 'Abrir la carpeta de despacho', 'ejec', 3, 0, 'Se crea la carpeta del despacho con los documentos revisados.'),
-        n('fin', 'fin', 'Listo para despachar', 'ejec', 4),
-        n('ped', 'usuario', 'Pedir correcciones al cliente', 'ejec', 2, 1, 'Se envía al cliente la lista de lo que falta o hay que corregir.')
+        n('abr', 'usuario', 'Armar la carpeta de la importación', 'ejec', 3, 0, 'Se arma la carpeta de la importación con los documentos revisados.'),
+        n('fin', 'fin', 'Listo para declarar', 'ejec', 4),
+        n('ped', 'usuario', 'Pedir correcciones al proveedor', 'ejec', 2, 1, 'Se envía al proveedor la lista de lo que falta o hay que corregir.')
       ],
       flujos: [['ini', 'rev'], ['rev', 'dec'], ['dec', 'abr', 'Sí'], ['abr', 'fin'], ['dec', 'ped', 'No'], ['ped', 'rev']]
     }]
   },
   {
-    id: 'aduana-intermedia', categoria: 'Aduana', nivel: 'intermedia',
+    id: 'aduana-intermedia', categoria: 'Comercio exterior', nivel: 'intermedia',
     nombre: 'Despacho de importación',
-    descripcion: 'El despacho dentro de la agencia: documentos, DIN, canal de aforo, pago y retiro de la carga.',
+    descripcion: 'Una importación de principio a fin: documentos, declaración, revisión de la aduana, pago de impuestos y retiro de la carga.',
     diagramas: [{
       nombre: 'Despacho de importación',
       pools: [{
-        id: 'agencia', nombre: 'Agencia de aduana',
-        carriles: [{ id: 'ejec', nombre: 'Ejecutivo de cuenta' }, { id: 'docu', nombre: 'Documentación' }, { id: 'finz', nombre: 'Finanzas' }, { id: 'oper', nombre: 'Operaciones' }]
+        id: 'empresa', nombre: 'Empresa importadora',
+        carriles: [{ id: 'ejec', nombre: 'Comercio exterior' }, { id: 'docu', nombre: 'Documentación' }, { id: 'finz', nombre: 'Finanzas' }, { id: 'oper', nombre: 'Logística' }]
       }],
       nodos: [
-        n('ini', 'inicio', 'El cliente avisa que viene un embarque', 'ejec', 0),
+        n('ini', 'inicio', 'El proveedor avisa que viene un embarque', 'ejec', 0),
         n('rev', 'usuario', 'Revisar los documentos del embarque', 'docu', 1),
         n('dc1', 'decision', '¿Documentos completos?', 'docu', 2),
         n('fal', 'usuario', 'Pedir los documentos que faltan', 'ejec', 2),
-        n('din', 'usuario', 'Confeccionar la DIN', 'docu', 3, 0, 'Se completa la Declaración de Ingreso con los datos de la factura y del transporte.'),
-        n('env', 'servicio', 'Enviar la DIN a Aduana', 'docu', 4),
-        n('can', 'decision', '¿Qué canal asignó Aduana?', 'docu', 5),
-        n('afo', 'manual', 'Presentar la carga al aforo físico', 'oper', 6, 0, 'Con canal rojo, un fiscalizador revisa la mercadería en el almacén.'),
+        n('din', 'usuario', 'Preparar la declaración de importación', 'docu', 3, 0, 'Se completa la declaración aduanera con los datos de la factura y del transporte.'),
+        n('env', 'servicio', 'Presentar la declaración a la aduana', 'docu', 4),
+        n('can', 'decision', '¿Qué revisión asignó la aduana?', 'docu', 5),
+        n('afo', 'manual', 'Presentar la carga a la revisión física', 'oper', 6, 0, 'Si la aduana pide revisión física, un inspector revisa la mercadería en el depósito.'),
         n('uni', 'decision', '', 'docu', 7),
         n('par', 'paralelo', '', 'docu', 8),
-        n('pag', 'usuario', 'Pagar derechos e IVA', 'finz', 9),
+        n('pag', 'usuario', 'Pagar aranceles e impuestos', 'finz', 9),
         n('tra', 'usuario', 'Coordinar el retiro y el transporte', 'oper', 9),
         n('jun', 'paralelo', '', 'oper', 10),
-        n('ret', 'manual', 'Retirar la carga del almacén', 'oper', 11),
-        n('ent', 'usuario', 'Entregar al cliente y cerrar la carpeta', 'ejec', 12),
-        n('fin', 'fin', 'Despacho terminado', 'ejec', 13)
+        n('ret', 'manual', 'Retirar la carga del depósito', 'oper', 11),
+        n('ent', 'usuario', 'Recibir en bodega y cerrar la carpeta', 'ejec', 12),
+        n('fin', 'fin', 'Importación terminada', 'ejec', 13)
       ],
       flujos: [
         ['ini', 'rev'], ['rev', 'dc1'], ['dc1', 'din', 'Sí'], ['dc1', 'fal', 'No'], ['fal', 'rev'], ['din', 'env'], ['env', 'can'],
-        ['can', 'afo', 'Rojo'], ['can', 'uni', 'Verde'], ['afo', 'uni'], ['uni', 'par'], ['par', 'pag'], ['par', 'tra'],
+        ['can', 'afo', 'Física'], ['can', 'uni', 'Documental'], ['afo', 'uni'], ['uni', 'par'], ['par', 'pag'], ['par', 'tra'],
         ['pag', 'jun'], ['tra', 'jun'], ['jun', 'ret'], ['ret', 'ent'], ['ent', 'fin']
       ]
     }]
   },
   {
-    id: 'aduana-avanzada', categoria: 'Aduana', nivel: 'avanzada',
-    nombre: 'Despacho completo: cliente, agencia y Aduana',
-    descripcion: 'El importador, la agencia y el Servicio Nacional de Aduanas intercambian documentos y avisos; el aforo físico va en su propia pestaña.',
+    id: 'aduana-avanzada', categoria: 'Comercio exterior', nivel: 'avanzada',
+    nombre: 'Importación completa: cliente, agente y aduana',
+    descripcion: 'El importador, su agente de aduana y la autoridad aduanera intercambian documentos y avisos; la revisión física va en su propia pestaña.',
     diagramas: [{
-      nombre: 'Despacho',
+      nombre: 'Importación',
       pools: [
         { id: 'importador', nombre: 'Importador (cliente)', carriles: [{ id: 'cli', nombre: 'Importador' }] },
-        { id: 'agencia', nombre: 'Agencia de aduana', carriles: [{ id: 'ejec', nombre: 'Ejecutivo de cuenta' }, { id: 'docu', nombre: 'Documentación' }, { id: 'oper', nombre: 'Operaciones' }] },
-        { id: 'aduana', nombre: 'Servicio Nacional de Aduanas', carriles: [{ id: 'sna', nombre: 'Aduana' }] }
+        { id: 'agencia', nombre: 'Agente de aduana', carriles: [{ id: 'ejec', nombre: 'Ejecutivo de cuenta' }, { id: 'docu', nombre: 'Documentación' }, { id: 'oper', nombre: 'Operaciones' }] },
+        { id: 'aduana', nombre: 'Autoridad aduanera', carriles: [{ id: 'sna', nombre: 'Aduana' }] }
       ],
       nodos: [
         n('c_ini', 'inicio', 'Compra mercadería en el extranjero', 'cli', 0),
-        n('c_env', 'usuario', 'Enviar los documentos a la agencia', 'cli', 1),
-        n('c_esp', 'espera', 'Esperar el arribo de la nave', 'cli', 2),
+        n('c_env', 'usuario', 'Enviar los documentos al agente', 'cli', 1),
+        n('c_esp', 'espera', 'Esperar la llegada del embarque', 'cli', 2),
         n('c_avi', 'recibir', 'Recibe el aviso de carga lista', 'cli', 11),
         n('c_rec', 'manual', 'Recibir la mercadería en bodega', 'cli', 12),
         n('c_fin', 'fin', 'Mercadería en bodega', 'cli', 13),
 
         n('a_ini', 'inicioMensaje', 'Llegan los documentos', 'ejec', 1),
         n('a_rev', 'usuario', 'Revisar los documentos', 'ejec', 2),
-        n('a_din', 'usuario', 'Confeccionar y enviar la DIN', 'docu', 3),
-        n('a_can', 'recibir', 'Llega el canal de aforo', 'docu', 4),
-        n('a_dec', 'decision', '¿Qué canal?', 'docu', 5),
-        n('a_afo', 'subproceso', 'Aforo físico', 'oper', 6, 0, 'El detalle está en la pestaña "Aforo físico".'),
+        n('a_din', 'usuario', 'Preparar y presentar la declaración', 'docu', 3),
+        n('a_can', 'recibir', 'Llega el tipo de revisión', 'docu', 4),
+        n('a_dec', 'decision', '¿Qué revisión?', 'docu', 5),
+        n('a_afo', 'subproceso', 'Revisión física', 'oper', 6, 0, 'El detalle está en la pestaña "Revisión física".'),
         n('a_uni', 'decision', '', 'docu', 7),
-        n('a_pag', 'usuario', 'Pagar derechos e IVA', 'docu', 8),
+        n('a_pag', 'usuario', 'Pagar aranceles e impuestos', 'docu', 8),
         n('a_aut', 'recibir', 'Llega la autorización de retiro', 'docu', 9),
-        n('a_ret', 'manual', 'Retirar la carga del almacén', 'oper', 10),
+        n('a_ret', 'manual', 'Retirar la carga del depósito', 'oper', 10),
         n('a_avi', 'enviar', 'Avisar al cliente', 'ejec', 11),
         n('a_fin', 'fin', 'Despacho terminado', 'ejec', 12),
 
-        n('s_ini', 'inicioMensaje', 'Recibe la DIN', 'sna', 3),
-        n('s_val', 'servicio', 'Validar la DIN y asignar canal', 'sna', 4),
+        n('s_ini', 'inicioMensaje', 'Recibe la declaración', 'sna', 3),
+        n('s_val', 'servicio', 'Validar la declaración y asignar revisión', 'sna', 4),
         n('s_pag', 'recibir', 'Recibe el pago', 'sna', 8),
         n('s_aut', 'servicio', 'Autorizar el retiro', 'sna', 9),
         n('s_fin', 'fin', 'Trámite cerrado', 'sna', 10)
       ],
       flujos: [
         ['c_ini', 'c_env'], ['c_env', 'c_esp'], ['c_esp', 'c_avi'], ['c_avi', 'c_rec'], ['c_rec', 'c_fin'],
-        ['a_ini', 'a_rev'], ['a_rev', 'a_din'], ['a_din', 'a_can'], ['a_can', 'a_dec'], ['a_dec', 'a_afo', 'Rojo'], ['a_dec', 'a_uni', 'Verde'],
+        ['a_ini', 'a_rev'], ['a_rev', 'a_din'], ['a_din', 'a_can'], ['a_can', 'a_dec'], ['a_dec', 'a_afo', 'Física'], ['a_dec', 'a_uni', 'Documental'],
         ['a_afo', 'a_uni'], ['a_uni', 'a_pag'], ['a_pag', 'a_aut'], ['a_aut', 'a_ret'], ['a_ret', 'a_avi'], ['a_avi', 'a_fin'],
         ['s_ini', 's_val'], ['s_val', 's_pag'], ['s_pag', 's_aut'], ['s_aut', 's_fin']
       ],
       mensajes: [
-        ['c_env', 'a_ini', 'Documentos'], ['a_din', 's_ini', 'DIN'], ['s_val', 'a_can', 'Canal'],
-        ['a_pag', 's_pag', 'Pago'], ['s_aut', 'a_aut', 'Levante'], ['a_avi', 'c_avi', 'Aviso']
+        ['c_env', 'a_ini', 'Documentos'], ['a_din', 's_ini', 'Declaración'], ['s_val', 'a_can', 'Revisión'],
+        ['a_pag', 's_pag', 'Pago'], ['s_aut', 'a_aut', 'Autorización'], ['a_avi', 'c_avi', 'Aviso']
       ]
     }, {
-      nombre: 'Aforo físico',
-      pools: [{ id: 'aforo', nombre: 'Aforo físico', carriles: [{ id: 'f_ope', nombre: 'Operaciones (agencia)' }, { id: 'f_fis', nombre: 'Fiscalizador de Aduana' }] }],
+      nombre: 'Revisión física',
+      pools: [{ id: 'aforo', nombre: 'Revisión física', carriles: [{ id: 'f_ope', nombre: 'Operaciones (agente)' }, { id: 'f_fis', nombre: 'Inspector de aduana' }] }],
       nodos: [
-        n('f_ini', 'inicio', 'Aduana asigna canal rojo', 'f_ope', 0),
-        n('f_coo', 'usuario', 'Coordinar hora y lugar con el almacén', 'f_ope', 1),
+        n('f_ini', 'inicio', 'La aduana pide revisión física', 'f_ope', 0),
+        n('f_coo', 'usuario', 'Coordinar hora y lugar con el depósito', 'f_ope', 1),
         n('f_rev', 'manual', 'Revisar la mercadería', 'f_fis', 2),
-        n('f_dec', 'decision', '¿Coincide con la DIN?', 'f_fis', 3),
-        n('f_ok', 'fin', 'Aforo conforme', 'f_fis', 4),
+        n('f_dec', 'decision', '¿Coincide con la declaración?', 'f_fis', 3),
+        n('f_ok', 'fin', 'Revisión conforme', 'f_fis', 4),
         n('f_acl', 'usuario', 'Presentar una aclaración', 'f_ope', 4),
         n('f_apr', 'usuario', 'Revisar y aprobar la aclaración', 'f_fis', 5),
-        n('f_obs', 'fin', 'Aforo con observación', 'f_fis', 6)
+        n('f_obs', 'fin', 'Revisión con observación', 'f_fis', 6)
       ],
       flujos: [['f_ini', 'f_coo'], ['f_coo', 'f_rev'], ['f_rev', 'f_dec'], ['f_dec', 'f_ok', 'Sí'], ['f_dec', 'f_acl', 'No'], ['f_acl', 'f_apr'], ['f_apr', 'f_obs']]
     }]

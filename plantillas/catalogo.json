@@ -2,25 +2,25 @@
  {
   "id": "aduana-simple",
   "nombre": "Revisión de documentos de embarque",
-  "categoria": "Aduana",
+  "categoria": "Comercio exterior",
   "nivel": "simple",
-  "descripcion": "Antes de despachar, el ejecutivo revisa que el cliente envió todo y pide lo que falta.",
+  "descripcion": "Antes de declarar una importación, se revisa que el proveedor envió todos los documentos y se pide lo que falta.",
   "incluye": "un carril y una decisión"
  },
  {
   "id": "aduana-intermedia",
   "nombre": "Despacho de importación",
-  "categoria": "Aduana",
+  "categoria": "Comercio exterior",
   "nivel": "intermedia",
-  "descripcion": "El despacho dentro de la agencia: documentos, DIN, canal de aforo, pago y retiro de la carga.",
+  "descripcion": "Una importación de principio a fin: documentos, declaración, revisión de la aduana, pago de impuestos y retiro de la carga.",
   "incluye": "4 carriles, 2 decisiones y un paralelo"
  },
  {
   "id": "aduana-avanzada",
-  "nombre": "Despacho completo: cliente, agencia y Aduana",
-  "categoria": "Aduana",
+  "nombre": "Importación completa: cliente, agente y aduana",
+  "categoria": "Comercio exterior",
   "nivel": "avanzada",
-  "descripcion": "El importador, la agencia y el Servicio Nacional de Aduanas intercambian documentos y avisos; el aforo físico va en su propia pestaña.",
+  "descripcion": "El importador, su agente de aduana y la autoridad aduanera intercambian documentos y avisos; la revisión física va en su propia pestaña.",
   "incluye": "3 pools que se comunican, 2 decisiones, un plazo y 2 pestañas"
  },
  {

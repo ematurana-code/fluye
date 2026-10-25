@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fluye="http://fluye.app/schema/1.0" id="aduana_simple_definiciones" targetNamespace="http://fluye.app/bpmn" exporter="Fluye" exporterVersion="0.1.0">
   <bpmn:collaboration id="aduana_simple_colab0">
-    <bpmn:participant id="aduana_simple_pool_agencia" name="Agencia de aduana" processRef="aduana_simple_proceso_agencia" />
+    <bpmn:participant id="aduana_simple_pool_empresa" name="Empresa importadora" processRef="aduana_simple_proceso_empresa" />
   </bpmn:collaboration>
-  <bpmn:process id="aduana_simple_proceso_agencia" isExecutable="false">
-    <bpmn:laneSet id="aduana_simple_carriles_agencia">
-      <bpmn:lane id="aduana_simple_carril_ejec" name="Ejecutivo de cuenta">
+  <bpmn:process id="aduana_simple_proceso_empresa" isExecutable="false">
+    <bpmn:laneSet id="aduana_simple_carriles_empresa">
+      <bpmn:lane id="aduana_simple_carril_ejec" name="Comercio exterior">
         <bpmn:flowNodeRef>aduana_simple_ini</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_simple_rev</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>aduana_simple_dec</bpmn:flowNodeRef>
@@ -14,11 +14,11 @@
         <bpmn:flowNodeRef>aduana_simple_ped</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="aduana_simple_ini" name="Llegan los documentos del cliente">
+    <bpmn:startEvent id="aduana_simple_ini" name="Llegan los documentos del proveedor">
       <bpmn:outgoing>aduana_simple_f0_0</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="aduana_simple_rev" name="Revisar factura, BL y certificado de origen">
-      <bpmn:documentation>Se revisa que la factura, el conocimiento de embarque (BL) y el certificado de origen estén y coincidan entre sí.</bpmn:documentation>
+    <bpmn:userTask id="aduana_simple_rev" name="Revisar factura, documento de transporte y certificado de origen">
+      <bpmn:documentation>Se revisa que la factura comercial, el documento de transporte y el certificado de origen estén y coincidan entre sí.</bpmn:documentation>
       <bpmn:incoming>aduana_simple_f0_0</bpmn:incoming>
       <bpmn:incoming>aduana_simple_f0_5</bpmn:incoming>
       <bpmn:outgoing>aduana_simple_f0_1</bpmn:outgoing>
@@ -28,16 +28,16 @@
       <bpmn:outgoing>aduana_simple_f0_2</bpmn:outgoing>
       <bpmn:outgoing>aduana_simple_f0_4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="aduana_simple_abr" name="Abrir la carpeta de despacho">
-      <bpmn:documentation>Se crea la carpeta del despacho con los documentos revisados.</bpmn:documentation>
+    <bpmn:userTask id="aduana_simple_abr" name="Armar la carpeta de la importación">
+      <bpmn:documentation>Se arma la carpeta de la importación con los documentos revisados.</bpmn:documentation>
       <bpmn:incoming>aduana_simple_f0_2</bpmn:incoming>
       <bpmn:outgoing>aduana_simple_f0_3</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="aduana_simple_fin" name="Listo para despachar">
+    <bpmn:endEvent id="aduana_simple_fin" name="Listo para declarar">
       <bpmn:incoming>aduana_simple_f0_3</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="aduana_simple_ped" name="Pedir correcciones al cliente">
-      <bpmn:documentation>Se envía al cliente la lista de lo que falta o hay que corregir.</bpmn:documentation>
+    <bpmn:userTask id="aduana_simple_ped" name="Pedir correcciones al proveedor">
+      <bpmn:documentation>Se envía al proveedor la lista de lo que falta o hay que corregir.</bpmn:documentation>
       <bpmn:incoming>aduana_simple_f0_4</bpmn:incoming>
       <bpmn:outgoing>aduana_simple_f0_5</bpmn:outgoing>
     </bpmn:userTask>
@@ -50,7 +50,7 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="aduana_simple_diagrama0" name="Revisión de documentos">
     <bpmndi:BPMNPlane id="aduana_simple_plano0" bpmnElement="aduana_simple_colab0">
-      <bpmndi:BPMNShape id="DI_aduana_simple_pool_agencia" bpmnElement="aduana_simple_pool_agencia" isHorizontal="true">
+      <bpmndi:BPMNShape id="DI_aduana_simple_pool_empresa" bpmnElement="aduana_simple_pool_empresa" isHorizontal="true">
         <dc:Bounds x="80" y="60" width="920" height="270" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DI_aduana_simple_carril_ejec" bpmnElement="aduana_simple_carril_ejec" isHorizontal="true">
