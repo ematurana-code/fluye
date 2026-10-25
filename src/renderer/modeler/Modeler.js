@@ -37,7 +37,7 @@ import FluyeRules from './rules/FluyeRules.js';
 import FluyeLayouter, { RecorteConexiones } from './layout/FluyeLayouter.js';
 import {
   AgregarCarrilHandler, Carriles, CopiarPegar, CrecimientoAutomatico, FlechasValidas, NombresUnicos, PadreCorrecto, ReglaCrecimiento,
-  TamanoMinimo, UbicacionAutomatica
+  TamanoMinimo, UbicacionAutomatica, PoolBajoOtro, AgregarPoolHandler
 } from './modeling/comportamientos.js';
 import EdicionNombre from './edicion/EdicionNombre.js';
 import MenuRapido from './contexto/MenuRapido.js';
@@ -56,15 +56,17 @@ class RegistroComandos {
   static $inject = ['commandStack'];
   constructor(commandStack) {
     commandStack.registerHandler('carril.agregar', AgregarCarrilHandler);
+    commandStack.registerHandler('pool.agregar', AgregarPoolHandler);
   }
 }
 
 const ModuloFluye = {
   __init__: [
     'fluyeRenderer', 'fluyeRules', 'recorteConexiones', 'padreCorrecto', 'crecimientoAutomatico', 'reglaCrecimiento',
-    'carriles', 'tamanoMinimo', 'flechasValidas', 'nombresUnicos', 'ubicacionAutomatica', 'copiarPegar', 'edicionNombre', 'menuRapido', 'conectarDesdeBorde',
+    'carriles', 'poolBajoOtro', 'tamanoMinimo', 'flechasValidas', 'nombresUnicos', 'ubicacionAutomatica', 'copiarPegar', 'edicionNombre', 'menuRapido', 'conectarDesdeBorde',
     'registroComandos'
   ],
+  poolBajoOtro: ['type', PoolBajoOtro],
   fluyeRenderer: ['type', FluyeRenderer],
   elementFactory: ['type', FluyeElementFactory],
   modeling: ['type', FluyeModeling],
@@ -206,6 +208,50 @@ export default class Modeler {
   renombrarDiagrama(indice, nombre) {
     const d = this.definiciones && this.definiciones.diagrams[indice];
     if (d) d.name = nombre;
+  }
+
+  // Pestaña donde está dibujado el detalle de un subproceso (-1 si todavía no tiene).
+  indiceSubproceso(id) {
+    return ((this.definiciones && this.definiciones.diagrams) || []).findIndex((d) => d.plane && d.plane.bpmnElement && d.plane.bpmnElement.id === id);
+  }
+
+  // Abre la pestaña con el detalle de un subproceso cerrado; si no existe, la crea (con un evento de inicio si el
+  // subproceso está vacío). Lo que pasa adentro se dibuja ahí y el archivo lo guarda como un diagrama más, igual
+  // que los archivos de bpmn.io o Camunda.
+  async abrirSubproceso(id) {
+    const defs = await this._modeloActual();
+    const buscar = (lista) => {
+      for (const fe of lista || []) {
+        if (fe.id === id) return fe;
+        const dentro = es(fe, 'bpmn:SubProcess') && buscar(fe.flowElements);
+        if (dentro) return dentro;
+      }
+      return null;
+    };
+    let sub = null;
+    for (const r of defs.rootElements || []) if (!sub && es(r, 'bpmn:Process')) sub = buscar(r.flowElements);
+    if (!sub) throw new Error('El subproceso ya no está en el diagrama.');
+    let indice = defs.diagrams.findIndex((d) => d.plane && d.plane.bpmnElement === sub);
+    if (indice < 0) {
+      const plano = this.moddle.create('bpmndi:BPMNPlane', { id: nuevoId('BPMNPlane'), bpmnElement: sub });
+      plano.planeElement = [];
+      if (!(sub.flowElements || []).length) {
+        const inicio = this.moddle.create('bpmn:StartEvent', { id: nuevoId('bpmn:StartEvent') });
+        inicio.$parent = sub;
+        sub.get('flowElements').push(inicio);
+        const forma = this.moddle.create('bpmndi:BPMNShape', {
+          id: `DI_${inicio.id}`, bpmnElement: inicio, bounds: this.moddle.create('dc:Bounds', { x: 160, y: 140, width: 36, height: 36 })
+        });
+        forma.$parent = plano;
+        plano.planeElement.push(forma);
+      }
+      const d = this.moddle.create('bpmndi:BPMNDiagram', { id: nuevoId('BPMNDiagram'), name: sub.name || 'Subproceso', plane: plano });
+      plano.$parent = d;
+      d.$parent = defs;
+      defs.diagrams.push(d);
+      indice = defs.diagrams.length - 1;
+    }
+    return this._reabrir(defs, indice);
   }
 
   // Borra el diagrama y los procesos que solo él mostraba. Siempre queda al menos uno.

@@ -478,6 +478,22 @@ modeler.on('commandStack.changed', () => queueMicrotask(actualizarPista));
 modeler.on('fluye.abierto', () => queueMicrotask(actualizarPista));
 modeler.on('fluye.abierto', actualizarRevision);
 
+// ----- subprocesos: el detalle de un subproceso cerrado va en su propia pestaña (se crea la primera vez) -----
+// Se abre desde el menú rápido de la figura o con un clic en su marcador "+".
+function abrirSubproceso(el) {
+  if (!el || !es(el, 'bpmn:SubProcess') || el.collapsed === false) return;
+  const existe = modeler.indiceSubproceso(el.businessObject.id) >= 0;
+  operarDiagrama(() => modeler.abrirSubproceso(el.businessObject.id), { cambia: !existe });
+}
+modeler.on('fluye.subproceso.abrir', ({ elemento }) => abrirSubproceso(elemento));
+modeler.on('element.click', ({ element: el, originalEvent: ev }) => {
+  if (!ev || !el || !es(el, 'bpmn:SubProcess') || el.collapsed === false) return;
+  const caja = canvas.getContainer().getBoundingClientRect(), vb = canvas.viewbox();
+  const x = vb.x + (ev.clientX - caja.left) / vb.scale, y = vb.y + (ev.clientY - caja.top) / vb.scale;
+  const fondo = el.y + el.height;
+  if (Math.abs(x - (el.x + el.width / 2)) <= 12 && fondo - y >= 0 && fondo - y <= 22) abrirSubproceso(el);
+});
+
 // ----- ayuda de la barra de abajo según lo seleccionado -----
 const AYUDAS = {
   nada: 'Arrastra desde la paleta · Selecciona un elemento para agregar el siguiente · Arrastra desde un punto azul para conectar · Espacio + arrastrar para moverte',

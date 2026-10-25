@@ -8,6 +8,13 @@ const TIPOS_CONEXION = /^bpmn:(SequenceFlow|MessageFlow|Association|DataInputAss
 // indice: cuál de los diagramas del archivo se muestra (cada uno es una pestaña); los demás se conservan tal cual.
 export async function importarXml({ moddle, canvas, elementFactory, diagrama, eventBus }, xml, indice = 0) {
   const { rootElement: defs, warnings } = await moddle.fromXML(xml, 'bpmn:Definitions');
+  // Pestañas cuyo diagrama ya no existe (el detalle de un subproceso que se borró) se quitan, y el índice pedido se
+  // corre para seguir apuntando al mismo diagrama.
+  if ((defs.diagrams || []).length > 1) {
+    const vivo = (d) => !!(d.plane && d.plane.bpmnElement);
+    indice -= defs.diagrams.slice(0, indice).filter((d) => !vivo(d)).length;
+    defs.diagrams = defs.diagrams.filter(vivo);
+  }
   if (!defs.diagrams || !defs.diagrams[indice]) indice = 0;
   const plano = defs.diagrams && defs.diagrams[indice] && defs.diagrams[indice].plane;
   if (!plano || !plano.bpmnElement) throw new Error('El archivo no trae un diagrama (le falta la parte gráfica BPMN DI).');

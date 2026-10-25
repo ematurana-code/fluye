@@ -16,6 +16,19 @@ export function carrilesDe(pool) {
   return (pool.children || []).filter(esCarril).sort((a, b) => a.y - b.y);
 }
 
+const SEPARACION_POOLS = 40;
+
+// Dónde va un pool nuevo debajo de otro: mismo borde izquierdo y mismo ancho; si ahí ya hay otro pool, más abajo.
+export function lugarBajoPool(pool, tamano) {
+  const vecinos = ((pool.parent && pool.parent.children) || []).filter((p) => esPool(p) && p !== pool).sort((a, b) => a.y - b.y);
+  let y = pool.y + pool.height + SEPARACION_POOLS;
+  for (const v of vecinos) {
+    const cruza = v.x < pool.x + pool.width && v.x + v.width > pool.x && v.y < y + tamano.height && v.y + v.height > y;
+    if (cruza) y = v.y + v.height + SEPARACION_POOLS;
+  }
+  return { x: pool.x, y, width: pool.width, height: tamano.height };
+}
+
 // ---------- Soltar sobre un carril = el elemento queda en el pool ----------
 
 export class PadreCorrecto extends CommandInterceptor {
@@ -173,6 +186,63 @@ export class AgregarCarrilHandler {
     }
     const ref = esCarril(ctx.elemento) ? ctx.elemento : lista[lista.length - 1];
     ctx.creados = [this._modeling.createShape(nuevo(), { x: getMid(ref).x, y: ref.y + ref.height - 5 }, pool)];
+  }
+
+  execute() { return []; }
+  revert() { return []; }
+}
+
+// ---------- Un pool soltado sobre otro pool (o sobre un carril) queda en el lienzo, debajo de ese pool ----------
+// Así arrastrar "Pool" desde la paleta encima de lo que ya hay lo agrega, en vez de rechazarlo.
+
+export class PoolBajoOtro extends CommandInterceptor {
+  static $inject = ['eventBus', 'modeling'];
+
+  constructor(eventBus, modeling) {
+    super(eventBus);
+    this._modeling = modeling;
+    // Corre después de PadreCorrecto (2000), que ya convirtió un carril apuntado en su pool.
+    this.preExecute('shape.create', 1900, (e) => {
+      const ctx = e.context;
+      if (!esPool(ctx.shape) || !ctx.parent) return;
+      const sobre = esCarril(ctx.parent) ? ctx.parent.parent : ctx.parent;
+      if (!esPool(sobre) || !sobre.parent) return;
+      ctx.parent = sobre.parent;
+      ctx.position = lugarBajoPool(sobre, ctx.shape);
+    });
+    // Cuando un pool crece (un carril nuevo, un paso cerca del borde), los pools que quedan debajo se corren.
+    this.postExecuted('shape.resize', 500, (e) => {
+      const pool = e.context.shape;
+      if (esPool(pool) && pool.parent) this._separar(pool);
+    });
+  }
+
+  _separar(pool) {
+    const abajo = ((pool.parent && pool.parent.children) || [])
+      .filter((p) => esPool(p) && p !== pool && p.y >= pool.y && p.x < pool.x + pool.width && p.x + p.width > pool.x)
+      .sort((a, b) => a.y - b.y);
+    let borde = pool.y + pool.height;
+    for (const p of abajo) {
+      const dy = borde + SEPARACION_POOLS - p.y;
+      if (dy > 0) this._modeling.moveElements([p], { x: 0, y: dy }, pool.parent, { autoResize: false });
+      borde = p.y + p.height;
+    }
+  }
+}
+
+// Comando "Agregar pool debajo" (botón del menú rápido de un pool).
+export class AgregarPoolHandler {
+  static $inject = ['modeling', 'elementFactory'];
+
+  constructor(modeling, elementFactory) {
+    this._modeling = modeling;
+    this._factory = elementFactory;
+  }
+
+  preExecute(ctx) {
+    const pool = ctx.elemento;
+    const nuevo = this._factory.createShape({ type: 'bpmn:Participant' });
+    ctx.creados = [this._modeling.createShape(nuevo, lugarBajoPool(pool, nuevo), pool.parent)];
   }
 
   execute() { return []; }

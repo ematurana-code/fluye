@@ -54,7 +54,8 @@ export default class MotorPlay {
 
   // Elementos de inicio posibles: inicios de primer nivel que no esperan un mensaje de otro pool.
   static inicios(elementos) {
-    const raiz = elementos.filter((e) => es(e, 'bpmn:StartEvent') && !es(e.parent, 'bpmn:SubProcess'));
+    // En la pestaña de un subproceso la raíz del lienzo es el subproceso mismo: sus inicios son de primer nivel.
+    const raiz = elementos.filter((e) => es(e, 'bpmn:StartEvent') && !(es(e.parent, 'bpmn:SubProcess') && e.parent.parent));
     const libres = raiz.filter((e) => !(e.incoming || []).some((c) => es(c, 'bpmn:MessageFlow')));
     return libres.length ? libres : raiz;
   }

@@ -7,7 +7,8 @@ const secuencia = (c) => es(c, 'bpmn:SequenceFlow');
 const entradas = (e) => (e.incoming || []).filter(secuencia);
 const salidas = (e) => (e.outgoing || []).filter(secuencia);
 const nombre = (e) => ((bo(e).name || '').trim());
-const dentroDeSubproceso = (e) => es(e.parent, 'bpmn:SubProcess');
+// (La raíz de la pestaña de un subproceso es el subproceso mismo: lo que cuelga de ella no cuenta como "adentro".)
+const dentroDeSubproceso = (e) => es(e.parent, 'bpmn:SubProcess') && !!e.parent.parent;
 const poolDe = (e) => {
   let p = e.parent;
   while (p && !es(p, 'bpmn:Participant')) p = p.parent;

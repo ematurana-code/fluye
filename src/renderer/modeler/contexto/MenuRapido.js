@@ -6,16 +6,18 @@ const GLIFOS = {
   tarea: `<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="5.5" width="19" height="13" rx="3" fill="${COLORES.tarea.fill}" stroke="${COLORES.tarea.stroke}" stroke-width="1.6"/></svg>`,
   compuerta: `<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2.5 21.5 12 12 21.5 2.5 12z" fill="${COLORES.compuerta.fill}" stroke="${COLORES.compuerta.stroke}" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
   intermedio: `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="9" fill="${COLORES.intermedio.fill}" stroke="${COLORES.intermedio.stroke}" stroke-width="1.5"/><circle cx="12" cy="12" r="6.3" fill="none" stroke="${COLORES.intermedio.stroke}" stroke-width="1.2"/></svg>`,
-  fin: `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="8.5" fill="${COLORES.fin.fill}" stroke="${COLORES.fin.stroke}" stroke-width="3"/></svg>`
+  fin: `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="8.5" fill="${COLORES.fin.fill}" stroke="${COLORES.fin.stroke}" stroke-width="3"/></svg>`,
+  pool: `<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="5" width="19" height="14" rx="1.5" fill="#fff" stroke="${COLORES.tarea.stroke}" stroke-width="1.6"/><path d="M7 5v14" stroke="${COLORES.tarea.stroke}" stroke-width="1.6"/></svg>`,
+  subproceso: `<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="4.5" width="19" height="15" rx="3" fill="${COLORES.tarea.fill}" stroke="${COLORES.tarea.stroke}" stroke-width="1.6"/><path d="M12 9v6M9 12h6" stroke="${COLORES.tarea.stroke}" stroke-width="1.8" stroke-linecap="round"/></svg>`
 };
 
 const boton = (html, clase = '') => `<div class="entry fl-pad ${clase}" draggable="true">${html}</div>`;
 
 export default class MenuRapido {
-  static $inject = ['contextPad', 'elementFactory', 'autoPlace', 'create', 'connect', 'modeling', 'commandStack', 'canvas'];
+  static $inject = ['contextPad', 'elementFactory', 'autoPlace', 'create', 'connect', 'modeling', 'commandStack', 'canvas', 'eventBus'];
 
-  constructor(contextPad, elementFactory, autoPlace, create, connect, modeling, commandStack, canvas) {
-    Object.assign(this, { _factory: elementFactory, _autoPlace: autoPlace, _create: create, _connect: connect, _modeling: modeling, _commandStack: commandStack, _canvas: canvas });
+  constructor(contextPad, elementFactory, autoPlace, create, connect, modeling, commandStack, canvas, eventBus) {
+    Object.assign(this, { _factory: elementFactory, _autoPlace: autoPlace, _create: create, _connect: connect, _modeling: modeling, _commandStack: commandStack, _canvas: canvas, _eventBus: eventBus });
     contextPad.registerProvider(this);
     this._popover = null;
 
@@ -53,6 +55,13 @@ export default class MenuRapido {
       entradas['agregar.intermedio'] = { group: 'agregar', html: boton(GLIFOS.intermedio), title: 'Agregar evento intermedio', action: this._agregar('bpmn:IntermediateThrowEvent') };
       entradas['agregar.fin'] = { group: 'agregar', html: boton(GLIFOS.fin), title: 'Agregar fin', action: this._agregar('bpmn:EndEvent') };
     }
+    // Subproceso cerrado: lo que pasa adentro se dibuja en su propia pestaña (la app la abre o la crea).
+    if (es(el, 'bpmn:SubProcess') && el.collapsed !== false) {
+      entradas['subproceso.abrir'] = {
+        group: 'editar', html: boton(GLIFOS.subproceso), title: 'Abrir el subproceso: dibujar lo que pasa adentro, en su propia pestaña',
+        action: { click: (_e, x) => this._eventBus.fire('fluye.subproceso.abrir', { elemento: x }) }
+      };
+    }
     if (esNodo(el) || esDato(el) || esAnotacion(el)) {
       entradas.conectar = { group: 'editar', html: boton(icono('flujo', 18)), title: 'Conectar con otro elemento (arrastrar)', action: conectar };
     }
@@ -60,6 +69,12 @@ export default class MenuRapido {
       entradas['carril.agregar'] = {
         group: 'editar', html: boton(icono('carril', 18)), title: esPool(el) ? 'Agregar carril' : 'Agregar carril debajo',
         action: { click: (_e, x) => this._commandStack.execute('carril.agregar', { elemento: x }) }
+      };
+    }
+    if (esPool(el)) {
+      entradas['pool.agregar'] = {
+        group: 'editar', html: boton(GLIFOS.pool), title: 'Agregar pool debajo',
+        action: { click: (_e, x) => this._commandStack.execute('pool.agregar', { elemento: x }) }
       };
     }
     if (!esConexion(el) && !esGrupo(el) && !esAnotacion(el)) {

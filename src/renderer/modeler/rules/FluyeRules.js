@@ -25,7 +25,8 @@ export function contenedorDe(el) {
 }
 
 const esRaiz = (el) => el && !el.parent;
-const raizEsProceso = (el) => esRaiz(el) && es(el, 'bpmn:Process');
+// La raíz del lienzo puede ser un proceso o un subproceso detallado en su propia pestaña: los dos reciben figuras.
+const raizEsProceso = (el) => esRaiz(el) && es(el, 'bpmn:Process', 'bpmn:SubProcess');
 
 // ignorar: la flecha que se está reconectando (si no, al mover su punta en la misma figura se encontraría a sí misma).
 function existeConexion(origen, destino, tipo, ignorar) {
@@ -77,6 +78,17 @@ export function puedeSoltar(forma, destino) {
   return false;
 }
 
+// Al crear desde la paleta, un pool también se puede soltar encima de otro pool o de un carril: el comportamiento
+// PoolBajoOtro lo deja en el lienzo, debajo del pool apuntado. (Mover un pool ya dibujado sobre otro sigue sin permitirse.)
+export function puedeCrear(forma, destino) {
+  if (esPool(forma) && (esPool(destino) || esCarril(destino))) {
+    let raiz = destino;
+    while (raiz.parent) raiz = raiz.parent;
+    return es(raiz, 'bpmn:Collaboration');
+  }
+  return puedeSoltar(forma, destino);
+}
+
 export default class FluyeRules extends RuleProvider {
   static $inject = ['eventBus'];
 
@@ -90,11 +102,11 @@ export default class FluyeRules extends RuleProvider {
 
     this.addRule('connection.updateWaypoints', () => true);
 
-    this.addRule('shape.create', (ctx) => puedeSoltar(ctx.shape, ctx.target));
+    this.addRule('shape.create', (ctx) => puedeCrear(ctx.shape, ctx.target));
 
     this.addRule('elements.create', (ctx) => {
       const formas = ctx.elements.filter((e) => !e.waypoints);
-      return formas.every((f) => (f.parent ? true : puedeSoltar(f, ctx.target)));
+      return formas.every((f) => (f.parent ? true : puedeCrear(f, ctx.target)));
     });
 
     this.addRule('elements.move', (ctx) => {
