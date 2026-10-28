@@ -131,12 +131,13 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 .boton-grande { min-height: 56px; padding: 0 26px; font-size: var(--t-texto); }
 .camino-titulo { display: block; font-size: var(--t-frase); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
 /* ---------- portada: el Play andando en la primera pantalla ---------- */
-/* Dos mitades por tono: a la izquierda qué es Fluye y los dos caminos; a la derecha el visor real con el Play andando. */
+/* Dos mitades por tono: a la izquierda qué es Fluye y los dos caminos, todo junto y centrado en alto; a la derecha el
+   visor real con el Play andando. La primera pantalla no pasa de 760 px de alto, para que no quede aire en monitores altos. */
 .boton-grande { min-height: 56px; padding: 0 26px; font-size: var(--t-texto); }
-.escena { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--hueco); min-height: calc(100svh - var(--barra) - 24px); }
-.escena-texto { grid-column: 1 / span 6; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 22px; padding: clamp(28px, 3.4vw, 56px); border-radius: var(--radio); background: var(--hondo); color: #fff; }
+.escena { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--hueco); min-height: clamp(560px, calc(100svh - var(--barra) - 24px), 760px); }
+.escena-texto { grid-column: 1 / span 6; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: clamp(28px, 3.4vw, 56px); border-radius: var(--radio); background: var(--hondo); color: #fff; }
 .escena-texto h1 { font-size: clamp(34px, 2.9vw, 52px); line-height: 1.06; }
-.escena-logo { margin-bottom: auto; line-height: 0; }
+.escena-logo { margin-bottom: 6px; line-height: 0; }
 .escena-bajada { max-width: 46ch; font-size: clamp(17px, 1.25vw, 19px); color: var(--sobre-hondo); }
 .escena-acciones { display: flex; flex-wrap: wrap; gap: var(--hueco); margin-top: 6px; }
 .escena-nota { font-size: var(--t-chico); color: var(--sobre-hondo); }
