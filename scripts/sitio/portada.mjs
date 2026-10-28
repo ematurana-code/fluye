@@ -154,7 +154,7 @@ export function portada({ plantillas, idioma = 'es' }) {
   <div class="escena-visor">
     <div class="visor-marco" data-ui>
       <nav class="visor-pestanas" aria-label="${t.procesos}">
-        ${probar.map((p, i) => `<a href="${escapar(visor(p))}" data-visor data-titulo="${escapar(p.nombre)}"${i === 0 ? ' aria-current="true"' : ''}>${escapar(p.nombre)}</a>`).join('\n        ')}
+        ${probar.map((p, i) => `<a href="${escapar(visor(p))}" data-visor data-titulo="${escapar(p.nombre)}" title="${escapar(p.nombre)}"${i === 0 ? ' aria-current="true"' : ''}>${escapar(p.nombre)}</a>`).join('\n        ')}
         <button type="button" class="visor-pantalla" data-pantalla-completa hidden aria-label="${t.pantalla}" title="${t.pantalla}"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </nav>
       <iframe src="${escapar(visor(primera))}" title="${escapar(t.visorDe(primera.nombre))}" allow="fullscreen" allowfullscreen></iframe>

@@ -145,8 +145,8 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 .escena-pista { font-size: var(--t-chico); color: var(--sobre-hondo); }
 /* El visor como pieza del programa: sus pestañas de procesos y el lienzo con el Play. */
 .visor-marco { flex: 1; display: flex; flex-direction: column; min-height: 440px; border-radius: 10px; overflow: hidden; background: #fff; }
-.visor-pestanas { display: flex; align-items: center; gap: 4px; padding: 6px; background: #eef2f8; overflow-x: auto; }
-.visor-pestanas a { padding: 8px 12px; border-radius: 6px; font-size: var(--t-chico); font-weight: 600; color: var(--tinta-2); text-decoration: none; white-space: nowrap; transition: background-color .15s, color .15s; }
+.visor-pestanas { display: flex; align-items: center; gap: 4px; padding: 6px; background: #eef2f8; }
+.visor-pestanas a { padding: 8px 12px; border-radius: 6px; font-size: var(--t-chico); font-weight: 600; color: var(--tinta-2); text-decoration: none; white-space: nowrap; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; transition: background-color .15s, color .15s; }
 .visor-pestanas a:hover { background: #dfe6f1; color: var(--tinta); }
 .visor-pestanas a[aria-current="true"] { background: #fff; color: var(--azul); }
 .visor-pantalla { display: grid; place-items: center; flex: none; width: 36px; height: 36px; margin-left: auto; border: 0; border-radius: 6px; background: transparent; color: var(--tinta-2); cursor: pointer; }

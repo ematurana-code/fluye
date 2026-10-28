@@ -588,7 +588,17 @@ if (!archivo.esEscritorio) {
   });
   // Instalable y sin internet: el service worker guarda la app en el navegador (no aplica a la app de escritorio ni a
   // la página abierta como archivo).
-  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch((e) => console.warn('Sin modo sin internet:', e));
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    // Cuando se publica una versión nueva, el service worker la toma y pasa a controlar la página: sin cambios sin
+    // guardar se recarga sola; con cambios, se avisa para guardar primero (la primera instalación no recarga).
+    const habia = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!habia) return;
+      if (hayCambios()) aviso('Hay una versión nueva de Fluye. Guarda tu trabajo y recarga la página para usarla.', 'ok', 10000);
+      else location.reload();
+    });
+    navigator.serviceWorker.register('sw.js').catch((e) => console.warn('Sin modo sin internet:', e));
+  }
 }
 
 // Pedidos de la ventana de escritorio (cerrar con cambios, abrir por doble clic en un .bpmn).

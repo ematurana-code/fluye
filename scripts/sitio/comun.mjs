@@ -84,7 +84,7 @@ export const TEXTOS = {
 export const escapar = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // El logo de Fluye (la ola) en línea, para no depender de una imagen.
-export const LOGO = (tam = 30) => `<svg viewBox="0 0 32 32" width="${tam}" height="${tam}" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="6.5" cy="20.5" r="2.5" fill="#60a5fa"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff"/></svg>`;
+export const LOGO = (tam = 30) => `<svg viewBox="0 0 32 32" width="${tam}" height="${tam}" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><path d="M6.5 20.5c3.4 0 4.2-9 8.4-9s5 9 8.4 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="6.5" cy="20.5" r="3.9" fill="#1e3a8a"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="2.6" stroke-linejoin="round"/><circle cx="6.5" cy="20.5" r="2.5" fill="#93c5fd"/><path d="M22.4 16.6 27 20.5l-4.6 3.9z" fill="#fff" stroke="#fff" stroke-width=".6" stroke-linejoin="round"/></svg>`;
 
 // Íconos chicos que se repiten: la flecha de las piezas que son enlaces y el triángulo del Play.
 export const FLECHA = '<svg class="pieza-flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
