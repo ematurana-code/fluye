@@ -11,6 +11,10 @@ const SUBIDA = 'https://www.googleapis.com/upload/drive/v3';
 const CARPETA = 'application/vnd.google-apps.folder';
 
 export const disponible = !!DRIVE_CLIENT_ID && !window.fluyeEscritorio;
+// En la extensión de Chrome y Edge no se puede cargar código de internet (Manifest V3): el permiso se pide con
+// chrome.identity.launchWebAuthFlow, que abre la misma ventana de Google y devuelve el permiso a la extensión.
+// Su dirección de regreso (https://<id de la extensión>.chromiumapp.org/) tiene que estar autorizada en el cliente.
+const enExtension = typeof chrome !== 'undefined' && !!chrome.identity?.launchWebAuthFlow;
 export const esRutaDrive = (ruta) => typeof ruta === 'string' && ruta.startsWith('drive:');
 const idDe = (ruta) => ruta.slice('drive:'.length);
 
@@ -21,7 +25,7 @@ let gis = null, token = null, vence = 0, carpeta = null;
 // Carga Google Identity Services una sola vez (se llama también al abrir los menús, para que el permiso se pida
 // todavía dentro del clic de la persona y el navegador no bloquee la ventana de Google).
 export function preparar() {
-  if (!disponible) return Promise.resolve(null);
+  if (!disponible || enExtension) return Promise.resolve(null);
   if (window.google?.accounts?.oauth2) gis = Promise.resolve(window.google.accounts.oauth2);
   if (!gis) {
     gis = new Promise((resolver, rechazar) => {
@@ -34,8 +38,25 @@ export function preparar() {
   return gis;
 }
 
+async function accesoExtension() {
+  const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  url.search = new URLSearchParams({ client_id: DRIVE_CLIENT_ID, response_type: 'token', redirect_uri: chrome.identity.getRedirectURL(), scope: ALCANCE, include_granted_scopes: 'true' });
+  let regreso;
+  try {
+    regreso = await chrome.identity.launchWebAuthFlow({ url: url.href, interactive: true });
+  } catch {
+    throw new Cancelado();
+  }
+  const r = new URLSearchParams(new URL(regreso).hash.slice(1));
+  if (r.get('error')) throw r.get('error') === 'access_denied' ? new Cancelado() : new Error('Google no dio acceso a tu Drive.');
+  token = r.get('access_token');
+  vence = Date.now() + Number(r.get('expires_in') || 3600) * 1000;
+  return token;
+}
+
 async function acceso() {
   if (token && Date.now() < vence - 60000) return token;
+  if (enExtension) return accesoExtension();
   const oauth2 = await preparar();
   return new Promise((resolver, rechazar) => {
     const cliente = oauth2.initTokenClient({

@@ -1,5 +1,5 @@
 // Genera build/icono.png (256 px), build/icono.ico (16 a 256 px) y los íconos de la versión web instalable
-// (build/icono-192.png y build/icono-512.png) desde un SVG, dibujándolo con un Chrome sin ventana.
+// y de la extensión (build/icono-16, 32, 48, 128, 192 y 512.png) desde un SVG, dibujándolo con un Chrome sin ventana.
 // Uso: node scripts/generar-icono.mjs [build/icono.svg]
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -10,7 +10,7 @@ import { CDP, lanzarChrome, paginaPrincipal, sleep } from './cdp.mjs';
 const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
 const origen = process.argv[2] || join(raiz, 'build', 'icono.svg');
 const TAMANOS = [16, 24, 32, 48, 64, 128, 256];
-const WEB = [192, 512];
+const WEB = [16, 32, 48, 128, 192, 512];
 const svg64 = readFileSync(origen).toString('base64');
 const temporal = mkdtempSync(join(tmpdir(), 'fluye-icono-'));
 
