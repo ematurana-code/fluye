@@ -159,14 +159,13 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 @keyframes subir { from { transform: translateY(105%); } }
 @keyframes aparecer { from { opacity: 0; transform: translateY(14px); } }
 
-/* ---------- "Así se usa": lo que haces y lo que Fluye devuelve, en una columna ---------- */
-.uso { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--hueco); }
-.uso > h2, .uso-pasos { grid-column: 4 / span 6; }
-.uso > h2 { margin-bottom: 56px; }
-.uso-pasos { display: grid; gap: 88px; padding: 0; list-style: none; }
+/* ---------- "Así se usa": cada paso en una fila, el texto en su pieza y al lado la pantalla real que lo hace ---------- */
+.uso-pasos { display: grid; gap: var(--hueco); padding: 0; list-style: none; }
+.uso-paso { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--hueco); }
+.uso-texto { grid-column: 1 / span 5; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: clamp(24px, 2.8vw, 44px); }
 .uso-frase { font-size: var(--t-frase); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
-.uso-llamado { margin-top: 16px; padding: 20px 22px; border-radius: var(--radio); background: var(--pieza); font-size: var(--t-texto); }
-.uso-salida { margin: 16px 0 0 56px; }
+.uso-llamado { max-width: 44ch; font-size: var(--t-texto); color: var(--tinta-2); }
+.uso-salida { grid-column: 6 / -1; }
 /* Recortes de las capturas reales (2880 x 1800): ancho = 2000 / ancho del recorte y márgenes = -x0 y -y0 sobre el mismo
    ancho, medidos en la captura vista a 2000 px. Cada recorte muestra la parte del programa que hace ese paso. */
 .uso-pantalla { position: relative; overflow: hidden; border-radius: var(--radio); background: #fff; }
@@ -175,7 +174,7 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 .uso-editor img { width: 158.7%; margin: -14.3% 0 0 0; }
 .uso-play { aspect-ratio: 16 / 9; }
 .uso-play img { width: 222.2%; margin: -76.7% 0 0 -66.7%; }
-.uso-final { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); align-items: end; gap: clamp(20px, 3vw, 48px); margin-left: 0; margin-right: -50%; padding: clamp(20px, 2.4vw, 36px) clamp(20px, 2.4vw, 36px) 0; border-radius: var(--radio); background: var(--decision); }
+.uso-final { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); align-items: end; gap: clamp(20px, 3vw, 48px); padding: clamp(20px, 2.4vw, 36px) clamp(20px, 2.4vw, 36px) 0; border-radius: var(--radio); background: var(--decision); }
 .uso-celular { aspect-ratio: 780 / 1240; border: 7px solid var(--tinta); border-bottom: 0; border-radius: 28px 28px 0 0; }
 .uso-celular img { width: 100%; }
 .uso-formatos { align-self: center; display: grid; gap: 14px; padding: 0 0 clamp(20px, 2.4vw, 36px); list-style: none; }
@@ -480,8 +479,7 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   .escena-texto, .escena-visor { grid-column: 1 / -1; }
   .escena { min-height: 0; }
   .escena-visor { height: 64svh; }
-  .uso > h2, .uso-pasos { grid-column: 2 / span 10; }
-  .uso-final { margin-right: 0; }
+  .uso-texto, .uso-salida { grid-column: 1 / -1; }
   .guia-bpmn, .guia-flujo, .guia-simbolos, .guia-carriles { grid-column: span 6; }
   .preguntas-indice { grid-column: 1 / span 6; }
   .preguntas-panel { grid-column: 7 / -1; }
@@ -510,10 +508,8 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   .titulo-mascara .linea, .titulo-mascara .linea > span { display: inline; }
   .titulo-mascara .linea > span { animation: none; }
   .escena-acciones .boton, .final-acciones .boton { flex: 1 1 100%; }
-  .uso > h2, .uso-pasos { grid-column: 1 / -1; padding-inline: 8px; }
-  .uso > h2 { margin-bottom: 32px; }
-  .uso-pasos { gap: 56px; }
-  .uso-salida { margin-left: 0; }
+  .uso-pasos { gap: 28px; }
+  .uso-paso { gap: 6px; }
   .uso-final { grid-template-columns: minmax(0, 150px) minmax(0, 1fr); }
   .aprende-lista a { grid-template-columns: 96px minmax(0, 1fr); }
   .aprende-lista .pieza-flecha { display: none; }

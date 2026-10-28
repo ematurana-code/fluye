@@ -35,6 +35,7 @@ const TX = {
     visorDe: (n) => `Visor de Fluye: ${n}`, procesos: 'Procesos para recorrer', pista: 'Está andando: en cada decisión, elige tú el camino.',
     pantalla: 'Pantalla completa',
     usoTitulo: 'Así se usa Fluye',
+    usoTexto: 'Tres pasos, del primer borrador al proceso que todos entienden.',
     uso: [
       ['Primero, dibuja el proceso.', 'Arrastra pasos, decisiones y responsables desde la paleta. Las flechas se trazan solas y el panel te avisa lo que falta.',
         'El editor de Fluye: la paleta de figuras, un proceso de compras en dos carriles y el panel que resume el diagrama.'],
@@ -86,6 +87,7 @@ const TX = {
     visorDe: (n) => `Fluye viewer: ${n}`, procesos: 'Processes to walk through', pista: 'It is running: at each decision, you choose the path.',
     pantalla: 'Full screen',
     usoTitulo: 'How to use Fluye',
+    usoTexto: 'Three steps, from first draft to a process everyone understands.',
     uso: [
       ['First, draw the process.', 'Drag steps, decisions and roles from the palette. Arrows route themselves and the panel tells you what is missing.',
         'The Fluye editor: the shape palette, a two-lane purchasing process and the panel that summarizes the diagram.'],
@@ -162,7 +164,10 @@ export function portada({ plantillas, idioma = 'es' }) {
 </section>
 
 <section class="uso" aria-labelledby="uso-titulo">
-  <h2 id="uso-titulo" class="entra">${t.usoTitulo}</h2>
+  <div class="cabeza entra">
+    <h2 id="uso-titulo">${t.usoTitulo}</h2>
+    <p>${t.usoTexto}</p>
+  </div>
   <ol class="uso-pasos">
     ${t.uso.map(([frase, texto, alt], i) => {
       const f = PANTALLAS[i];
@@ -171,8 +176,10 @@ export function portada({ plantillas, idioma = 'es' }) {
         ? `<div class="uso-salida uso-final">${pantalla}<ul class="uso-formatos">${t.formatos.map(([n, d]) => `<li><strong>${n}</strong><span>${d}</span></li>`).join('')}</ul></div>`
         : `<div class="uso-salida">${pantalla}</div>`;
       return `<li class="uso-paso entra">
-      <p class="uso-frase">${frase}</p>
-      <p class="uso-llamado">${texto}</p>
+      <div class="pieza uso-texto">
+        <p class="uso-frase">${frase}</p>
+        <p class="uso-llamado">${texto}</p>
+      </div>
       ${salida}
     </li>`;
     }).join('\n    ')}
