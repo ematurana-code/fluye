@@ -34,6 +34,10 @@ writeFileSync(join(carpeta, 'manifest.json'), JSON.stringify({
   version,
   description: 'Dibuja procesos BPMN y de flujo y recórrelos paso a paso con un Play. Gratis, de código abierto y sin internet.',
   homepage_url: 'https://ematurana-code.github.io/fluye/',
+  // Clave pública fija: el ID queda siempre jlkmoecmeldboapiaepbpgljlmmmpfpn (también al cargarla descomprimida) y su
+  // dirección de regreso de Google, https://jlkmoecmeldboapiaepbpgljlmmmpfpn.chromiumapp.org/, está autorizada en el
+  // cliente de Drive. La clave privada no se publica (F:\Fluye\fluye-extension-clave-privada.pem).
+  key: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAynPUdf9uz9lfne49bteM+RdffqGT0P9HCOx9F0UH7nUCNQv566qCDtjOq4N8OyCSObG/crcOh63+mbpFhWYeIpjqsq4PN1LPZUPZzt62JPxx+9LEVd9Pvi1C+XH4zQjVYMdRBu/MF1OvPrU5xym0RcDT4sfgix9yK/cQXynxa4oTVwMO19ZuHPLEA9TNfMYwoatVPqHzGstXVBLlYiCHUKK9RtWwCpehu2Xen20t1oM67XFYvbIzppyf3MYcsWw0vHiAeVrvNONOAedgiHzuKRuzdUtT90EtAxWiocCiP7mCEWxT02ua6A4ZCQ2eHe6sOUIEMFMk92ULQFSYmq3JvQIDAQAB',
   icons: iconos,
   action: { default_title: 'Abrir Fluye', default_icon: iconos },
   background: { service_worker: 'fondo.js' },
