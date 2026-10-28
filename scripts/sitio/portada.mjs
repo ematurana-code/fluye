@@ -150,6 +150,7 @@ export function portada({ plantillas, idioma = 'es' }) {
     <p class="escena-bajada">${t.bajada}</p>
     <div class="escena-acciones">
       <a class="boton boton-grande boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
+      <a class="boton boton-grande" href="${r}app/?instalar=1">${INSTALAR}${t.instalar}</a>
       <a class="boton boton-grande" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
     </div>
     <p class="escena-nota">${t.nota}</p>
@@ -235,6 +236,7 @@ export function portada({ plantillas, idioma = 'es' }) {
   <h2 id="final-titulo" class="entra">${t.cierreTitulo}</h2>
   <div class="final-acciones entra" style="--i:1">
     <a class="boton boton-grande boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
+    <a class="boton boton-grande" href="${r}app/?instalar=1">${INSTALAR}${t.instalar}</a>
     <a class="boton boton-grande" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
   </div>
   <p class="final-codigo entra" style="--i:2">${t.codigo}</p>
