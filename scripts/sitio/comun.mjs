@@ -88,7 +88,7 @@ export const PLAY = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden
 // El nombre del pie, construido con un bloque por letra (alturas y colores fijos).
 const BLOQUES = [['F', '100%', '#ffffff'], ['L', '76%', '#dce6fd'], ['U', '62%', '#3b82f6'], ['Y', '88%', '#93b4f7'], ['E', '70%', '#ffffff']];
 
-const enlacesPie = (r, areas, idioma) => {
+const enlacesPie = (r, idioma) => {
   const t = TEXTOS[idioma], p = t.pie, rutas = RUTAS[idioma];
   return `
   <div class="pie-columnas">
@@ -99,10 +99,6 @@ const enlacesPie = (r, areas, idioma) => {
         <li><a href="${r}app/">${p.probarNavegador}</a></li>
         <li><a href="${VERSIONES}">${p.versiones}</a></li>
       </ul>
-    </div>
-    <div>
-      <h2>${t.plantillas}</h2>
-      <ul>${areas.map((a) => `<li><a href="${r}${rutas.plantillas}#${a.ruta}">${escapar(a.nombre)}</a></li>`).join('')}</ul>
     </div>
     <div>
       <h2>${t.guias}</h2>
@@ -128,7 +124,7 @@ const enlacesPie = (r, areas, idioma) => {
  * la profundidad. esquema: objetos JSON-LD (datos estructurados para Google). alternas: { es, en } con la ruta de esta
  * misma página en cada idioma (enlaces hreflang y el cambio de idioma de la barra).
  */
-export function pagina({ ruta, titulo, descripcion, cuerpo, esquema = [], indexar = true, imagen = 'og.png', areas = [], clase = '', base = '', idioma = 'es', alternas = null }) {
+export function pagina({ ruta, titulo, descripcion, cuerpo, esquema = [], indexar = true, imagen = 'og.png', clase = '', base = '', idioma = 'es', alternas = null }) {
   const r = '../'.repeat(ruta.split('/').filter(Boolean).length);
   const t = TEXTOS[idioma], rutas = RUTAS[idioma];
   const url = SITIO + ruta;
@@ -173,7 +169,6 @@ ${datos}
     <div class="barra-enlaces">
       <a class="barra-nombre" href="${r}${rutas.raiz}" translate="no">Fluye</a>
       <nav aria-label="${t.principal}">
-        <a href="${r}${rutas.plantillas}">${t.plantillas}</a>
         <a href="${r}${rutas.guias}">${t.guias}</a>
         <a href="${DESCARGA}">${t.descargar}</a>
         <a href="${REPO}">${t.codigo}</a>
@@ -188,7 +183,7 @@ ${cuerpo}
 </main>
 <footer class="pie">
   <div class="pie-bloques" aria-hidden="true">${BLOQUES.map(([l, alto, color]) => `<span style="--alto:${alto};--fondo-letra:${color}">${l}</span>`).join('')}</div>
-  ${enlacesPie(r, areas, idioma)}
+  ${enlacesPie(r, idioma)}
   <div class="pie-final">
     <p>${t.pie.final}</p>
     <a class="boton" href="${DESCARGA}">${t.pie.boton}</a>

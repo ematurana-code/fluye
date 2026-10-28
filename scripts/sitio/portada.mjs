@@ -1,13 +1,16 @@
-// Portada: lo primero es usar Fluye (abrirlo en el navegador o descargarlo); después, empezar desde una plantilla,
-// probar el Play en el visor real, las guías, las preguntas frecuentes y el cierre. Mismo diseño en los dos idiomas (TX).
+// Portada: lo primero es usar Fluye (abrirlo en el navegador o descargarlo); después, probar el Play en el visor real,
+// las guías, las preguntas frecuentes y el cierre. Las plantillas se descubren dentro de Fluye, no aquí (así lo pidió el
+// usuario); sus páginas siguen para quien las busca en Google. Mismo diseño en los dos idiomas (TX).
 import { DESCARGA, FLECHA, PESO, REPO, RUTAS, SITIO, VERSION, escapar, urlVisor } from './comun.mjs';
-import { catalogo } from './plantillas.mjs';
-import { SIMBOLOS } from './guias.mjs';
+import { SIMBOLOS, medidas } from './guias.mjs';
 
 // Logo de Windows (cuatro cuadros) para el botón de descarga.
 const WINDOWS = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5.5 10.5 4.5v7H3zM12 4.3 21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z" fill="currentColor"/></svg>';
 // Flecha de "abrir" para el botón principal.
 const ABRIR = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+// Color y lugar de cada tarjeta de guía (los mismos del índice de guías).
+const CLASES_GUIA = [' pieza-tarea guia-bpmn', ' guia-flujo', ' guia-simbolos', ' pieza-2 guia-carriles'];
 
 // Las plantillas que se pueden cargar en el visor de la portada (por id, valen en los dos idiomas).
 const PARA_PROBAR = ['compras-simple', 'ti-intermedia', 'web-intermedia', 'atencion-intermedia', 'aduana-intermedia', 'rrhh-avanzada'];
@@ -37,18 +40,18 @@ const TX = {
       ['Estándar BPMN 2.0', 'Archivos .bpmn que abren otros programas.', 'exclusiva'],
       ['Play paso a paso', 'Recorre el proceso y avisa dónde se atasca.', 'fin']
     ],
-    plantillasTitulo: '33 plantillas para empezar',
-    plantillasTexto: (n) => `Procesos armados de ${n} áreas en tres niveles. Elige uno, mira su diagrama y ábrelo en Fluye para ajustarlo a tu organización.`,
     pruebaTitulo: 'Pruébalo aquí: dale Play',
     pruebaTexto: 'El visor real de Fluye. Pulsa Play y, en cada decisión, elige por dónde sigue el proceso.',
     visorDe: (n) => `Visor de Fluye: ${n}`, elige: 'Elige un proceso', nivelDe: (p) => `${p.categoria}, nivel ${p.nivelNombre.toLowerCase()}`,
     pantalla: 'Pantalla completa', pestana: 'Abrir en otra pestaña',
     guiasTitulo: 'Aprende a dibujar procesos',
     guiasTexto: 'Guías cortas en español, con ejemplos que puedes recorrer con el Play.',
-    guias: [['que-es-bpmn/', 'Qué es BPMN', 'El estándar para dibujar procesos: de dónde viene, sus figuras y cuándo conviene usarlo.'],
-      ['diagrama-de-flujo/', 'Cómo hacer un diagrama de flujo', 'Siete pasos, del primer borrador al proceso que se entiende a la primera.'],
-      ['simbolos-bpmn/', 'Símbolos BPMN', 'Qué significa cada figura, con su dibujo.'],
-      ['diagrama-de-carriles/', 'Diagrama de carriles', 'Cómo mostrar quién hace cada paso y dónde el trabajo cambia de manos.']],
+    // Cada guía con el diagrama de su ejemplo (la misma vista que en el índice de guías).
+    guias: [['que-es-bpmn/', 'Qué es BPMN', 'El estándar para dibujar procesos: de dónde viene, sus figuras y cuándo conviene usarlo.', 'solicitud-de-vacaciones'],
+      ['diagrama-de-flujo/', 'Cómo hacer un diagrama de flujo', 'Siete pasos, del primer borrador al proceso que se entiende a la primera.', 'solicitud-de-compra'],
+      ['simbolos-bpmn/', 'Símbolos BPMN', 'Qué significa cada figura, con su dibujo.', 'inicio-de-sesion-con-bloqueo-por-intentos'],
+      ['diagrama-de-carriles/', 'Diagrama de carriles', 'Cómo mostrar quién hace cada paso y dónde el trabajo cambia de manos.', 'ticket-de-mesa-de-ayuda']],
+    ejemploDe: (g) => `Diagrama de ejemplo de la guía: ${g}`,
     preguntasTitulo: 'Preguntas frecuentes',
     preguntasTexto: `Si te queda otra duda, escríbela en el <a href="${REPO}/issues">repositorio de GitHub</a>.`,
     celularNota: 'Así se ve en un celular la página que exporta Fluye, con el Play.',
@@ -89,18 +92,17 @@ const TX = {
       ['BPMN 2.0 standard', '.bpmn files that open in other tools.', 'exclusiva'],
       ['Step-by-step Play', 'Walks through the process and flags where it gets stuck.', 'fin']
     ],
-    plantillasTitulo: '33 templates to start from',
-    plantillasTexto: (n) => `Ready-made processes from ${n} areas at three levels. Pick one, preview its diagram and open it in Fluye to fit your organization.`,
     pruebaTitulo: 'Try it here: press Play',
     pruebaTexto: 'The real Fluye viewer. Press Play and choose the path at each decision. The viewer labels are in Spanish.',
     visorDe: (n) => `Fluye viewer: ${n}`, elige: 'Choose a process', nivelDe: (p) => `${p.categoria}, ${p.nivelNombre.toLowerCase()}`,
     pantalla: 'Full screen', pestana: 'Open in a new tab',
     guiasTitulo: 'Learn to draw processes',
     guiasTexto: 'Short guides with examples you can walk through with Play.',
-    guias: [['what-is-bpmn/', 'What is BPMN', 'The standard for drawing processes: where it comes from, its shapes and when to use it.'],
-      ['how-to-make-a-flowchart/', 'How to make a flowchart', 'Seven steps from first draft to a process people understand at first glance.'],
-      ['bpmn-symbols/', 'BPMN symbols', 'What every shape means, with its drawing.'],
-      ['swimlane-diagram/', 'Swimlane diagram', 'How to show who does each step and where work changes hands.']],
+    guias: [['what-is-bpmn/', 'What is BPMN', 'The standard for drawing processes: where it comes from, its shapes and when to use it.', 'vacation-request'],
+      ['how-to-make-a-flowchart/', 'How to make a flowchart', 'Seven steps from first draft to a process people understand at first glance.', 'purchase-request'],
+      ['bpmn-symbols/', 'BPMN symbols', 'What every shape means, with its drawing.', 'login-with-lockout-after-failed-attempts'],
+      ['swimlane-diagram/', 'Swimlane diagram', 'How to show who does each step and where work changes hands.', 'help-desk-ticket']],
+    ejemploDe: (g) => `Example diagram for the guide: ${g}`,
     preguntasTitulo: 'Frequently asked questions',
     preguntasTexto: `Still have a question? Ask it in the <a href="${REPO}/issues">GitHub repository</a>.`,
     celularNota: 'The page Fluye exports, open on a phone with Play.',
@@ -119,7 +121,7 @@ const TX = {
   }
 };
 
-export function portada({ plantillas, areas, idioma = 'es' }) {
+export function portada({ plantillas, idioma = 'es' }) {
   const t = TX[idioma], rutas = RUTAS[idioma];
   const ruta = rutas.raiz;
   const r = '../'.repeat(ruta.split('/').filter(Boolean).length);
@@ -151,14 +153,6 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
   ${t.hechos.map(([titulo, texto, simbolo]) => `<p class="dato-clave">${SIMBOLOS[simbolo]}<span><strong>${titulo}</strong>${texto}</span></p>`).join('\n  ')}
 </section>
 
-<section class="plantillas-portada" aria-labelledby="plantillas-titulo">
-  <div class="cabeza entra">
-    <h2 id="plantillas-titulo">${t.plantillasTitulo}</h2>
-    <p>${t.plantillasTexto(areas.length)}</p>
-  </div>
-  ${catalogo(r, plantillas, areas, { idioma })}
-</section>
-
 <section class="prueba" aria-labelledby="prueba-titulo">
   <div class="cabeza entra">
     <h2 id="prueba-titulo">${t.pruebaTitulo}</h2>
@@ -187,10 +181,7 @@ export function portada({ plantillas, areas, idioma = 'es' }) {
     <p>${t.guiasTexto}</p>
   </div>
   <div class="tablero guias-tablero">
-    <a class="pieza pieza-tarea guia-bpmn entra" href="${r}${rutas.guias}${t.guias[0][0]}"><span class="guia-dibujo">${SIMBOLOS.inicio}${SIMBOLOS.secuencia}${SIMBOLOS.tarea}${SIMBOLOS.secuencia}${SIMBOLOS.exclusiva}${SIMBOLOS.secuencia}${SIMBOLOS.fin}</span><span class="guia-texto"><span class="camino-titulo">${t.guias[0][1]}</span><p>${t.guias[0][2]}</p></span>${FLECHA}</a>
-    <a class="pieza guia-flujo entra" style="--i:1" href="${r}${rutas.guias}${t.guias[1][0]}"><span class="guia-dibujo">${SIMBOLOS.inicio}${SIMBOLOS.secuencia}${SIMBOLOS.usuario}${SIMBOLOS.secuencia}${SIMBOLOS.fin}</span><span class="guia-texto"><span class="camino-titulo">${t.guias[1][1]}</span><p>${t.guias[1][2]}</p></span>${FLECHA}</a>
-    <a class="pieza guia-simbolos entra" href="${r}${rutas.guias}${t.guias[2][0]}"><span class="guia-dibujo">${SIMBOLOS.mensaje}${SIMBOLOS.plazo}${SIMBOLOS.paralela}${SIMBOLOS.documento}</span><span class="guia-texto"><span class="camino-titulo">${t.guias[2][1]}</span><p>${t.guias[2][2]}</p></span>${FLECHA}</a>
-    <a class="pieza pieza-2 guia-carriles entra" style="--i:1" href="${r}${rutas.guias}${t.guias[3][0]}"><span class="guia-dibujo">${SIMBOLOS.carril}${SIMBOLOS.pool}</span><span class="guia-texto"><span class="camino-titulo">${t.guias[3][1]}</span><p>${t.guias[3][2]}</p></span>${FLECHA}</a>
+    ${t.guias.map(([destino, titulo, texto, ejemplo], i) => `<a class="pieza${CLASES_GUIA[i]} entra"${i % 2 ? ' style="--i:1"' : ''} href="${r}${rutas.guias}${destino}"><span class="guia-imagen"><img src="${r}${rutas.plantillas}${ejemplo}/vista.png" ${medidas(ejemplo, idioma)} loading="lazy" alt="${escapar(t.ejemploDe(titulo))}"></span><span class="guia-texto"><span class="camino-titulo">${titulo}</span><p>${texto}</p></span>${FLECHA}</a>`).join('\n    ')}
   </div>
 </section>
 

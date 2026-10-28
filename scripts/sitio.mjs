@@ -81,31 +81,31 @@ for (const p of ordenadasEn) p.alterna = `${RUTAS.es.plantillas}${es.get(p.id).r
 // Las guías y sus índices sacan de aquí las medidas y el flujo de sus ejemplos.
 Object.assign(PLANTILLAS, { es: ordenadas, en: ordenadasEn });
 const paginas = [
-  portada({ plantillas: ordenadas, areas }),
+  portada({ plantillas: ordenadas }),
   indicePlantillas(ordenadas, areas),
   ...ordenadas.map((p) => paginaPlantilla(p, ordenadas)),
   indiceGuias(ordenadas),
   ...guias(ordenadas)
 ];
 const paginasEn = [
-  portada({ plantillas: ordenadasEn, areas: areasEn, idioma: 'en' }),
+  portada({ plantillas: ordenadasEn, idioma: 'en' }),
   indicePlantillas(ordenadasEn, areasEn, 'en'),
   ...ordenadasEn.map((p) => paginaPlantilla(p, ordenadasEn, 'en')),
   indiceGuiasEn(),
   ...guiasEn(ordenadasEn)
 ];
-for (const p of paginas) escribir(`${p.ruta}index.html`, pagina({ ...p, areas }));
-for (const p of paginasEn) escribir(`${p.ruta}index.html`, pagina({ ...p, areas: areasEn }));
+for (const p of paginas) escribir(`${p.ruta}index.html`, pagina(p));
+for (const p of paginasEn) escribir(`${p.ruta}index.html`, pagina(p));
 
 // Página de error de GitHub Pages: se sirve en cualquier dirección, por eso usa <base> para sus enlaces.
 escribir('404.html', pagina({
-  ruta: '', titulo: 'Página no encontrada | Fluye', descripcion: 'Esta dirección no existe en el sitio de Fluye.', indexar: false, areas, base: '/fluye/',
+  ruta: '', titulo: 'Página no encontrada | Fluye', descripcion: 'Esta dirección no existe en el sitio de Fluye.', indexar: false, base: '/fluye/',
   cuerpo: `
 <div class="pila">
   <header class="tablero titular">
     <div class="pieza titular-texto">
       <h1>Esta página no existe</h1>
-      <p class="bajada">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar. Prueba con la <a href="./">portada</a>, las <a href="plantillas/">plantillas</a> o las <a href="guias/">guías</a>.</p>
+      <p class="bajada">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar. Prueba con la <a href="./">portada</a> o las <a href="guias/">guías</a>, o <a href="app/">abre Fluye</a>.</p>
     </div>
     <div class="pieza pieza-fin titular-lado"><p class="frase">Este camino termina aquí, pero los demás siguen abiertos.</p></div>
   </header>
@@ -128,7 +128,7 @@ ${[...paginas, ...paginasEn].map((p) => `  <url><loc>${SITIO}${p.ruta}</loc><las
 const guiasHechas = paginas.filter((p) => p.ruta.startsWith('guias/') && p.ruta !== 'guias/');
 escribir('llms.txt', `# Fluye
 
-> Fluye es un programa gratis y de código abierto (licencia MIT) para hacer diagramas BPMN 2.0 y diagramas de flujo en Windows 10 y 11, en español. Dibuja pools, carriles, tareas, decisiones y eventos, revisa que el diagrama esté completo y lo recorre paso a paso con un Play. Funciona sin internet y no pide cuenta. Lo creó Esteban Maturana, en Chile.
+> Fluye es un programa gratis y de código abierto (licencia MIT) para hacer diagramas BPMN 2.0 y diagramas de flujo, en español: se usa en el navegador o como programa para Windows 10 y 11. Dibuja pools, carriles, tareas, decisiones y eventos, revisa que el diagrama esté completo y lo recorre paso a paso con un Play. Funciona sin internet y no pide cuenta. Lo creó Esteban Maturana, en Chile.
 
 Datos clave:
 
