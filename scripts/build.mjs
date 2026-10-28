@@ -1,6 +1,7 @@
 // Empaqueta la interfaz (src/renderer) en dist/renderer con esbuild. Uso: node scripts/build.mjs [--watch]
 import * as esbuild from 'esbuild';
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { relative } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
@@ -13,6 +14,35 @@ const vigilar = process.argv.includes('--watch');
 mkdirSync(salida, { recursive: true });
 const copiarHtml = () => cpSync(join(raiz, 'src', 'renderer', 'index.html'), join(salida, 'index.html'));
 copiarHtml();
+
+// Versión web instalable (PWA): manifiesto, íconos y un service worker que guarda la app en el navegador para usarla
+// sin internet. La lista de archivos sale de lo que acaba de armar esbuild; la versión de la caché es la huella de su
+// contenido, así cada publicación nueva reemplaza la anterior. En la app de escritorio estos archivos no se usan.
+const instalable = {
+  name: 'instalable',
+  setup(b) {
+    b.onEnd((r) => {
+      if (r.errors.length || !r.metafile) return;
+      for (const t of [192, 512]) cpSync(join(raiz, 'build', `icono-${t}.png`), join(salida, `icono-${t}.png`));
+      writeFileSync(join(salida, 'manifest.webmanifest'), JSON.stringify({
+        name: 'Fluye', short_name: 'Fluye', lang: 'es', dir: 'ltr',
+        description: 'Diagramas BPMN y de flujo, con un Play que recorre el proceso paso a paso. Gratis y de código abierto.',
+        id: './', start_url: './', scope: './', display: 'standalone',
+        background_color: '#ffffff', theme_color: '#1e3a8a',
+        icons: [192, 512].map((t) => ({ src: `icono-${t}.png`, sizes: `${t}x${t}`, type: 'image/png', purpose: 'any' })),
+        // Instalada, Fluye aparece en "Abrir con" para los .bpmn (ver archivo.inicial).
+        file_handlers: [{ action: './', accept: { 'application/xml': ['.bpmn'] } }]
+      }, null, 2));
+      const archivos = ['./', 'index.html', 'manifest.webmanifest', 'icono-192.png', 'icono-512.png',
+        ...Object.keys(r.metafile.outputs).map((o) => relative(salida, join(raiz, o)).replace(/\\/g, '/')).filter((o) => !o.endsWith('.map') && !o.endsWith('.woff'))];
+      const huella = createHash('sha256');
+      for (const a of archivos) if (a !== './') huella.update(readFileSync(join(salida, a)));
+      writeFileSync(join(salida, 'sw.js'), readFileSync(join(raiz, 'src', 'web', 'sw.js'), 'utf8')
+        .replace('__FLUYE_CACHE__', `fluye-${huella.digest('hex').slice(0, 12)}`)
+        .replace('__FLUYE_ARCHIVOS__', JSON.stringify(archivos)));
+    });
+  }
+};
 
 // import x from 'archivo?base64' -> el contenido del archivo en base64 (fuentes incrustadas en las exportaciones)
 const base64 = {
@@ -61,8 +91,10 @@ const opciones = {
   loader: { '.woff2': 'file', '.woff': 'file' },
   assetNames: 'fuentes/[name]-[hash]',
   logLevel: 'info',
+  metafile: true,
   plugins: [
     { name: 'html', setup(b) { b.onEnd(copiarHtml); } },
+    instalable,
     base64,
     // import plantillas from 'fluye:plantillas' -> la galería de procesos prearmados (plantillas/catalogo.json + .bpmn + .svg)
     {

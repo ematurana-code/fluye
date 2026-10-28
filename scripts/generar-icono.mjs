@@ -1,4 +1,5 @@
-// Genera build/icono.png (256 px) y build/icono.ico (16 a 256 px) desde un SVG, dibujándolo con un Chrome sin ventana.
+// Genera build/icono.png (256 px), build/icono.ico (16 a 256 px) y los íconos de la versión web instalable
+// (build/icono-192.png y build/icono-512.png) desde un SVG, dibujándolo con un Chrome sin ventana.
 // Uso: node scripts/generar-icono.mjs [build/icono.svg]
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,6 +10,7 @@ import { CDP, lanzarChrome, paginaPrincipal, sleep } from './cdp.mjs';
 const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
 const origen = process.argv[2] || join(raiz, 'build', 'icono.svg');
 const TAMANOS = [16, 24, 32, 48, 64, 128, 256];
+const WEB = [192, 512];
 const svg64 = readFileSync(origen).toString('base64');
 const temporal = mkdtempSync(join(tmpdir(), 'fluye-icono-'));
 
@@ -18,7 +20,7 @@ try {
   await c.send('Page.enable');
   await c.send('Emulation.setDefaultBackgroundColorOverride', { color: { r: 0, g: 0, b: 0, a: 0 } });
   const pngs = [];
-  for (const t of TAMANOS) {
+  for (const t of [...TAMANOS, ...WEB]) {
     await c.send('Emulation.setDeviceMetricsOverride', { width: t, height: t, deviceScaleFactor: 1, mobile: false });
     const html = `<html><body style="margin:0;background:transparent"><img src="data:image/svg+xml;base64,${svg64}" width="${t}" height="${t}" style="display:block"></body></html>`;
     await c.ir(`data:text/html;base64,${Buffer.from(html).toString('base64')}`);
@@ -27,6 +29,8 @@ try {
     pngs.push({ t, datos: Buffer.from(r.data, 'base64') });
   }
   c.cerrar();
+  for (const t of WEB) writeFileSync(join(raiz, 'build', `icono-${t}.png`), pngs.find((p) => p.t === t).datos);
+  pngs.splice(TAMANOS.length);
 
   // ICO con imágenes PNG adentro (formato válido desde Windows Vista).
   const cabecera = Buffer.alloc(6 + 16 * pngs.length);

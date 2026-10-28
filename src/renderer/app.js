@@ -38,6 +38,8 @@ const canvas = modeler.get('canvas');
 // sucio: hubo cambios en otra pestaña o en las pestañas mismas (al cambiar de pestaña el historial de deshacer parte de cero).
 const estado = { ruta: null, nombre: 'Proceso sin título', guardadoEn: null, sucio: false };
 const vistas = new Map(); // zoom y posición de cada pestaña, para volver a verla igual
+let relojRespaldo = null; // versión web: respaldo en el navegador poco después del último cambio
+let respaldoActivo = false; // recién al terminar de partir: antes, el respaldo anterior todavía puede recuperarse
 
 // Se recuerda la última acción del historial al guardar (no su posición): después de deshacer, una acción nueva ocupa
 // la misma posición que la guardada y se perdería la marca de cambios sin guardar.
@@ -51,6 +53,7 @@ function actualizarTitulo() {
   $('#btn-deshacer').disabled = !commandStack.canUndo();
   $('#btn-rehacer').disabled = !commandStack.canRedo();
   archivo.marcarCambios(cambios, `${cambios ? '• ' : ''}${estado.nombre.replace(/\.(bpmn|xml)$/i, '')} — Fluye`);
+  if (!archivo.esEscritorio) programarRespaldo();
 }
 
 function actualizarZoom() {
@@ -249,7 +252,10 @@ menuExportar.addEventListener('click', async (e) => {
     let r;
     if (formato === 'svg') r = await archivo.exportar({ ...base, datos: svgDelDiagrama(modeler).svg, extension: 'svg', descripcion: 'Imagen SVG', tipoMime: 'image/svg+xml' });
     else if (formato === 'png') r = await archivo.exportar({ ...base, datos: (await pngDelDiagrama(modeler, 2)).bytes, extension: 'png', descripcion: 'Imagen PNG', tipoMime: 'image/png' });
-    else if (formato === 'pdf') r = await archivo.exportarPdf({ ...base, html: htmlParaPdf(modeler, nombre) });
+    else if (formato === 'pdf') {
+      if (!archivo.esEscritorio) aviso('En la ventana de impresión, elige «Guardar como PDF» como destino.', 'ok', 7000);
+      r = await archivo.exportarPdf({ ...base, html: htmlParaPdf(modeler, nombre) });
+    }
     else if (formato === 'word') r = await archivo.exportar({ ...base, datos: await wordDelDiagrama(modeler, nombre), extension: 'docx', descripcion: 'Documento de Word', tipoMime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
     else if (formato === 'html') r = await archivo.exportar({ ...base, datos: await htmlInteractivo(modeler, nombre), extension: 'html', descripcion: 'Página web interactiva', tipoMime: 'text/html' });
     if (r && r.error) aviso(r.error, 'alerta', 5000);
@@ -337,10 +343,11 @@ $('#btn-recientes').addEventListener('click', async (e) => {
   menuExportar.hidden = true;
   const lista = await archivo.recientes();
   menuRecientes.replaceChildren();
-  if (!lista.length) menuRecientes.appendChild(Object.assign(document.createElement('div'), { className: 'fl-menu-vacio', textContent: 'Sin archivos recientes' }));
+  const vacio = archivo.esEscritorio || archivo.conAcceso ? 'Sin archivos recientes' : 'Este navegador no recuerda archivos: usa Chrome o Edge, o Fluye para Windows';
+  if (!lista.length) menuRecientes.appendChild(Object.assign(document.createElement('div'), { className: 'fl-menu-vacio', textContent: vacio }));
   for (const r of lista) {
-    const b = Object.assign(document.createElement('button'), { type: 'button', className: 'fl-menu-item', title: r.ruta });
-    b.append(Object.assign(document.createElement('strong'), { textContent: r.nombre }), Object.assign(document.createElement('small'), { textContent: r.ruta }));
+    const b = Object.assign(document.createElement('button'), { type: 'button', className: 'fl-menu-item', title: r.detalle || r.ruta });
+    b.append(Object.assign(document.createElement('strong'), { textContent: r.nombre }), Object.assign(document.createElement('small'), { textContent: r.detalle || r.ruta }));
     b.addEventListener('click', () => { menuRecientes.hidden = true; abrir(r.ruta); });
     menuRecientes.appendChild(b);
   }
@@ -535,6 +542,49 @@ function actualizarGrilla() {
 modeler.on('canvas.viewbox.changed', actualizarGrilla);
 lienzoGrilla.classList.add('con-grilla');
 
+// ----- versión web: respaldo en el navegador y aviso al cerrar la pestaña -----
+// Lo que tiene cambios sin guardar se copia al navegador (IndexedDB) un momento después de cada cambio; al volver,
+// Fluye ofrece recuperarlo. Sin cambios, el respaldo se borra. No se respalda mientras se escribe un nombre en el
+// lienzo, se cambia de pestaña o corre el Play: se intenta de nuevo un poco después.
+function programarRespaldo() {
+  clearTimeout(relojRespaldo);
+  if (!respaldoActivo) return;
+  relojRespaldo = setTimeout(async () => {
+    if (!hayCambios()) { archivo.borrarRespaldo(); return; }
+    const edicion = modeler.get('directEditing', false);
+    if (operando || play.activo || (edicion && edicion.isActive())) { programarRespaldo(); return; }
+    try {
+      await archivo.respaldar({ xml: await modeler.guardarXml(), nombre: estado.nombre, ruta: estado.ruta });
+    } catch (e) {
+      console.warn('No se pudo respaldar en el navegador:', e);
+    }
+  }, 1500);
+}
+
+async function ofrecerRespaldo() {
+  const r = await archivo.leerRespaldo();
+  if (!r || !r.xml) return false;
+  const cuando = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(r.fecha);
+  const eleccion = await preguntar('Trabajo sin guardar', `“${r.nombre.replace(/\.(bpmn|xml)$/i, '')}” tenía cambios sin guardar (${cuando}). Fluye los guardó en este navegador. ¿Quieres recuperarlos?`, [
+    { id: 'descartar', texto: 'Descartar' }, { id: 'recuperar', texto: 'Recuperar', clase: 'btn-primary' }
+  ]);
+  if (eleccion !== 'recuperar' || !(await cargar(r.xml, r.nombre, r.ruta || null))) { await archivo.borrarRespaldo(); return false; }
+  estado.sucio = true;
+  actualizarTitulo();
+  aviso('Recuperado. Guarda para dejarlo en un archivo.', 'ok', 5000);
+  return true;
+}
+
+if (!archivo.esEscritorio) {
+  window.addEventListener('beforeunload', (e) => {
+    confirmarEdiciones();
+    if (hayCambios()) { e.preventDefault(); e.returnValue = ''; }
+  });
+  // Instalable y sin internet: el service worker guarda la app en el navegador (no aplica a la app de escritorio ni a
+  // la página abierta como archivo).
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch((e) => console.warn('Sin modo sin internet:', e));
+}
+
 // Pedidos de la ventana de escritorio (cerrar con cambios, abrir por doble clic en un .bpmn).
 let preguntandoCierre = false;
 archivo.alPedir(async (accion, dato) => {
@@ -586,7 +636,7 @@ const herramientas = crearHerramientas($('#herramientas'), modeler);
 crearPropiedades($('#propiedades'), modeler, { alPlay: () => $('#btn-play').click() });
 
 const primero = await archivo.inicial();
-// En la versión web (la demo de la página del proyecto), ?plantilla=<id> abre esa plantilla de la galería.
+// En la versión web, ?plantilla=<id> abre esa plantilla de la galería.
 const parametros = new URLSearchParams(location.search);
 const pedida = !window.fluyeEscritorio && PLANTILLAS.find((p) => p.id === parametros.get('plantilla'));
 // ?archivo=<.bpmn del mismo sitio> abre ese archivo (lo usan las páginas en inglés, cuyas plantillas no vienen en la app).
@@ -596,15 +646,28 @@ const urlPedida = archivoPedido ? (() => { try { return new URL(archivoPedido, l
 const xmlPedido = urlPedida && urlPedida.origin === location.origin && /^\/[\w./-]+\.bpmn$/.test(urlPedida.pathname)
   ? await fetch(urlPedida, { credentials: 'same-origin', redirect: 'error' }).then((r) => (r.ok ? r.text() : null)).catch(() => null)
   : null;
-if (pedida && await cargar(pedida.bpmn, `${pedida.nombre}.bpmn`, null)) {
-  aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
-} else if (xmlPedido && await cargar(xmlPedido, archivoPedido.split('/').pop(), null)) {
-  aviso('Plantilla lista: ajústala, pulsa Play o descarga Fluye para guardarla.', 'ok', 5000);
-} else if (!(primero && await cargar(primero.contenido, primero.nombre, primero.ruta))) {
+// Primero un proyecto vacío, para que la pregunta de recuperar (versión web) aparezca sobre la app ya armada.
+async function partirVacio() {
   await modeler.nuevo('Proceso 1');
   estado.guardadoEn = puntoPila();
   pestanas.actualizar();
   actualizarTitulo();
 }
+const avisoPlantilla = 'Plantilla lista: ajústala, pulsa Play y guárdala con tu nombre.';
+if (primero && await cargar(primero.contenido, primero.nombre, primero.ruta)) {
+  // Abierto desde el explorador de archivos (escritorio o web instalada).
+} else {
+  // Lo que no se alcanzó a guardar en la web se ofrece antes de abrir otra cosa (si no, el respaldo se perdería).
+  const respaldoPendiente = !archivo.esEscritorio && !!(await archivo.leerRespaldo());
+  if (respaldoPendiente || !(pedida || xmlPedido)) await partirVacio();
+  document.body.classList.add('listo');
+  if (!(respaldoPendiente && await ofrecerRespaldo())) {
+    if (pedida && await cargar(pedida.bpmn, `${pedida.nombre}.bpmn`, null)) aviso(avisoPlantilla, 'ok', 5000);
+    else if (xmlPedido && await cargar(xmlPedido, archivoPedido.split('/').pop(), null)) aviso(avisoPlantilla, 'ok', 5000);
+    else if (!modeler.definiciones) await partirVacio();
+  }
+}
 document.body.classList.add('listo');
+respaldoActivo = true;
+if (!archivo.esEscritorio) programarRespaldo();
 requestAnimationFrame(() => { modeler.ajustarVista(); actualizarZoom(); });

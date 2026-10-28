@@ -32,7 +32,7 @@ const T = {
     cifras: [['pasos', 'paso'], ['decisiones', 'decisión'], ['responsables', 'responsable'], ['pools', 'pool']],
     bajada: (p) => `Diagrama de flujo BPMN gratis del área ${p.categoria}, nivel ${p.nivelNombre.toLowerCase()}. ${p.descripcion} Trae ${p.incluye}.`,
     diagramaAlt: (n) => `Diagrama BPMN de ${n}`, notaPlay: 'Se abre a pantalla completa. En cada decisión eliges el camino.',
-    abrir: 'Abrir y editar en el navegador', abrirNota: 'Sin instalar nada.',
+    abrir: 'Abrir en Fluye', abrirNota: 'En el navegador, sin instalar: edítala y guárdala con tu nombre.',
     bajar: 'Descargar el archivo .bpmn', bajarNota: 'Se abre en Fluye y en otros programas BPMN.',
     sinInternet: 'Úsala sin internet.', sinInternetTexto: `Descarga <a href="${DESCARGA}">Fluye para Windows</a> y ábrela desde Nuevo, Desde una plantilla.`,
     quienTitulo: 'Quién hace qué, paso a paso',
@@ -79,7 +79,7 @@ const T = {
     cifras: [['steps', 'step'], ['decisions', 'decision'], ['roles', 'role'], ['pools', 'pool']],
     bajada: (p) => `Free BPMN flowchart template for ${p.categoria.toLowerCase()}, ${p.nivelNombre.toLowerCase()} level. ${p.descripcion} Includes ${p.incluye}.`,
     diagramaAlt: (n) => `BPMN diagram: ${n}`, notaPlay: 'Opens full screen. You choose the path at each decision.',
-    abrir: 'Open and edit in your browser', abrirNota: 'Nothing to install.',
+    abrir: 'Open in Fluye', abrirNota: 'In your browser, nothing to install: edit it and save it as yours.',
     bajar: 'Download the .bpmn file', bajarNota: 'Opens in Fluye and in other BPMN tools.',
     sinInternet: 'Use it offline.', sinInternetTexto: `Download <a href="${DESCARGA}">Fluye for Windows</a> and open the file with Open. The interface is in Spanish.`,
     quienTitulo: 'Who does what, step by step',
@@ -122,6 +122,12 @@ const corto = (texto, max = 158) => (texto.length <= max ? texto : `${texto.slic
 // queda para los lectores de pantalla y en la leyenda de arriba.
 const marcaNivel = (nivel, nombre = '') => `<span class="marca-nivel marca-${nivel}"${nombre ? '' : ' aria-hidden="true"'}><i></i><i></i><i></i>${nombre ? `<span class="oculto">${escapar(nombre)}</span>` : ''}</span>`;
 
+// Dirección de la app web con la plantilla abierta: las del español vienen en la app (?plantilla=); las del inglés se
+// cargan desde su página (?archivo=, relativo a app/).
+export const abrirEnApp = (r, p, idioma) => (idioma === 'es'
+  ? `${r}app/?plantilla=${encodeURIComponent(p.id)}`
+  : `${r}app/?archivo=${encodeURIComponent(`../${RUTAS[idioma].plantillas}${p.ruta}/${p.ruta}.bpmn`)}`);
+
 export function catalogo(r, plantillas, areas, { titulo = 'h3', idioma = 'es' } = {}) {
   const t = T[idioma], base = `${r}${RUTAS[idioma].plantillas}`;
   const p = plantillas.find((x) => x.id === 'compras-simple') || plantillas[0];
@@ -129,14 +135,14 @@ export function catalogo(r, plantillas, areas, { titulo = 'h3', idioma = 'es' } 
   <div class="tablero catalogo" data-catalogo>
     <div class="catalogo-vista">
       <div class="pieza catalogo-imagen"><img src="${base}${p.ruta}/vista.png" width="1200" height="700" loading="lazy" alt="${escapar(t.vistaDe(p.nombre))}" data-catalogo-imagen></div>
-      <div class="pieza pieza-2 catalogo-ficha"><p class="frase" data-catalogo-nombre>${escapar(p.nombre)}</p><p data-catalogo-texto>${escapar(p.descripcion)}</p></div>
+      <div class="pieza pieza-2 catalogo-ficha"><p class="frase" data-catalogo-nombre>${escapar(p.nombre)}</p><p data-catalogo-texto>${escapar(p.descripcion)}</p><a class="boton catalogo-abrir" href="${escapar(abrirEnApp(r, p, idioma))}" data-catalogo-abrir>${t.abrir}</a></div>
     </div>
     <div class="pieza catalogo-listas">
       <p class="catalogo-leyenda chico">${Object.keys(NIVELES[idioma]).map((k) => `<span>${marcaNivel(k)}${NIVELES[idioma][k].nombre}</span>`).join('')}</p>${areas.map((a) => `
       <section class="catalogo-area entra" id="${a.ruta}" aria-labelledby="area-${a.ruta}">
         <${titulo} id="area-${a.ruta}" class="frase">${escapar(a.nombre)}</${titulo}>
         <ul>${plantillas.filter((x) => x.categoria === a.nombre).map((x) => `
-          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}"><span>${escapar(x.nombre)}</span>${marcaNivel(x.nivel, x.nivelNombre)}</a></li>`).join('')}
+          <li data-nivel="${x.nivel}"><a href="${base}${x.ruta}/" data-vista="${base}${x.ruta}/vista.png" data-nombre="${escapar(x.nombre)}" data-texto="${escapar(x.descripcion)}" data-abrir="${escapar(abrirEnApp(r, x, idioma))}"><span>${escapar(x.nombre)}</span>${marcaNivel(x.nivel, x.nivelNombre)}</a></li>`).join('')}
         </ul>
       </section>`).join('')}
     </div>
@@ -226,9 +232,7 @@ export function paginaPlantilla(p, todas, idioma = 'es') {
     { nombre: t.inicio, ruta: rutas.raiz }, { nombre: t.plantillasMiga, ruta: rutas.plantillas }, { nombre: p.nombre, ruta }
   ], idioma);
   const cifras = [a.pasos, a.decisiones, a.responsables, a.pools.length];
-  const abrir = idioma === 'es'
-    ? `${r}demo/?plantilla=${encodeURIComponent(p.id)}`
-    : `${r}demo/?archivo=${encodeURIComponent(`../${ruta}${p.ruta}.bpmn`)}`;
+  const abrir = abrirEnApp(r, p, idioma);
 
   const cuerpo = `
 <article class="plantilla">

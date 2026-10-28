@@ -20,7 +20,7 @@ const TG = {
   es: {
     inicio: 'Inicio', guias: 'Guías', enFluye: 'Así se hace en Fluye', indice: 'En esta guía', verPlantilla: 'Ver la plantilla',
     descargar: 'Descargar Fluye gratis', descargarNota: 'Para Windows 10 y 11. Es gratis, no pide cuenta y funciona sin internet.',
-    probar: 'Probar sin instalar', probarNota: 'El editor completo en el navegador, con las mismas plantillas y el Play.',
+    probar: 'Usar Fluye en el navegador', probarNota: 'El programa completo, sin instalar: guarda en tu computador y trae las mismas plantillas y el Play.',
     empezar: 'Haz tu diagrama en Fluye', empezarTexto: 'Gratis, en español y sin crear una cuenta.', pregunta: '¿Cómo quieres empezar?',
     ejemploAlt: (n) => `Diagrama BPMN de ejemplo: ${n}`,
     ejemploNota: (n) => `Abre el ejemplo de esta guía: ${n}.`
@@ -28,7 +28,7 @@ const TG = {
   en: {
     inicio: 'Home', guias: 'Guides', enFluye: 'How it\'s done in Fluye', indice: 'In this guide', verPlantilla: 'View the template',
     descargar: 'Download Fluye free', descargarNota: 'For Windows 10 and 11. Free, no account needed, works offline. Interface in Spanish.',
-    probar: 'Try it without installing', probarNota: 'The full editor in your browser, with the same templates and Play.',
+    probar: 'Use Fluye in your browser', probarNota: 'The full program, nothing to install: it saves to your computer and has the same templates and Play.',
     empezar: 'Make your diagram in Fluye', empezarTexto: 'Free, open source and no account needed.', pregunta: 'How do you want to start?',
     ejemploAlt: (n) => `Example BPMN diagram: ${n}`,
     ejemploNota: (n) => `Opens this guide's example: ${n}.`
@@ -111,7 +111,7 @@ export function articulo({ ruta: corta, titulo, h1, bajada, descripcion = bajada
     <aside class="articulo-lado" aria-label="${tg.indice}">
       <nav class="pieza pieza-tarea indice-guia" aria-labelledby="indice-titulo"><h2 id="indice-titulo">${tg.indice}</h2>${indice}</nav>
       <a class="pieza pieza-azul" href="${DESCARGA}"><span><span class="camino-titulo">${tg.descargar}</span><span class="camino-nota">${tg.descargarNota}</span></span>${FLECHA}</a>
-      <a class="pieza pieza-2" href="${r}demo/"><span><span class="camino-titulo">${tg.probar}</span><span class="camino-nota suave">${tg.probarNota}</span></span>${FLECHA}</a>
+      <a class="pieza pieza-2" href="${r}app/"><span><span class="camino-titulo">${tg.probar}</span><span class="camino-nota suave">${tg.probarNota}</span></span>${FLECHA}</a>
     </aside>
   </div>
   <section aria-labelledby="empezar-titulo">

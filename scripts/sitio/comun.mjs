@@ -26,18 +26,18 @@ export const RUTAS = {
 export const TEXTOS = {
   es: {
     lang: 'es', locale: 'es_ES', saltar: 'Ir al contenido', inicio: 'Fluye, inicio', principal: 'Principal',
-    plantillas: 'Plantillas', guias: 'Guías', probar: 'Probar', codigo: 'Código', descargar: 'Descargar', otroIdioma: 'English',
+    plantillas: 'Plantillas', guias: 'Guías', abrirApp: 'Abrir Fluye', codigo: 'Código', descargar: 'Descargar', otroIdioma: 'English',
     otroIdiomaTitulo: 'Fluye in English', estasEn: 'Estás en',
     pie: {
-      programa: 'Programa', descargarWindows: 'Descargar para Windows', probarNavegador: 'Probar en el navegador', versiones: 'Versiones anteriores',
+      programa: 'Programa', descargarWindows: 'Descargar para Windows', probarNavegador: 'Usar en el navegador', versiones: 'Versiones anteriores',
       proyecto: 'Proyecto', codigoGithub: 'Código en GitHub', licencia: 'Licencia MIT', problema: 'Reportar un problema',
-      frase: 'Programa gratis y de código abierto para hacer diagramas BPMN y de flujo en Windows, en español.',
+      frase: 'Programa gratis y de código abierto para hacer diagramas BPMN y de flujo en el navegador o en Windows, en español.',
       final: '© 2026 Esteban Maturana. Licencia MIT. Hecho en Chile. BPMN es un estándar de la OMG.', boton: 'Descargar gratis'
     },
     guiasPie: [['que-es-bpmn/', 'Qué es BPMN'], ['diagrama-de-flujo/', 'Cómo hacer un diagrama de flujo'], ['simbolos-bpmn/', 'Símbolos BPMN'], ['diagrama-de-carriles/', 'Diagrama de carriles']],
     decision: {
       pregunta: '¿Dónde lo vas a usar?', descargar: 'Descargar gratis', descargarNota: `Para Windows 10 y 11. Pesa ${PESO} y no pide cuenta.`,
-      probar: 'Probar sin instalar', probarNota: 'Abre el editor aquí mismo, en el navegador.'
+      probar: 'Usar en el navegador', probarNota: 'Sin instalar ni crear cuenta. Tus archivos quedan en tu computador.'
     },
     enFluye: {
       editorAlt: 'El editor de Fluye con un proceso de compras en dos carriles y el panel que resume el diagrama.',
@@ -51,18 +51,18 @@ export const TEXTOS = {
   },
   en: {
     lang: 'en', locale: 'en_US', saltar: 'Skip to content', inicio: 'Fluye, home', principal: 'Main',
-    plantillas: 'Templates', guias: 'Guides', probar: 'Try it', codigo: 'Code', descargar: 'Download', otroIdioma: 'Español',
+    plantillas: 'Templates', guias: 'Guides', abrirApp: 'Open Fluye', codigo: 'Code', descargar: 'Download', otroIdioma: 'Español',
     otroIdiomaTitulo: 'Fluye en español', estasEn: 'You are here',
     pie: {
-      programa: 'Software', descargarWindows: 'Download for Windows', probarNavegador: 'Try it in your browser', versiones: 'Previous versions',
+      programa: 'Software', descargarWindows: 'Download for Windows', probarNavegador: 'Use it in your browser', versiones: 'Previous versions',
       proyecto: 'Project', codigoGithub: 'Source code on GitHub', licencia: 'MIT license', problema: 'Report an issue',
-      frase: 'Free, open-source software for BPMN diagrams and flowcharts on Windows. The interface is in Spanish.',
+      frase: 'Free, open-source software for BPMN diagrams and flowcharts, in your browser or on Windows. The interface is in Spanish.',
       final: '© 2026 Esteban Maturana. MIT license. Made in Chile. BPMN is an OMG standard.', boton: 'Download free'
     },
     guiasPie: [['what-is-bpmn/', 'What is BPMN'], ['how-to-make-a-flowchart/', 'How to make a flowchart'], ['bpmn-symbols/', 'BPMN symbols'], ['swimlane-diagram/', 'Swimlane diagram']],
     decision: {
       pregunta: 'Where will you use it?', descargar: 'Download free', descargarNota: `For Windows 10 and 11. ${PESO}, no account needed.`,
-      probar: 'Try it without installing', probarNota: 'Opens the editor right here, in your browser.'
+      probar: 'Use it in your browser', probarNota: 'Nothing to install, no account. Your files stay on your computer.'
     },
     enFluye: {
       editorAlt: 'The Fluye editor with a two-lane purchasing process and the panel that summarizes the diagram.',
@@ -96,7 +96,7 @@ const enlacesPie = (r, areas, idioma) => {
       <h2>${p.programa}</h2>
       <ul>
         <li><a href="${DESCARGA}">${p.descargarWindows}</a></li>
-        <li><a href="${r}demo/">${p.probarNavegador}</a></li>
+        <li><a href="${r}app/">${p.probarNavegador}</a></li>
         <li><a href="${VERSIONES}">${p.versiones}</a></li>
       </ul>
     </div>
@@ -175,12 +175,12 @@ ${datos}
       <nav aria-label="${t.principal}">
         <a href="${r}${rutas.plantillas}">${t.plantillas}</a>
         <a href="${r}${rutas.guias}">${t.guias}</a>
-        <a href="${r}demo/">${t.probar}</a>
+        <a href="${DESCARGA}">${t.descargar}</a>
         <a href="${REPO}">${t.codigo}</a>
         <a class="barra-idioma" href="${r}${rutaOtra}" hreflang="${otro}" lang="${otro}" title="${t.otroIdiomaTitulo}">${t.otroIdioma}</a>
       </nav>
     </div>
-    <a class="barra-accion" href="${DESCARGA}">${t.descargar}</a>
+    <a class="barra-accion" href="${r}app/">${t.abrirApp}</a>
   </div>
 </header>
 <main id="contenido">
@@ -218,7 +218,7 @@ export const decision = (r, pregunta, idioma = 'es') => {
   <div class="tablero decision-fila">
     <div class="pieza pieza-decision decision-pregunta"><span class="decision-rombo" aria-hidden="true"></span><p class="frase">${escapar(pregunta || d.pregunta)}</p></div>
     <a class="pieza pieza-azul" href="${DESCARGA}"><span><span class="camino-titulo">${d.descargar}</span><span class="camino-nota">${d.descargarNota}</span></span>${FLECHA}</a>
-    <a class="pieza pieza-tarea" href="${r}demo/"><span><span class="camino-titulo">${d.probar}</span><span class="camino-nota">${d.probarNota}</span></span>${FLECHA}</a>
+    <a class="pieza pieza-tarea" href="${r}app/"><span><span class="camino-titulo">${d.probar}</span><span class="camino-nota">${d.probarNota}</span></span>${FLECHA}</a>
   </div>`;
 };
 

@@ -18,7 +18,7 @@ const rutas = [
   ['/', join(raiz, 'dist', 'renderer')]
 ];
 const tipos = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.map': 'application/json',
-  '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.bpmn': 'application/xml', '.json': 'application/json' };
+  '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.bpmn': 'application/xml', '.json': 'application/json', '.webmanifest': 'application/manifest+json' };
 
 async function listarBpmn(dir, prefijo) {
   const { readdir } = await import('node:fs/promises');

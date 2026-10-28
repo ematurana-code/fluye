@@ -1,7 +1,8 @@
 // Arma la página del proyecto para GitHub Pages en _sitio/ (uso: npm run sitio; antes compila con npm run build):
 // - portada, guías y una página por plantilla (scripts/sitio/*.mjs), con datos estructurados para buscadores;
 // - visor/: el visor interactivo de Fluye (el de la página web exportada) que carga cada plantilla por su dirección;
-// - demo/: la app completa en el navegador (dist/renderer);
+// - app/: Fluye en el navegador (dist/renderer): guarda en el computador, se instala y funciona sin internet; demo/
+//   (la dirección anterior) lleva a app/;
 // - sitemap.xml, llms.txt (resumen para asistentes de IA) y 404.html. Los recursos fijos (estilos, letra, imágenes) vienen de sitio/.
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -28,10 +29,18 @@ const sinIndexar = (html) => html.replace('<head>', '<head>\n<meta name="robots"
 rmSync(salida, { recursive: true, force: true });
 cpSync(join(raiz, 'sitio'), salida, { recursive: true });
 
-// La demo: la app completa, con el ícono de Fluye y fuera de los buscadores (es una herramienta, no una página).
-cpSync(web, join(salida, 'demo'), { recursive: true, filter: (r) => !r.endsWith('.map') });
-const demo = join(salida, 'demo', 'index.html');
-writeFileSync(demo, sinIndexar(readFileSync(demo, 'utf8')).replace('<head>', '<head>\n<link rel="icon" href="../imagenes/icono.png" type="image/png">'));
+// La app web, fuera de los buscadores: es una herramienta; la que se busca es la portada.
+cpSync(web, join(salida, 'app'), { recursive: true, filter: (r) => !r.endsWith('.map') });
+const app = join(salida, 'app', 'index.html');
+writeFileSync(app, sinIndexar(readFileSync(app, 'utf8')));
+// demo/ era la dirección anterior: lleva a app/ con lo mismo que pedía (?plantilla= o ?archivo=).
+escribir('demo/index.html', `<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Fluye</title>
+<link rel="canonical" href="${SITIO}app/">
+<script>location.replace('../app/' + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=../app/">
+</head><body><p><a href="../app/">Abrir Fluye</a></p></body></html>
+`);
 
 // El visor: la misma página interactiva que exporta Fluye, sin proceso adentro; lo trae del sitio con ?archivo=.
 escribir('visor/index.html', sinIndexar(readFileSync(plantillaVisor, 'utf8'))
@@ -124,7 +133,7 @@ escribir('llms.txt', `# Fluye
 Datos clave:
 
 - Precio: gratis, sin planes de pago ni anuncios.
-- Sistema: Windows 10 y 11 de 64 bits. También se puede probar en el navegador, sin instalar.
+- Dónde se usa: en el navegador (sin instalar; Chrome y Edge guardan sobre el mismo archivo, y se puede instalar como app que funciona sin internet) o como programa para Windows 10 y 11 de 64 bits.
 - Notación: BPMN 2.0, el estándar de la OMG. Abre y guarda archivos .bpmn estándar, también los que exportan otras herramientas de modelado.
 - Exporta a BPMN, PNG, SVG, PDF, Word y una página web interactiva de un solo archivo que trae el Play.
 - Trae ${ordenadas.length} plantillas de ${areas.length} áreas en tres niveles, revisión del diagrama mientras se dibuja y corrector ortográfico en español sin internet.
@@ -133,7 +142,7 @@ Datos clave:
 ## Empezar
 
 - [Descargar Fluye para Windows](${DESCARGA}): instalador por usuario, no pide administrador.
-- [Probar Fluye en el navegador](${SITIO}demo/): el editor completo, sin instalar.
+- [Usar Fluye en el navegador](${SITIO}app/): el programa completo, sin instalar ni crear cuenta; los archivos quedan en tu computador.
 
 ## Guías
 
@@ -148,7 +157,7 @@ ${ordenadas.map((p) => `- [${p.nombre}](${SITIO}plantillas/${p.ruta}/): ${p.desc
 
 > Fluye is free, open-source software (MIT license) for BPMN 2.0 diagrams and flowcharts on Windows 10 and 11. It draws pools, lanes, tasks, gateways and events, checks the diagram as you draw and walks through the process step by step with Play. Works offline, no account needed. The website, guides and templates are available in English; the program interface is in Spanish.
 
-- [Fluye in English](${SITIO}${RUTAS.en.raiz}): overview, live demo and FAQ.
+- [Fluye in English](${SITIO}${RUTAS.en.raiz}): overview, the web app and FAQ.
 - [Free BPMN templates](${SITIO}${RUTAS.en.plantillas}): ${ordenadasEn.length} flowchart templates by area and level.
 ${paginasEn.filter((p) => p.ruta.startsWith(RUTAS.en.guias) && p.ruta !== RUTAS.en.guias).map((p) => `- [${p.titulo.replace(/ \| Fluye$/, '')}](${SITIO}${p.ruta}): ${p.descripcion}`).join('\n')}
 ${ordenadasEn.map((p) => `- [${p.nombre}](${SITIO}${RUTAS.en.plantillas}${p.ruta}/): ${p.descripcion}`).join('\n')}
