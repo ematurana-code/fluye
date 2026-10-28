@@ -1,19 +1,18 @@
-// Portada: lo primero es usar Fluye (abrirlo en el navegador o descargarlo); después, probar el Play en el visor real,
-// las guías, las preguntas frecuentes y el cierre. Las plantillas se descubren dentro de Fluye, no aquí (así lo pidió el
-// usuario); sus páginas siguen para quien las busca en Google. Mismo diseño en los dos idiomas (TX).
-import { DESCARGA, FLECHA, PESO, REPO, RUTAS, SITIO, VERSION, escapar, urlVisor } from './comun.mjs';
-import { SIMBOLOS, medidas } from './guias.mjs';
+// Portada, dirección "el producto en acción": el Play de verdad recorre un proceso en la primera pantalla, al lado de
+// qué es Fluye y los dos caminos (abrirlo en el navegador o descargarlo). Después: así se usa (dibuja, dale Play,
+// compártelo, cada paso con su pantalla real), dónde usarlo (navegador o Windows), guías, preguntas y cierre.
+// Las plantillas se descubren dentro de Fluye, no aquí (así lo pidió el usuario); sus páginas siguen para quien las
+// busca en Google. Mismo diseño en los dos idiomas (TX). Notas de diseño: .taste-skill/notas.md.
+import { DESCARGA, FLECHA, LOGO, PESO, REPO, RUTAS, SITIO, VERSION, escapar, urlVisor } from './comun.mjs';
+import { medidas } from './guias.mjs';
 
 // Logo de Windows (cuatro cuadros) para el botón de descarga.
 const WINDOWS = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5.5 10.5 4.5v7H3zM12 4.3 21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z" fill="currentColor"/></svg>';
 // Flecha de "abrir" para el botón principal.
 const ABRIR = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-// Color y lugar de cada tarjeta de guía (los mismos del índice de guías).
-const CLASES_GUIA = [' pieza-tarea guia-bpmn', ' guia-flujo', ' guia-simbolos', ' pieza-2 guia-carriles'];
-
-// Las plantillas que se pueden cargar en el visor de la portada (por id, valen en los dos idiomas).
-const PARA_PROBAR = ['compras-simple', 'ti-intermedia', 'web-intermedia', 'atencion-intermedia', 'aduana-intermedia', 'rrhh-avanzada'];
+// Los procesos que el Play del inicio puede recorrer (por id, valen en los dos idiomas).
+const PARA_PROBAR = ['compras-simple', 'ti-intermedia', 'rrhh-avanzada'];
 
 const TX = {
   es: {
@@ -28,25 +27,28 @@ const TX = {
       ['¿Abre archivos de otros programas de procesos?', 'Sí. Fluye abre y guarda archivos .bpmn estándar, también los que exportan otras herramientas de modelado (con sus colores), y puede juntar varios archivos en un proyecto con pestañas.'],
       ['¿Cómo comparto un diagrama con alguien que no tiene Fluye?', 'Exporta una página web interactiva: es un solo archivo .html que se abre en cualquier navegador, incluso en el celular, y trae el Play adentro. También puedes exportar a PDF, Word, PNG o SVG.']
     ],
-    h1: 'Diagramas BPMN y de flujo, gratis',
-    bajada: 'Dibuja procesos con el estándar BPMN 2.0 y recórrelos paso a paso con el Play. Úsalo ahora en el navegador o instálalo en Windows.',
-    playAlt: 'El Play detenido en la decisión ¿Se aprueba?, que pregunta por qué camino sigue el proceso.',
+    // El título en dos líneas, cada una sube desde su propia línea base al cargar.
+    h1: ['Diagramas BPMN', 'que se recorren con Play'],
+    bajada: 'Fluye dibuja tus procesos con el estándar BPMN y los recorre paso a paso, para que veas por dónde sigue cada caso antes de ponerlo en marcha.',
     abrir: 'Abrir Fluye', descargar: 'Descargar para Windows',
-    nota: `Sin cuenta y sin anuncios. Tus archivos quedan en tu computador. El programa para Windows 10 y 11 pesa ${PESO}.`,
-    hechosEtiqueta: 'Fluye en cuatro datos',
-    hechos: [
-      ['Gratis y de código abierto', 'Licencia MIT, sin planes de pago ni anuncios.', 'inicio'],
-      ['En el navegador o en Windows', 'El mismo editor, con o sin instalar.', 'tarea'],
-      ['Estándar BPMN 2.0', 'Archivos .bpmn que abren otros programas.', 'exclusiva'],
-      ['Play paso a paso', 'Recorre el proceso y avisa dónde se atasca.', 'fin']
+    nota: 'Gratis y de código abierto. Sin cuenta: tus archivos quedan en tu computador.',
+    visorDe: (n) => `Visor de Fluye: ${n}`, procesos: 'Procesos para recorrer', pista: 'Está andando: en cada decisión, elige tú el camino.',
+    pantalla: 'Pantalla completa',
+    usoTitulo: 'Así se usa Fluye',
+    uso: [
+      ['Primero, dibuja el proceso.', 'Arrastra pasos, decisiones y responsables desde la paleta. Las flechas se trazan solas y el panel te avisa lo que falta.',
+        'El editor de Fluye: la paleta de figuras, un proceso de compras en dos carriles y el panel que resume el diagrama.'],
+      ['Luego, dale Play.', 'La ficha recorre el proceso y se detiene en cada decisión para que elijas el camino. Si un camino no llega a un final, te lo muestra.',
+        'El Play detenido en la decisión ¿Se aprueba?, con los dos caminos para elegir.'],
+      ['Al final, compártelo.', 'Expórtalo como una página web con el Play adentro, que se abre hasta en el celular, o a PDF, Word e imagen.',
+        'La página web que exporta Fluye, abierta en un celular con el Play en una decisión.']
     ],
-    pruebaTitulo: 'Pruébalo aquí: dale Play',
-    pruebaTexto: 'El visor real de Fluye. Pulsa Play y, en cada decisión, elige por dónde sigue el proceso.',
-    visorDe: (n) => `Visor de Fluye: ${n}`, elige: 'Elige un proceso', nivelDe: (p) => `${p.categoria}, nivel ${p.nivelNombre.toLowerCase()}`,
-    pantalla: 'Pantalla completa', pestana: 'Abrir en otra pestaña',
+    formatos: [['Página web', 'con el Play, en un solo archivo'], ['PDF', 'una hoja A4 lista para imprimir'], ['Word', 'portada, diagrama y ficha de cada paso'], ['PNG y SVG', 'para presentaciones y documentos'], ['BPMN', 'el estándar que abren otros programas']],
+    dondeTitulo: 'Elige dónde usarlo',
+    dondeTexto: 'Es el mismo editor y los mismos archivos: lo que empiezas en uno lo terminas en el otro.',
+    navegador: ['En el navegador', ['Sin instalar ni crear cuenta.', 'En Chrome y Edge guarda en tus carpetas, sobre el mismo archivo.', 'Se instala como app y funciona sin internet.', 'Si cierras sin guardar, lo recupera.']],
+    windows: ['En Windows', [`Programa para Windows 10 y 11 (${PESO}).`, 'Abre tus .bpmn con doble clic.', 'Exporta el PDF directo, sin ventana de impresión.', 'Corrector ortográfico en español sin internet.']],
     guiasTitulo: 'Aprende a dibujar procesos',
-    guiasTexto: 'Guías cortas en español, con ejemplos que puedes recorrer con el Play.',
-    // Cada guía con el diagrama de su ejemplo (la misma vista que en el índice de guías).
     guias: [['que-es-bpmn/', 'Qué es BPMN', 'El estándar para dibujar procesos: de dónde viene, sus figuras y cuándo conviene usarlo.', 'solicitud-de-vacaciones'],
       ['diagrama-de-flujo/', 'Cómo hacer un diagrama de flujo', 'Siete pasos, del primer borrador al proceso que se entiende a la primera.', 'solicitud-de-compra'],
       ['simbolos-bpmn/', 'Símbolos BPMN', 'Qué significa cada figura, con su dibujo.', 'inicio-de-sesion-con-bloqueo-por-intentos'],
@@ -54,10 +56,7 @@ const TX = {
     ejemploDe: (g) => `Diagrama de ejemplo de la guía: ${g}`,
     preguntasTitulo: 'Preguntas frecuentes',
     preguntasTexto: `Si te queda otra duda, escríbela en el <a href="${REPO}/issues">repositorio de GitHub</a>.`,
-    celularNota: 'Así se ve en un celular la página que exporta Fluye, con el Play.',
-    celularAlt: 'La página web que exporta Fluye, abierta en un celular con el Play detenido en una decisión.',
-    cierreTitulo: 'Ordena tu próximo proceso',
-    cierreTexto: 'Ábrelo ahora en el navegador o descárgalo para Windows. Cuando lo termines, compártelo como una página web que se abre hasta en el celular.',
+    cierreTitulo: 'Tu próximo proceso empieza aquí',
     codigo: `Fluye es de código abierto, con licencia MIT, y lo hace Esteban Maturana en Chile. <a href="${REPO}">Ver el código en GitHub</a>.`,
     app: {
       alternateName: ['Fluye BPMN', 'Fluye, modelador BPMN'], sub: 'Modelado de procesos BPMN y diagramas de flujo',
@@ -80,24 +79,27 @@ const TX = {
       ['Can I use it for simple flowcharts?', 'Yes. A flowchart with a start, steps, decisions and an end is drawn with the same BPMN shapes. Add lanes when you also want to show who does each step.'],
       ['How do I share a diagram with someone who does not have Fluye?', 'Export an interactive web page: a single .html file that opens in any browser, even on a phone, with Play built in. You can also export to PDF, Word, PNG or SVG.']
     ],
-    h1: 'Free BPMN and flowchart software',
-    bajada: 'Draw processes with the BPMN 2.0 standard and walk through them step by step with Play. Use it now in your browser or install it on Windows. The interface is in Spanish.',
-    playAlt: 'Play stopped at a decision, asking which way the process goes next.',
+    h1: ['BPMN diagrams', 'you can play step by step'],
+    bajada: 'Fluye draws your processes with the BPMN standard and walks through them step by step, so you see where each case goes before you put it to work. The interface is in Spanish.',
     abrir: 'Open Fluye', descargar: 'Download for Windows',
-    nota: `No account, no ads. Your files stay on your computer. The Windows 10 and 11 program is ${PESO}.`,
-    hechosEtiqueta: 'Fluye in four facts',
-    hechos: [
-      ['Free and open source', 'MIT license, no paid plans, no ads.', 'inicio'],
-      ['In your browser or on Windows', 'The same editor, installed or not.', 'tarea'],
-      ['BPMN 2.0 standard', '.bpmn files that open in other tools.', 'exclusiva'],
-      ['Step-by-step Play', 'Walks through the process and flags where it gets stuck.', 'fin']
+    nota: 'Free and open source. No account: your files stay on your computer.',
+    visorDe: (n) => `Fluye viewer: ${n}`, procesos: 'Processes to walk through', pista: 'It is running: at each decision, you choose the path.',
+    pantalla: 'Full screen',
+    usoTitulo: 'How to use Fluye',
+    uso: [
+      ['First, draw the process.', 'Drag steps, decisions and roles from the palette. Arrows route themselves and the panel tells you what is missing.',
+        'The Fluye editor: the shape palette, a two-lane purchasing process and the panel that summarizes the diagram.'],
+      ['Then, press Play.', 'A token walks through the process and stops at each decision so you choose the path. If a path never reaches an end, it shows you.',
+        'Play stopped at the decision Approved?, with both paths to choose from.'],
+      ['Finally, share it.', 'Export it as a web page with Play inside that opens even on a phone, or to PDF, Word and images.',
+        'The web page Fluye exports, open on a phone with Play at a decision.']
     ],
-    pruebaTitulo: 'Try it here: press Play',
-    pruebaTexto: 'The real Fluye viewer. Press Play and choose the path at each decision. The viewer labels are in Spanish.',
-    visorDe: (n) => `Fluye viewer: ${n}`, elige: 'Choose a process', nivelDe: (p) => `${p.categoria}, ${p.nivelNombre.toLowerCase()}`,
-    pantalla: 'Full screen', pestana: 'Open in a new tab',
+    formatos: [['Web page', 'with Play, in a single file'], ['PDF', 'an A4 sheet ready to print'], ['Word', 'cover, diagram and a sheet per step'], ['PNG and SVG', 'for slides and documents'], ['BPMN', 'the standard other tools open']],
+    dondeTitulo: 'Choose where to use it',
+    dondeTexto: 'Same editor, same files: what you start in one you can finish in the other.',
+    navegador: ['In your browser', ['Nothing to install, no account.', 'In Chrome and Edge it saves to your folders, over the same file.', 'Installs as an app and works offline.', 'If you close without saving, it recovers your work.']],
+    windows: ['On Windows', [`Program for Windows 10 and 11 (${PESO}).`, 'Opens your .bpmn files with a double click.', 'Exports PDF directly, no print dialog.', 'Spanish spell checker, offline.']],
     guiasTitulo: 'Learn to draw processes',
-    guiasTexto: 'Short guides with examples you can walk through with Play.',
     guias: [['what-is-bpmn/', 'What is BPMN', 'The standard for drawing processes: where it comes from, its shapes and when to use it.', 'vacation-request'],
       ['how-to-make-a-flowchart/', 'How to make a flowchart', 'Seven steps from first draft to a process people understand at first glance.', 'purchase-request'],
       ['bpmn-symbols/', 'BPMN symbols', 'What every shape means, with its drawing.', 'login-with-lockout-after-failed-attempts'],
@@ -105,10 +107,7 @@ const TX = {
     ejemploDe: (g) => `Example diagram for the guide: ${g}`,
     preguntasTitulo: 'Frequently asked questions',
     preguntasTexto: `Still have a question? Ask it in the <a href="${REPO}/issues">GitHub repository</a>.`,
-    celularNota: 'The page Fluye exports, open on a phone with Play.',
-    celularAlt: 'The web page exported by Fluye, open on a phone with Play stopped at a decision.',
-    cierreTitulo: 'Map your next process',
-    cierreTexto: 'Open it now in your browser or download it for Windows. When you are done, share it as a web page that opens even on a phone.',
+    cierreTitulo: 'Your next process starts here',
     codigo: `Fluye is open source under the MIT license, made by Esteban Maturana in Chile. <a href="${REPO}">View the code on GitHub</a>.`,
     app: {
       alternateName: ['Fluye BPMN', 'Fluye BPMN modeler'], sub: 'BPMN process modeling and flowcharts',
@@ -121,68 +120,89 @@ const TX = {
   }
 };
 
+// Capturas reales del programa para "Así se usa", cada una recortada en lo que muestra su paso.
+const PANTALLAS = [
+  { src: 'editor.webp', ancho: 2880, alto: 1800, clase: 'uso-editor' },
+  { src: 'play.webp', ancho: 2880, alto: 1800, clase: 'uso-play' },
+  { src: 'celular.png', ancho: 780, alto: 1688, clase: 'uso-celular' }
+];
+
 export function portada({ plantillas, idioma = 'es' }) {
   const t = TX[idioma], rutas = RUTAS[idioma];
   const ruta = rutas.raiz;
   const r = '../'.repeat(ruta.split('/').filter(Boolean).length);
   const probar = PARA_PROBAR.map((id) => plantillas.find((p) => p.id === id)).filter(Boolean);
   const archivo = (p) => `${rutas.plantillas}${p.ruta}/${p.ruta}.bpmn`;
+  const visor = (p) => urlVisor(r, archivo(p), p.nombre, true);
   const primera = probar[0];
+  const lista = (items) => `<ul class="lista-hecha">${items.map((x) => `<li>${x}</li>`).join('')}</ul>`;
 
   const cuerpo = `
-<section class="tablero portada" aria-labelledby="titulo">
-  <div class="pieza portada-texto entra">
-    <div>
-      <h1 id="titulo">${t.h1}</h1>
-      <p class="bajada">${t.bajada}</p>
+<section class="escena" aria-labelledby="titulo" data-prueba>
+  <div class="escena-texto">
+    <span class="escena-logo">${LOGO(56)}</span>
+    <h1 id="titulo" class="titulo-mascara">${t.h1.map((l) => `<span class="linea"><span>${l}</span></span>`).join(' ')}</h1>
+    <p class="escena-bajada">${t.bajada}</p>
+    <div class="escena-acciones">
+      <a class="boton boton-grande boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
+      <a class="boton boton-grande" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
     </div>
-    <div class="portada-acciones">
-      <div class="portada-botones">
-        <a class="boton boton-grande" href="${r}app/">${ABRIR}${t.abrir}</a>
-        <a class="boton boton-grande boton-tarea" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
-      </div>
-      <p class="chico suave">${t.nota}</p>
-    </div>
+    <p class="escena-nota">${t.nota}</p>
   </div>
-  <figure class="pieza pieza-foto portada-foto obturador">
-    <img src="${r}imagenes/play.webp" width="2880" height="1800" alt="${escapar(t.playAlt)}" fetchpriority="high">
-  </figure>
+  <div class="escena-visor">
+    <div class="visor-marco" data-ui>
+      <nav class="visor-pestanas" aria-label="${t.procesos}">
+        ${probar.map((p, i) => `<a href="${escapar(visor(p))}" data-visor data-titulo="${escapar(p.nombre)}"${i === 0 ? ' aria-current="true"' : ''}>${escapar(p.nombre)}</a>`).join('\n        ')}
+        <button type="button" class="visor-pantalla" data-pantalla-completa hidden aria-label="${t.pantalla}" title="${t.pantalla}"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </nav>
+      <iframe src="${escapar(visor(primera))}" title="${escapar(t.visorDe(primera.nombre))}" allow="fullscreen" allowfullscreen></iframe>
+    </div>
+    <p class="escena-pista">${t.pista}</p>
+  </div>
 </section>
 
-<section class="pieza franja-datos entra" aria-label="${t.hechosEtiqueta}">
-  ${t.hechos.map(([titulo, texto, simbolo]) => `<p class="dato-clave">${SIMBOLOS[simbolo]}<span><strong>${titulo}</strong>${texto}</span></p>`).join('\n  ')}
+<section class="uso" aria-labelledby="uso-titulo">
+  <h2 id="uso-titulo" class="entra">${t.usoTitulo}</h2>
+  <ol class="uso-pasos">
+    ${t.uso.map(([frase, texto, alt], i) => {
+      const f = PANTALLAS[i];
+      const pantalla = `<figure class="uso-pantalla ${f.clase}" data-ui><img src="${r}imagenes/${f.src}" width="${f.ancho}" height="${f.alto}" loading="lazy" alt="${escapar(alt)}"></figure>`;
+      const salida = i === 2
+        ? `<div class="uso-salida uso-final">${pantalla}<ul class="uso-formatos">${t.formatos.map(([n, d]) => `<li><strong>${n}</strong><span>${d}</span></li>`).join('')}</ul></div>`
+        : `<div class="uso-salida">${pantalla}</div>`;
+      return `<li class="uso-paso entra">
+      <p class="uso-frase">${frase}</p>
+      <p class="uso-llamado">${texto}</p>
+      ${salida}
+    </li>`;
+    }).join('\n    ')}
+  </ol>
 </section>
 
-<section class="prueba" aria-labelledby="prueba-titulo">
+<section class="donde" aria-labelledby="donde-titulo">
   <div class="cabeza entra">
-    <h2 id="prueba-titulo">${t.pruebaTitulo}</h2>
-    <p>${t.pruebaTexto}</p>
+    <h2 id="donde-titulo">${t.dondeTitulo}</h2>
+    <p>${t.dondeTexto}</p>
   </div>
-  <div class="tablero prueba-panel" data-prueba>
-    <div class="pieza prueba-visor" data-ui>
-      <iframe src="${escapar(urlVisor(r, archivo(primera), primera.nombre, false))}" title="${escapar(t.visorDe(primera.nombre))}" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+  <div class="tablero donde-tablero">
+    <div class="pieza pieza-hondo donde-opcion entra">
+      <h3>${t.navegador[0]}</h3>
+      ${lista(t.navegador[1])}
+      <a class="boton boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
     </div>
-    <div class="pieza prueba-mando">
-      <h3 id="prueba-elige">${t.elige}</h3>
-      <ul class="prueba-lista" aria-labelledby="prueba-elige">
-        ${probar.map((p, i) => `<li><a href="${escapar(urlVisor(r, archivo(p), p.nombre, false))}" data-visor data-titulo="${escapar(p.nombre)}"${i === 0 ? ' aria-current="true"' : ''}>${escapar(p.nombre)}<span>${escapar(t.nivelDe(p))}</span></a></li>`).join('\n        ')}
-      </ul>
-      <div class="prueba-botones">
-        <button type="button" class="boton" data-pantalla-completa hidden><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${t.pantalla}</button>
-        <a class="boton boton-tarea" href="${escapar(urlVisor(r, archivo(primera), primera.nombre, false))}" target="_blank" rel="noopener" data-pestana>${t.pestana}</a>
-      </div>
+    <div class="pieza pieza-tarea donde-opcion entra" style="--i:1">
+      <h3>${t.windows[0]}</h3>
+      ${lista(t.windows[1])}
+      <a class="boton" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
     </div>
   </div>
 </section>
 
-<section class="guias-portada" aria-labelledby="guias-titulo">
-  <div class="cabeza entra">
-    <h2 id="guias-titulo">${t.guiasTitulo}</h2>
-    <p>${t.guiasTexto}</p>
-  </div>
-  <div class="tablero guias-tablero">
-    ${t.guias.map(([destino, titulo, texto, ejemplo], i) => `<a class="pieza${CLASES_GUIA[i]} entra"${i % 2 ? ' style="--i:1"' : ''} href="${r}${rutas.guias}${destino}"><span class="guia-imagen"><img src="${r}${rutas.plantillas}${ejemplo}/vista.png" ${medidas(ejemplo, idioma)} loading="lazy" alt="${escapar(t.ejemploDe(titulo))}"></span><span class="guia-texto"><span class="camino-titulo">${titulo}</span><p>${texto}</p></span>${FLECHA}</a>`).join('\n    ')}
-  </div>
+<section class="aprende" aria-labelledby="guias-titulo">
+  <h2 id="guias-titulo" class="entra">${t.guiasTitulo}</h2>
+  <ul class="aprende-lista">
+    ${t.guias.map(([destino, titulo, texto, ejemplo], i) => `<li class="entra" style="--i:${i}"><a href="${r}${rutas.guias}${destino}"><span class="aprende-imagen"><img src="${r}${rutas.plantillas}${ejemplo}/vista.png" ${medidas(ejemplo, idioma)} loading="lazy" alt="${escapar(t.ejemploDe(titulo))}"></span><span class="aprende-texto"><strong>${titulo}</strong><span>${texto}</span></span>${FLECHA}</a></li>`).join('\n    ')}
+  </ul>
 </section>
 
 <section class="preguntas" aria-labelledby="preguntas-titulo">
@@ -201,20 +221,13 @@ export function portada({ plantillas, idioma = 'es' }) {
   </div>
 </section>
 
-<section class="tablero cierre" aria-labelledby="cierre-titulo">
-  <div class="pieza pieza-azul cierre-centro entra">
-    <h2 id="cierre-titulo">${t.cierreTitulo}</h2>
-    <p>${t.cierreTexto}</p>
-    <div class="cierre-botones">
-      <a class="boton boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
-      <a class="boton boton-tarea" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
-    </div>
-    <p class="chico cierre-codigo">${t.codigo}</p>
+<section class="final" aria-labelledby="final-titulo">
+  <h2 id="final-titulo" class="entra">${t.cierreTitulo}</h2>
+  <div class="final-acciones entra" style="--i:1">
+    <a class="boton boton-grande boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
+    <a class="boton boton-grande" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
   </div>
-  <figure class="pieza pieza-decision cierre-celular entra" style="--i:1">
-    <figcaption>${t.celularNota}</figcaption>
-    <img src="${r}imagenes/celular.png" width="780" height="1688" loading="lazy" alt="${escapar(t.celularAlt)}">
-  </figure>
+  <p class="final-codigo entra" style="--i:2">${t.codigo}</p>
 </section>`;
 
   const url = SITIO + ruta;

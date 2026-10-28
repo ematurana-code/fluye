@@ -477,7 +477,8 @@ function actualizarPista() {
   nota.className = 'fl-pista';
   nota.append(
     Object.assign(document.createElement('strong'), { textContent: 'Empieza aquí' }),
-    Object.assign(document.createElement('span'), { textContent: 'Selecciona el inicio y usa el menú rápido para agregar el primer paso, o arrastra uno desde la paleta.' })
+    Object.assign(document.createElement('span'), { textContent: 'Selecciona el inicio y usa el menú rápido para agregar el primer paso, o arrastra uno desde la paleta.' }),
+    Object.assign(document.createElement('span'), { className: 'fl-pista-otra', textContent: '¿Prefieres partir de un ejemplo? Nuevo, Desde una plantilla.' })
   );
   overlays.add(nodos[0], 'fl-pista', { position: { top: -6, left: nodos[0].width + 16 }, html: nota, scale: { min: 0.8, max: 1 } });
 }
@@ -575,6 +576,11 @@ async function ofrecerRespaldo() {
   return true;
 }
 
+// En una pantalla angosta (celular) el lienzo va primero: el panel parte cerrado y se avisa una vez que dibujar es más
+// cómodo en un computador o una tablet. Ver y recorrer procesos con el Play funciona igual.
+const angosta = window.matchMedia('(max-width: 760px)').matches;
+if (angosta) document.body.classList.add('sin-panel');
+
 if (!archivo.esEscritorio) {
   window.addEventListener('beforeunload', (e) => {
     confirmarEdiciones();
@@ -669,5 +675,10 @@ if (primero && await cargar(primero.contenido, primero.nombre, primero.ruta)) {
 }
 document.body.classList.add('listo');
 respaldoActivo = true;
+if (angosta) {
+  let visto = false;
+  try { visto = localStorage.getItem('fluye.aviso-celular') === '1'; localStorage.setItem('fluye.aviso-celular', '1'); } catch { /* sin almacenamiento: se avisa igual */ }
+  if (!visto) aviso('En el celular puedes ver y recorrer procesos con el Play. Para dibujar con comodidad, usa un computador o una tablet.', 'ok', 8000);
+}
 if (!archivo.esEscritorio) programarRespaldo();
 requestAnimationFrame(() => { modeler.ajustarVista(); actualizarZoom(); });

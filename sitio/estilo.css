@@ -128,40 +128,91 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
   .barra-enlaces nav a:nth-child(3) { display: none; }
 }
 
-/* ---------- portada: el primer tablero ---------- */
-/* Texto con los dos botones a la izquierda y, a la derecha, el Play en grande (la foto más propia de Fluye). */
-.portada { grid-template-rows: minmax(480px, calc(100svh - var(--barra) - 150px)); margin-top: 0; }
-.portada-texto { grid-column: 1 / span 5; display: flex; flex-direction: column; justify-content: space-between; gap: 36px; padding: clamp(24px, 3vw, 44px); }
-.portada-texto h1 { font-size: clamp(32px, 3.6vw, 52px); }
-.portada-texto .bajada { max-width: 46ch; margin-top: 22px; font-size: clamp(17px, 1.3vw, 19px); color: var(--tinta-2); }
-.portada-acciones { display: grid; gap: 14px; }
-.portada-botones { display: flex; flex-wrap: wrap; gap: var(--hueco); }
 .boton-grande { min-height: 56px; padding: 0 26px; font-size: var(--t-texto); }
-.portada-foto { grid-column: 6 / -1; background: var(--pieza); }
-.portada-foto img { object-position: 6% 50%; }
-/* Cuatro datos concretos bajo el inicio, cada uno con su figura de BPMN. */
-main > .franja-datos { margin-top: var(--hueco); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 32px; padding: 22px var(--relleno); }
-.dato-clave { display: flex; align-items: flex-start; gap: 12px; }
-.dato-clave .simbolo { flex: none; width: 40px; height: auto; }
-.dato-clave strong { display: block; font-size: var(--t-texto); }
 .camino-titulo { display: block; font-size: var(--t-frase); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+/* ---------- portada: el Play andando en la primera pantalla ---------- */
+/* Dos mitades por tono: a la izquierda qué es Fluye y los dos caminos; a la derecha el visor real con el Play andando. */
+.boton-grande { min-height: 56px; padding: 0 26px; font-size: var(--t-texto); }
+.escena { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--hueco); min-height: calc(100svh - var(--barra) - 24px); }
+.escena-texto { grid-column: 1 / span 6; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 22px; padding: clamp(28px, 3.4vw, 56px); border-radius: var(--radio); background: var(--hondo); color: #fff; }
+.escena-texto h1 { font-size: clamp(34px, 2.9vw, 52px); line-height: 1.06; }
+.escena-logo { margin-bottom: auto; line-height: 0; }
+.escena-bajada { max-width: 46ch; font-size: clamp(17px, 1.25vw, 19px); color: var(--sobre-hondo); }
+.escena-acciones { display: flex; flex-wrap: wrap; gap: var(--hueco); margin-top: 6px; }
+.escena-nota { font-size: var(--t-chico); color: var(--sobre-hondo); }
+.escena-visor { grid-column: 7 / -1; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: clamp(14px, 1.8vw, 28px); border-radius: var(--radio); background: var(--azul-2); }
+.escena-pista { font-size: var(--t-chico); color: var(--sobre-hondo); }
+/* El visor como pieza del programa: sus pestañas de procesos y el lienzo con el Play. */
+.visor-marco { flex: 1; display: flex; flex-direction: column; min-height: 440px; border-radius: 10px; overflow: hidden; background: #fff; }
+.visor-pestanas { display: flex; align-items: center; gap: 4px; padding: 6px; background: #eef2f8; overflow-x: auto; }
+.visor-pestanas a { padding: 8px 12px; border-radius: 6px; font-size: var(--t-chico); font-weight: 600; color: var(--tinta-2); text-decoration: none; white-space: nowrap; transition: background-color .15s, color .15s; }
+.visor-pestanas a:hover { background: #dfe6f1; color: var(--tinta); }
+.visor-pestanas a[aria-current="true"] { background: #fff; color: var(--azul); }
+.visor-pantalla { display: grid; place-items: center; flex: none; width: 36px; height: 36px; margin-left: auto; border: 0; border-radius: 6px; background: transparent; color: var(--tinta-2); cursor: pointer; }
+.visor-pantalla:hover { background: #dfe6f1; color: var(--tinta); }
+.visor-marco iframe { flex: 1; width: 100%; min-height: 0; border: 0; }
+/* El título sube línea por línea desde su base al cargar; el resto aparece después. Sin animación, todo está quieto. */
+.titulo-mascara .linea { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+.titulo-mascara .linea > span { display: block; animation: subir .9s cubic-bezier(.16, 1, .3, 1) both; }
+.titulo-mascara .linea + .linea > span { animation-delay: .11s; }
+.escena-bajada, .escena-acciones, .escena-nota, .escena-pista { animation: aparecer .6s .5s both var(--suave); }
+@keyframes subir { from { transform: translateY(105%); } }
+@keyframes aparecer { from { opacity: 0; transform: translateY(14px); } }
+
+/* ---------- "Así se usa": lo que haces y lo que Fluye devuelve, en una columna ---------- */
+.uso { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--hueco); }
+.uso > h2, .uso-pasos { grid-column: 4 / span 6; }
+.uso > h2 { margin-bottom: 56px; }
+.uso-pasos { display: grid; gap: 88px; padding: 0; list-style: none; }
+.uso-frase { font-size: var(--t-frase); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+.uso-llamado { margin-top: 16px; padding: 20px 22px; border-radius: var(--radio); background: var(--pieza); font-size: var(--t-texto); }
+.uso-salida { margin: 16px 0 0 56px; }
+/* Recortes de las capturas reales (2880 x 1800): ancho = 2000 / ancho del recorte y márgenes = -x0 y -y0 sobre el mismo
+   ancho, medidos en la captura vista a 2000 px. Cada recorte muestra la parte del programa que hace ese paso. */
+.uso-pantalla { position: relative; overflow: hidden; border-radius: var(--radio); background: #fff; }
+.uso-pantalla img { display: block; max-width: none; height: auto; }
+.uso-editor { aspect-ratio: 16 / 9; }
+.uso-editor img { width: 158.7%; margin: -14.3% 0 0 0; }
+.uso-play { aspect-ratio: 16 / 9; }
+.uso-play img { width: 222.2%; margin: -76.7% 0 0 -66.7%; }
+.uso-final { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); align-items: end; gap: clamp(20px, 3vw, 48px); margin-left: 0; margin-right: -50%; padding: clamp(20px, 2.4vw, 36px) clamp(20px, 2.4vw, 36px) 0; border-radius: var(--radio); background: var(--decision); }
+.uso-celular { aspect-ratio: 780 / 1240; border: 7px solid var(--tinta); border-bottom: 0; border-radius: 28px 28px 0 0; }
+.uso-celular img { width: 100%; }
+.uso-formatos { align-self: center; display: grid; gap: 14px; padding: 0 0 clamp(20px, 2.4vw, 36px); list-style: none; }
+.uso-formatos strong { display: block; font-size: var(--t-texto); }
+.uso-formatos span { font-size: var(--t-chico); color: var(--tinta-2); }
+
+/* ---------- "Elige dónde usarlo": navegador o Windows ---------- */
+.donde-opcion { grid-column: span 6; display: flex; flex-direction: column; gap: 22px; padding: clamp(24px, 2.8vw, 44px); }
+.donde-opcion .boton { align-self: flex-start; margin-top: auto; }
+.lista-hecha { display: grid; gap: 12px; padding: 0; list-style: none; }
+.lista-hecha li { position: relative; padding-left: 26px; font-size: var(--t-texto); }
+.lista-hecha li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 10px; height: 10px; border-radius: 50%; background: var(--azul); }
+.pieza-hondo .lista-hecha li::before { background: var(--ficha); }
+
+/* ---------- guías: bandas con el diagrama de cada ejemplo ---------- */
+.aprende > h2 { margin-bottom: 36px; padding-inline: var(--relleno); }
+.aprende-lista { display: grid; gap: 4px; padding: 0; list-style: none; }
+.aprende-lista a { display: grid; grid-template-columns: clamp(140px, 16vw, 240px) minmax(0, 1fr) auto; align-items: center; gap: clamp(16px, 2.4vw, 36px); padding: 10px clamp(16px, 2vw, 28px) 10px 10px; border-radius: var(--radio); background: var(--pieza); color: var(--tinta); text-decoration: none; transition: background-color .15s; }
+.aprende-lista li:nth-child(even) a { background: var(--pieza-2); }
+.aprende-lista a:hover { background: var(--tarea); }
+.aprende-imagen { display: block; aspect-ratio: 16 / 7; overflow: hidden; border-radius: 6px; background: #fff; }
+.aprende-imagen img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+.aprende-texto strong { display: block; font-size: var(--t-frase); line-height: 1.2; letter-spacing: -0.02em; }
+.aprende-texto > span { display: block; margin-top: 6px; color: var(--tinta-2); }
+.aprende-lista .pieza-flecha { transition: transform .2s var(--suave); }
+.aprende-lista a:hover .pieza-flecha { transform: translate(4px, -4px); }
+
+/* ---------- cierre: la invitación, en el azul hondo del inicio ---------- */
+.final { display: grid; justify-items: start; gap: 26px; padding: clamp(40px, 6vw, 96px) clamp(24px, 4vw, 64px); border-radius: var(--radio); background: var(--hondo); color: #fff; }
+.final h2 { max-width: 18ch; }
+.final-acciones { display: flex; flex-wrap: wrap; gap: var(--hueco); }
+.final-codigo { max-width: 60ch; font-size: var(--t-chico); color: var(--sobre-hondo); }
+.final-codigo a { color: #fff; }
+
 .camino-nota { display: block; margin-top: 8px; font-size: var(--t-chico); }
 .pieza-azul .camino-nota { color: var(--sobre-hondo); }
 .pieza-tarea .camino-nota { color: var(--tinta-2); }
-
-/* ---------- "Pruébalo aquí": el visor real con su selector ---------- */
-.prueba-panel { grid-template-rows: auto; }
-.prueba-visor { grid-column: 1 / span 9; padding: 0; overflow: hidden; height: clamp(460px, 72svh, 760px); background: var(--pieza); }
-.prueba-visor iframe { width: 100%; height: 100%; border: 0; }
-.prueba-mando { grid-column: 10 / -1; display: flex; flex-direction: column; gap: 20px; }
-.prueba-mando h3 { font-size: var(--t-texto); line-height: 1.3; }
-.prueba-lista { display: grid; gap: 6px; }
-.prueba-lista a { display: grid; gap: 2px; min-height: 52px; padding: 10px 14px; border-radius: var(--radio); background: var(--pieza-2); color: var(--tinta); text-decoration: none; transition: background-color .15s; }
-.prueba-lista a span { font-size: var(--t-chico); color: var(--tinta-2); }
-.prueba-lista a:hover { background: var(--tarea); }
-.prueba-lista a[aria-current="true"] { background: var(--azul); color: #fff; }
-.prueba-lista a[aria-current="true"] span { color: var(--sobre-hondo); }
-.prueba-botones { display: grid; gap: 8px; margin-top: auto; }
 
 /* ---------- plantillas: lista activa con el diagrama fijo al lado ---------- */
 .catalogo { align-items: start; }
@@ -224,19 +275,6 @@ main > .franja-datos { margin-top: var(--hueco); display: grid; grid-template-co
 .preguntas-panel .pregunta-titulo { margin-bottom: 18px; font-size: var(--t-texto); font-weight: 600; color: var(--tinta-2); letter-spacing: 0; }
 .js .preguntas-panel { display: block; }
 .js .preguntas-indice .respuesta { display: none; }
-
-/* ---------- cierre: la fila de la acción ---------- */
-.cierre { grid-template-rows: minmax(360px, auto); }
-/* El celular asoma desde abajo, con su marco: la página exportada tal como se ve en el teléfono. */
-.cierre-celular { grid-column: 9 / -1; display: flex; flex-direction: column; align-items: center; gap: 22px; padding: var(--relleno) var(--relleno) 0; overflow: hidden; }
-.cierre-celular figcaption { align-self: stretch; font-size: var(--t-chico); font-weight: 600; color: var(--tinta); }
-.cierre-celular img { flex: 1; min-height: 0; width: min(64%, 240px); object-fit: cover; object-position: top; border: 7px solid var(--tinta); border-bottom: 0; border-radius: 28px 28px 0 0; background: #fff; }
-.cierre-centro { grid-column: 1 / span 8; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: clamp(24px, 3vw, 44px); }
-.cierre-centro h2 { color: #fff; }
-.cierre-centro p { max-width: 52ch; color: var(--sobre-hondo); }
-.cierre-botones { display: flex; flex-wrap: wrap; gap: var(--hueco); margin-top: 6px; }
-.cierre-codigo { margin-top: 10px; color: var(--sobre-hondo); }
-.cierre-codigo a { color: #fff; }
 
 /* ---------- en inglés ---------- */
 
@@ -439,20 +477,14 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
 
 /* ---------- tableta ---------- */
 @media (max-width: 1100px) {
-  .portada { grid-template-rows: auto auto; }
-  .portada-texto { grid-column: 1 / -1; }
-  .portada-texto h1 { max-width: 18ch; }
-  .portada-foto { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
-  main > .franja-datos { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
-  .prueba-visor { grid-column: 1 / -1; }
-  .prueba-mando { grid-column: 1 / -1; }
-  .prueba-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .prueba-botones { grid-template-columns: 1fr 1fr; }
+  .escena-texto, .escena-visor { grid-column: 1 / -1; }
+  .escena { min-height: 0; }
+  .escena-visor { height: 64svh; }
+  .uso > h2, .uso-pasos { grid-column: 2 / span 10; }
+  .uso-final { margin-right: 0; }
   .guia-bpmn, .guia-flujo, .guia-simbolos, .guia-carriles { grid-column: span 6; }
   .preguntas-indice { grid-column: 1 / span 6; }
   .preguntas-panel { grid-column: 7 / -1; }
-  .cierre-centro { grid-column: 1 / span 7; }
-  .cierre-celular { grid-column: 8 / -1; }
   .titular-texto, .titular-lado, .plantilla-vista, .plantilla-acciones, .titular-grande .titular-texto, .titular-grande .titular-lado { grid-column: 1 / -1; }
   .titular-grande .titular-lado { min-height: 56vw; }
   .titular-grande .guia-vista { min-height: 0; }
@@ -471,25 +503,33 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
 
 /* ---------- celular: cada tablero se vuelve a armar en dos columnas ---------- */
 @media (max-width: 760px) {
+  .escena-visor { height: 72svh; padding: 10px; }
+  .visor-marco { min-height: 0; }
+  .escena-texto { padding: 24px 20px; }
+  .escena-texto h1 { font-size: 7.6vw; }
+  .titulo-mascara .linea, .titulo-mascara .linea > span { display: inline; }
+  .titulo-mascara .linea > span { animation: none; }
+  .escena-acciones .boton, .final-acciones .boton { flex: 1 1 100%; }
+  .uso > h2, .uso-pasos { grid-column: 1 / -1; padding-inline: 8px; }
+  .uso > h2 { margin-bottom: 32px; }
+  .uso-pasos { gap: 56px; }
+  .uso-salida { margin-left: 0; }
+  .uso-final { grid-template-columns: minmax(0, 150px) minmax(0, 1fr); }
+  .aprende-lista a { grid-template-columns: 96px minmax(0, 1fr); }
+  .aprende-lista .pieza-flecha { display: none; }
+  .aprende-texto strong { font-size: var(--t-texto); }
   :root { --barra: 64px; }
   .barra-fila { grid-template-columns: 52px minmax(0, 1fr) auto; height: 52px; }
   .barra-enlaces { grid-template-columns: 1fr; padding: 0 14px; }
   .barra-nombre { display: none; }
   .barra-enlaces nav { gap: 16px; }
   .barra-enlaces nav a:nth-child(2), .barra-enlaces nav a:nth-child(3) { display: none; }
-  main > .franja-datos { grid-template-columns: 1fr; gap: 16px; }
   .barra-enlaces nav { justify-content: flex-start; gap: 14px; }
   .barra-accion { padding: 0 16px; }
   .cabeza { grid-template-columns: 1fr; margin-bottom: 20px; }
   .cabeza > :first-child, .cabeza > p { grid-column: 1; }
   .tablero { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
   .tablero > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
-  .portada-foto { aspect-ratio: 4 / 3; }
-  .portada-botones .boton { flex: 1 1 100%; }
-  .prueba-visor { height: clamp(340px, 52svh, 460px); }
-  .prueba-lista { grid-template-columns: 1fr; }
-  .prueba-lista li:nth-child(n+5) { display: none; }
-  .prueba-botones { grid-template-columns: 1fr; }
   .catalogo-vista { position: sticky; top: calc(var(--barra) + 4px); z-index: 3; grid-template-columns: 1fr; }
   .catalogo-imagen { aspect-ratio: auto; height: 30svh; }
   .catalogo-ficha { display: none; }
@@ -498,8 +538,6 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   .preguntas-panel { display: none !important; }
   .js .preguntas-indice .respuesta { display: none; }
   .js .preguntas-indice .pregunta.abierta .respuesta { display: block; }
-  .cierre-celular { height: 300px; }
-  .cierre-botones .boton { flex: 1 1 100%; }
   .decision-fila > a { grid-column: span 1 !important; }
   .decision-pregunta { flex-direction: row; align-items: center; }
   .decision-rombo { width: 32px; height: 32px; flex: none; }
@@ -523,6 +561,7 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   html { scroll-behavior: auto; }
   .js .entra { opacity: 1; transform: none; transition: none; }
   .js .obturador img { clip-path: none; transform: none; transition: none; }
+  .titulo-mascara .linea > span, .escena-bajada, .escena-acciones, .escena-nota, .escena-pista { animation: none; }
   a.pieza, .boton, .vista-play-imagen img, .vista-play-boton, .pieza-flecha, .catalogo-imagen img { transition: none; }
   a.pieza:hover, a.pieza:hover .pieza-flecha, .vista-play:hover .vista-play-imagen img, .vista-play:hover .vista-play-boton { transform: none; }
 }

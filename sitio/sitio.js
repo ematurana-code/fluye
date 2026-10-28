@@ -57,11 +57,10 @@ document.addEventListener('click', (e) => {
   reproductor.dialogo.querySelector('.reproductor-cerrar').focus();
 });
 
-// ---------- portada: el visor con su selector de procesos ----------
+// ---------- portada: el Play andando, con sus pestañas de procesos ----------
 const prueba = document.querySelector('[data-prueba]');
 if (prueba) {
   const marco = prueba.querySelector('iframe');
-  const pestana = prueba.querySelector('[data-pestana]');
   const pantalla = prueba.querySelector('[data-pantalla-completa]');
   if (document.fullscreenEnabled) {
     pantalla.hidden = false;
@@ -74,8 +73,7 @@ if (prueba) {
     for (const a of prueba.querySelectorAll('a[data-visor]')) a.toggleAttribute('aria-current', a === enlace);
     enlace.setAttribute('aria-current', 'true');
     marco.src = enlace.href;
-    marco.title = `Visor de Fluye: ${enlace.dataset.titulo}`;
-    pestana.href = enlace.href;
+    marco.title = `${document.documentElement.lang === 'en' ? 'Fluye viewer' : 'Visor de Fluye'}: ${enlace.dataset.titulo}`;
   });
 }
 

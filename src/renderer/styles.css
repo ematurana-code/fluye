@@ -17,7 +17,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--bg); color: var(--text); font-family: Inter, "Segoe UI", system-ui, sans-serif; font-size: 14px; overflow: hidden; -webkit-font-smoothing: antialiased; }
-body:not(.listo) .fl-cuerpo { visibility: hidden; }
+body:not(.listo) .fl-cuerpo { visibility: hidden; transition: none; }
 button { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
@@ -359,3 +359,12 @@ body.en-play .fl-estado-revision { visibility: hidden; }
 .fl-pista::before { content: ''; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; background: var(--surface); border-left: 1px dashed var(--accent-light); border-bottom: 1px dashed var(--accent-light); transform: rotate(45deg); }
 .fl-pista strong { font-size: 12.5px; color: var(--primary); }
 .fl-pista span { font-size: 12px; line-height: 1.4; color: var(--text-muted); }
+.fl-pista .fl-pista-otra { margin-top: 4px; color: var(--primary); }
+
+/* ---------- celular: el lienzo primero; la barra muestra solo íconos y se desplaza de lado ---------- */
+@media (max-width: 760px) {
+  .fl-barra { gap: 8px; padding: 0 8px; overflow-x: auto; }
+  .fl-marca span, .fl-archivo { display: none; }
+  .fl-acciones { margin-left: 0; }
+  .fl-acciones .fl-btn > span { display: none; }
+}
