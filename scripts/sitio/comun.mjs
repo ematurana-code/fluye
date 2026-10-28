@@ -1,5 +1,6 @@
 // Lo que comparten todas las páginas del sitio: cabecera, pie, metadatos para buscadores y redes, y utilidades.
 // El sitio existe en español (raíz) y en inglés (en/): cada pieza compartida recibe el idioma y saca sus textos de TEXTOS.
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -7,6 +8,10 @@ const raizProyecto = join(import.meta.dirname, '..', '..');
 const paquete = JSON.parse(readFileSync(join(raizProyecto, 'package.json'), 'utf8'));
 
 export const VERSION = paquete.version;
+// Huella del contenido de la hoja de estilos y del script del sitio: va en su dirección (?v=) para que el navegador
+// baje la versión nueva apenas se publica (GitHub Pages deja guardar los archivos 10 minutos).
+const huella = (archivo) => createHash('sha256').update(readFileSync(join(raizProyecto, 'sitio', archivo))).digest('hex').slice(0, 10);
+const ESTILO = `estilo.css?v=${huella('estilo.css')}`, SCRIPT = `sitio.js?v=${huella('sitio.js')}`;
 export const SITIO = 'https://ematurana-code.github.io/fluye/';
 export const REPO = 'https://github.com/ematurana-code/fluye';
 export const DESCARGA = `${REPO}/releases/latest/download/Fluye-Instalar-${VERSION}.exe`;
@@ -157,7 +162,7 @@ ${GOOGLE_VERIFICACION && ruta === '' ? `<meta name="google-site-verification" co
 <link rel="icon" href="${r}imagenes/icono.png" type="image/png">
 <link rel="preload" href="${r}fuentes/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${r}fuentes/inter-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${r}estilo.css">
+<link rel="stylesheet" href="${r}${ESTILO}">
 <script>document.documentElement.classList.add('js');</script>
 ${datos}
 </head>
@@ -189,7 +194,7 @@ ${cuerpo}
     <a class="boton" href="${DESCARGA}">${t.pie.boton}</a>
   </div>
 </footer>
-<script src="${r}sitio.js" defer></script>
+<script src="${r}${SCRIPT}" defer></script>
 </body>
 </html>
 `;
