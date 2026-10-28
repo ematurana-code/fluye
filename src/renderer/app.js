@@ -17,6 +17,7 @@ import PLANTILLAS from 'fluye:plantillas';
 import { crearPropiedades } from './ui/propiedades.js';
 import * as archivo from './ui/archivo.js';
 import * as drive from './ui/drive.js';
+import { iniciarInstalar } from './ui/instalar.js';
 import { aviso, elegirOpcion, preguntar } from './ui/dialogos.js';
 import { mostrarMenuOrtografia } from './ui/ortografia.js';
 import Play from './play/Play.js';
@@ -742,5 +743,8 @@ if (angosta) {
   try { visto = localStorage.getItem('fluye.aviso-celular') === '1'; localStorage.setItem('fluye.aviso-celular', '1'); } catch { /* sin almacenamiento: se avisa igual */ }
   if (!visto) aviso('En el celular puedes ver y recorrer procesos con el Play. Para dibujar con comodidad, usa un computador o una tablet.', 'ok', 8000);
 }
-if (!archivo.esEscritorio) programarRespaldo();
+if (!archivo.esEscritorio) {
+  programarRespaldo();
+  iniciarInstalar({ hayDialogoAbierto });
+}
 requestAnimationFrame(() => { modeler.ajustarVista(); actualizarZoom(); });

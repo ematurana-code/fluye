@@ -9,6 +9,8 @@ import { medidas } from './guias.mjs';
 // Logo de Windows (cuatro cuadros) para el botón de descarga.
 const WINDOWS = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5.5 10.5 4.5v7H3zM12 4.3 21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z" fill="currentColor"/></svg>';
 // Flecha de "abrir" para el botón principal.
+// Monitor con flecha hacia abajo: instalar la app web en el navegador.
+const INSTALAR = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 7v6m3-3-3 3-3-3M12 17v4M8 21h8"/></g></svg>';
 const ABRIR = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 // Los procesos que el Play del inicio puede recorrer (por id, valen en los dos idiomas).
@@ -20,7 +22,7 @@ const TX = {
       ['¿Qué programa uso para hacer diagramas BPMN gratis?', 'Fluye es un programa gratis y de código abierto para hacer diagramas BPMN 2.0, en español. Dibuja pools, carriles, tareas, decisiones y eventos, revisa que el diagrama esté completo y lo recorre paso a paso con un Play. Se usa en el navegador, sin instalar, o como programa para Windows.'],
       ['¿Fluye es gratis?', 'Sí. Es gratis para siempre y de código abierto con licencia MIT: puedes usarlo en tu casa, en tu empresa o en clases, sin cuenta, sin anuncios y sin límite de diagramas.'],
       ['¿Dónde quedan mis diagramas si lo uso en el navegador?', 'En tu computador. Guardas archivos .bpmn donde quieras y Fluye no los sube a ningún servidor. En Chrome y Edge, Guardar escribe sobre el mismo archivo; mientras trabajas, Fluye deja además una copia de respaldo en el navegador por si cierras la pestaña sin guardar.'],
-      ['¿Funciona sin internet?', 'Sí. El programa para Windows trabaja sin conexión, y la versión web, una vez abierta, también: se puede instalar desde Chrome o Edge como una app más. Incluso el corrector ortográfico en español funciona sin internet.'],
+      ['¿Funciona sin internet?', 'Sí. El programa para Windows trabaja sin conexión, y la versión web, una vez abierta, también: en Chrome y Edge se instala con el botón Instalar, como una app más. Incluso el corrector ortográfico en español funciona sin internet.'],
       ['¿Funciona en Mac o Linux?', 'Sí, en el navegador: Fluye funciona en Chrome, Edge, Firefox o Safari en cualquier sistema. El programa que se instala es para Windows 10 y 11.'],
       ['¿Qué es BPMN?', 'Es el estándar internacional para dibujar procesos (Business Process Model and Notation, de la OMG). Usa pocas figuras: círculos para el inicio y el fin, rectángulos para las tareas, rombos para las decisiones y franjas para los responsables.'],
       ['¿Sirve para diagramas de flujo comunes?', 'Sí. Un diagrama de flujo con inicio, pasos, decisiones y fin se dibuja con las mismas figuras de BPMN. Si además quieres mostrar quién hace cada paso, le agregas carriles.'],
@@ -30,7 +32,7 @@ const TX = {
     // El título en dos líneas, cada una sube desde su propia línea base al cargar.
     h1: ['Diagramas BPMN', 'que se recorren con Play'],
     bajada: 'Fluye dibuja tus procesos con el estándar BPMN y los recorre paso a paso, para que veas por dónde sigue cada caso antes de ponerlo en marcha.',
-    abrir: 'Abrir Fluye', descargar: 'Descargar para Windows',
+    abrir: 'Abrir Fluye', descargar: 'Descargar para Windows', instalar: 'Instalar en el navegador', abrirSin: 'Abrir sin instalar',
     nota: 'Gratis y de código abierto. Sin cuenta: tus archivos quedan en tu computador.',
     visorDe: (n) => `Visor de Fluye: ${n}`, procesos: 'Procesos para recorrer', pista: 'Está andando: en cada decisión, elige tú el camino.',
     pantalla: 'Pantalla completa',
@@ -47,7 +49,7 @@ const TX = {
     formatos: [['Página web', 'con el Play, en un solo archivo'], ['PDF', 'una hoja A4 lista para imprimir'], ['Word', 'portada, diagrama y ficha de cada paso'], ['PNG y SVG', 'para presentaciones y documentos'], ['BPMN', 'el estándar que abren otros programas']],
     dondeTitulo: 'Elige dónde usarlo',
     dondeTexto: 'Es el mismo editor y los mismos archivos: lo que empiezas en uno lo terminas en el otro.',
-    navegador: ['En el navegador', ['Sin instalar ni crear cuenta.', 'En Chrome y Edge guarda en tus carpetas, sobre el mismo archivo.', 'Se instala como app y funciona sin internet.', 'Si cierras sin guardar, lo recupera.']],
+    navegador: ['En el navegador', ['Sin instalar ni crear cuenta.', 'En Chrome y Edge guarda en tus carpetas, sobre el mismo archivo.', 'Se instala con un clic en Chrome y Edge y funciona sin internet.', 'Si cierras sin guardar, lo recupera.']],
     windows: ['En Windows', [`Programa para Windows 10 y 11 (${PESO}).`, 'Abre tus .bpmn con doble clic.', 'Exporta el PDF directo, sin ventana de impresión.', 'Corrector ortográfico en español sin internet.']],
     guiasTitulo: 'Aprende a dibujar procesos',
     guias: [['que-es-bpmn/', 'Qué es BPMN', 'El estándar para dibujar procesos: de dónde viene, sus figuras y cuándo conviene usarlo.', 'solicitud-de-vacaciones'],
@@ -74,7 +76,7 @@ const TX = {
       ['Is Fluye really free?', 'Yes. It is free forever and open source under the MIT license: use it at home, at work or in class, with no account, no ads and no diagram limits.'],
       ['Where are my diagrams stored when I use it in the browser?', 'On your computer. You save .bpmn files wherever you like and Fluye never uploads them to a server. In Chrome and Edge, Save writes over the same file; while you work, Fluye also keeps a backup copy in the browser in case you close the tab without saving.'],
       ['Is the program in English?', 'The website, guides and templates are in English, but the program interface is in Spanish for now. The BPMN shapes are the same in every language, and the .bpmn files you create open in any BPMN tool.'],
-      ['Does it work offline?', 'Yes. The Windows program works without a connection, and so does the web version once it has loaded: Chrome and Edge can install it as an app.'],
+      ['Does it work offline?', 'Yes. The Windows program works without a connection, and so does the web version once it has loaded: in Chrome and Edge, the Install button adds it as an app.'],
       ['Does it work on Mac or Linux?', 'Yes, in the browser: Fluye runs in Chrome, Edge, Firefox or Safari on any system. The installable program is for Windows 10 and 11.'],
       ['What is BPMN?', 'Business Process Model and Notation, the international standard for drawing processes, maintained by the OMG. It uses a few shapes: circles for start and end events, rounded rectangles for tasks, diamonds for decisions and lanes for roles.'],
       ['Can I use it for simple flowcharts?', 'Yes. A flowchart with a start, steps, decisions and an end is drawn with the same BPMN shapes. Add lanes when you also want to show who does each step.'],
@@ -82,7 +84,7 @@ const TX = {
     ],
     h1: ['BPMN diagrams', 'you can play step by step'],
     bajada: 'Fluye draws your processes with the BPMN standard and walks through them step by step, so you see where each case goes before you put it to work. The interface is in Spanish.',
-    abrir: 'Open Fluye', descargar: 'Download for Windows',
+    abrir: 'Open Fluye', descargar: 'Download for Windows', instalar: 'Install in your browser', abrirSin: 'Open without installing',
     nota: 'Free and open source. No account: your files stay on your computer.',
     visorDe: (n) => `Fluye viewer: ${n}`, procesos: 'Processes to walk through', pista: 'It is running: at each decision, you choose the path.',
     pantalla: 'Full screen',
@@ -99,7 +101,7 @@ const TX = {
     formatos: [['Web page', 'with Play, in a single file'], ['PDF', 'an A4 sheet ready to print'], ['Word', 'cover, diagram and a sheet per step'], ['PNG and SVG', 'for slides and documents'], ['BPMN', 'the standard other tools open']],
     dondeTitulo: 'Choose where to use it',
     dondeTexto: 'Same editor, same files: what you start in one you can finish in the other.',
-    navegador: ['In your browser', ['Nothing to install, no account.', 'In Chrome and Edge it saves to your folders, over the same file.', 'Installs as an app and works offline.', 'If you close without saving, it recovers your work.']],
+    navegador: ['In your browser', ['Nothing to install, no account.', 'In Chrome and Edge it saves to your folders, over the same file.', 'Installs in one click in Chrome and Edge and works offline.', 'If you close without saving, it recovers your work.']],
     windows: ['On Windows', [`Program for Windows 10 and 11 (${PESO}).`, 'Opens your .bpmn files with a double click.', 'Exports PDF directly, no print dialog.', 'Spanish spell checker, offline.']],
     guiasTitulo: 'Learn to draw processes',
     guias: [['what-is-bpmn/', 'What is BPMN', 'The standard for drawing processes: where it comes from, its shapes and when to use it.', 'vacation-request'],
@@ -195,12 +197,12 @@ export function portada({ plantillas, idioma = 'es' }) {
     <div class="pieza pieza-hondo donde-opcion entra">
       <h3>${t.navegador[0]}</h3>
       ${lista(t.navegador[1])}
-      <a class="boton boton-claro" href="${r}app/">${ABRIR}${t.abrir}</a>
+      <p class="donde-botones"><a class="boton boton-claro" href="${r}app/?instalar=1">${INSTALAR}${t.instalar}</a><a class="boton" href="${r}app/">${ABRIR}${t.abrirSin}</a></p>
     </div>
     <div class="pieza pieza-tarea donde-opcion entra" style="--i:1">
       <h3>${t.windows[0]}</h3>
       ${lista(t.windows[1])}
-      <a class="boton" href="${DESCARGA}">${WINDOWS}${t.descargar}</a>
+      <p class="donde-botones"><a class="boton" href="${DESCARGA}">${WINDOWS}${t.descargar}</a></p>
     </div>
   </div>
 </section>

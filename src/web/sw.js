@@ -4,8 +4,10 @@
 const CACHE = '__FLUYE_CACHE__';
 const ARCHIVOS = __FLUYE_ARCHIVOS__;
 
+// Se piden a la red (cache: 'reload'): GitHub Pages deja los archivos 10 minutos en la caché del navegador, y sin esto
+// una versión nueva podía guardar el index.html o el app.js de la anterior.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS.map((a) => new Request(a, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {

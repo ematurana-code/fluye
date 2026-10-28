@@ -184,7 +184,7 @@ a.pieza:hover .pieza-flecha { transform: translate(4px, -4px); }
 
 /* ---------- "Elige dónde usarlo": navegador o Windows ---------- */
 .donde-opcion { grid-column: span 6; display: flex; flex-direction: column; gap: 22px; padding: clamp(24px, 2.8vw, 44px); }
-.donde-opcion .boton { align-self: flex-start; margin-top: auto; }
+.donde-botones { display: flex; flex-wrap: wrap; gap: 8px; margin: auto 0 0; }
 .lista-hecha { display: grid; gap: 12px; padding: 0; list-style: none; }
 .lista-hecha li { position: relative; padding-left: 26px; font-size: var(--t-texto); }
 .lista-hecha li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 10px; height: 10px; border-radius: 50%; background: var(--azul); }

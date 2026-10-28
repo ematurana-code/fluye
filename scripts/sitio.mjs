@@ -146,6 +146,7 @@ Datos clave:
 
 - [Descargar Fluye para Windows](${DESCARGA}): instalador por usuario, no pide administrador.
 - [Usar Fluye en el navegador](${SITIO}app/): el programa completo, sin instalar ni crear cuenta; los archivos quedan en tu computador.
+- [Instalar Fluye en el navegador](${SITIO}app/?instalar=1): en Chrome y Edge queda como app, con su ícono y sin internet.
 
 ## Guías
 

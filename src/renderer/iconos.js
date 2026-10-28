@@ -4,7 +4,7 @@ import {
   Save, Undo2, Redo2, Download, Play, ZoomIn, ZoomOut, Maximize, CircleCheck, TriangleAlert, ChevronDown,
   PanelRight, X, Rows3, Spline, MousePointer2, Clock3, MessageSquare, Database, File, StickyNote, Group, Square,
   Circle, Diamond, LayoutTemplate, Copy, ClipboardPaste, History, Pencil, Info, Pause, SkipForward, RotateCcw,
-  FileImage, FileType, FileText
+  FileImage, FileType, FileText, MonitorDown
 } from 'lucide';
 
 export const ICONOS = {
@@ -15,7 +15,8 @@ export const ICONOS = {
   flujo: Spline, puntero: MousePointer2, reloj: Clock3, mensaje: MessageSquare, baseDatos: Database, archivo: File,
   nota: StickyNote, grupo: Group, cuadrado: Square, circulo: Circle, rombo: Diamond, plantilla: LayoutTemplate,
   copiar: Copy, pegar: ClipboardPaste, recientes: History, editar: Pencil, info: Info,
-  pausa: Pause, pasoSiguiente: SkipForward, reiniciar: RotateCcw, imagen: FileImage, pdf: FileType, word: FileText
+  pausa: Pause, pasoSiguiente: SkipForward, reiniciar: RotateCcw, imagen: FileImage, pdf: FileType, word: FileText,
+  instalar: MonitorDown
 };
 
 const ATRIBUTOS = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
