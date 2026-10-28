@@ -16,6 +16,7 @@ import { revisarDiagrama } from './modeler/revision.js';
 import PLANTILLAS from 'fluye:plantillas';
 import { crearPropiedades } from './ui/propiedades.js';
 import * as archivo from './ui/archivo.js';
+import * as drive from './ui/drive.js';
 import { aviso, elegirOpcion, preguntar } from './ui/dialogos.js';
 import { mostrarMenuOrtografia } from './ui/ortografia.js';
 import Play from './play/Play.js';
@@ -150,10 +151,52 @@ async function guardar(como = false) {
     aviso('Guardado', 'ok');
     return true;
   } catch (e) {
+    if (e instanceof drive.Cancelado) return false;
     console.error(e);
     aviso(`No se pudo guardar: ${e.message}`, 'error', 7000);
     return false;
   }
+}
+
+// ----- Google Drive (versión web): guardar una copia en la carpeta Fluye y abrir lo que Fluye guardó ahí -----
+async function conDrive(accion) {
+  try {
+    return await accion();
+  } catch (e) {
+    // Cancelar o cerrar la ventana de Google llega como Cancelado; se avisa igual, porque a veces Google la da por
+    // cerrada antes de devolver el permiso y la persona creería que se guardó.
+    if (e instanceof drive.Cancelado) aviso('No se completó la conexión con Google Drive. Vuelve a intentarlo.', 'alerta', 6000);
+    else { console.error(e); aviso(e.message, 'error', 7000); }
+    return null;
+  } finally {
+    document.body.classList.remove('ocupado');
+  }
+}
+
+async function guardarEnDrive() {
+  confirmarEdiciones();
+  await conDrive(async () => {
+    const xml = await modeler.guardarXml();
+    document.body.classList.add('ocupado');
+    const r = await drive.crear(`${estado.nombre.replace(/.(bpmn|xml)$/i, '')}.bpmn`, xml);
+    Object.assign(estado, { ruta: r.ruta, nombre: r.nombre, guardadoEn: puntoPila(), sucio: false });
+    actualizarTitulo();
+    aviso('Guardado en tu Google Drive, en la carpeta Fluye. Desde ahora, Guardar lo actualiza allá.', 'ok', 6000);
+  });
+}
+
+async function abrirDeDrive() {
+  if (!(await confirmarDescarte())) return;
+  const lista = await conDrive(() => drive.listar());
+  if (!lista) return;
+  if (!lista.length) { aviso('Todavía no hay procesos de Fluye en tu Drive. Guarda uno con Exportar, Google Drive.', 'ok', 6000); return; }
+  const fecha = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const id = await elegirOpcion('Abrir desde Google Drive', 'Tus procesos guardados con Fluye, del más reciente al más antiguo.',
+    lista.map((f) => ({ valor: f.id, texto: `${f.name.replace(/.(bpmn|xml)$/i, '')}, ${fecha.format(new Date(f.modifiedTime))}` })));
+  if (!id) return;
+  const elegido = lista.find((f) => f.id === id);
+  const xml = await conDrive(() => { document.body.classList.add('ocupado'); return drive.leer(id); });
+  if (xml) await cargar(xml, elegido.name, `drive:${id}`);
 }
 
 // ----- título editable: clic sobre el nombre -----
@@ -234,7 +277,8 @@ $('#btn-panel').addEventListener('click', () => {
 });
 
 const menuExportar = $('#menu-exportar');
-$('#btn-exportar').addEventListener('click', (e) => { e.stopPropagation(); menuRecientes.hidden = true; menuExportar.hidden = !menuExportar.hidden; });
+$('#btn-exportar').addEventListener('click', (e) => { e.stopPropagation(); menuRecientes.hidden = true; menuExportar.hidden = !menuExportar.hidden; drive.preparar().catch(() => {}); });
+if (drive.disponible) menuExportar.querySelector('[data-formato="drive"]').hidden = false;
 menuExportar.addEventListener('click', async (e) => {
   const item = e.target.closest('[data-formato]');
   if (!item || item.disabled) return;
@@ -242,6 +286,7 @@ menuExportar.addEventListener('click', async (e) => {
   const formato = item.dataset.formato;
   modeler.terminarEdicion(); // un nombre a medio escribir también sale en la imagen, el PDF o el Word
   if (formato === 'bpmn') return guardar(true);
+  if (formato === 'drive') return guardarEnDrive();
   // Imagen, PDF y Word son de la pestaña abierta: con varias, el archivo lleva también el nombre del diagrama.
   const pestanasArchivo = modeler.diagramas();
   const nombreArchivo = estado.nombre.replace(/\.(bpmn|xml)$/i, '');
@@ -343,6 +388,13 @@ $('#btn-recientes').addEventListener('click', async (e) => {
   menuExportar.hidden = true;
   const lista = await archivo.recientes();
   menuRecientes.replaceChildren();
+  if (drive.disponible) {
+    drive.preparar().catch(() => {});
+    const b = Object.assign(document.createElement('button'), { type: 'button', className: 'fl-menu-item' });
+    b.append(Object.assign(document.createElement('strong'), { textContent: 'Abrir desde Google Drive' }), Object.assign(document.createElement('small'), { textContent: 'Los procesos que guardaste con Fluye en tu Drive' }));
+    b.addEventListener('click', () => { menuRecientes.hidden = true; abrirDeDrive(); });
+    menuRecientes.appendChild(b);
+  }
   const vacio = archivo.esEscritorio || archivo.conAcceso ? 'Sin archivos recientes' : 'Este navegador no recuerda archivos: usa Chrome o Edge, o Fluye para Windows';
   if (!lista.length) menuRecientes.appendChild(Object.assign(document.createElement('div'), { className: 'fl-menu-vacio', textContent: vacio }));
   for (const r of lista) {

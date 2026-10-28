@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://www.googleapis.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/">
 <title>Fluye</title>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="manifest" href="manifest.webmanifest">
@@ -42,6 +42,7 @@
         <button id="btn-exportar" class="fl-btn" data-icono="exportar" title="Exportar"><span>Exportar</span></button>
         <div id="menu-exportar" class="fl-menu" hidden>
           <button class="fl-menu-item" data-formato="bpmn"><strong>BPMN (.bpmn)</strong><small>Estándar: se abre en Bizagi y otras herramientas</small></button>
+          <button class="fl-menu-item" data-formato="drive" hidden><strong>Google Drive</strong><small>Guarda una copia en tu Drive, en la carpeta Fluye</small></button>
           <button class="fl-menu-item" data-formato="png"><strong>Imagen PNG</strong><small>Para presentaciones, correos y chats</small></button>
           <button class="fl-menu-item" data-formato="svg"><strong>Imagen SVG</strong><small>Vectorial: se agranda sin perder calidad</small></button>
           <button class="fl-menu-item" data-formato="pdf"><strong>PDF</strong><small>Una hoja A4 con el diagrama, lista para imprimir</small></button>

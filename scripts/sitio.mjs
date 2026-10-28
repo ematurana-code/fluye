@@ -12,6 +12,7 @@ import { portada } from './sitio/portada.mjs';
 import { NIVELES, indicePlantillas, paginaPlantilla } from './sitio/plantillas.mjs';
 import { PLANTILLAS, guias, indiceGuias } from './sitio/guias.mjs';
 import { guiasEn, indiceGuiasEn } from './sitio/guias-en.mjs';
+import { privacidad } from './sitio/privacidad.mjs';
 
 const raiz = join(import.meta.dirname, '..');
 const salida = join(raiz, '_sitio');
@@ -85,14 +86,16 @@ const paginas = [
   indicePlantillas(ordenadas, areas),
   ...ordenadas.map((p) => paginaPlantilla(p, ordenadas)),
   indiceGuias(ordenadas),
-  ...guias(ordenadas)
+  ...guias(ordenadas),
+  privacidad('es')
 ];
 const paginasEn = [
   portada({ plantillas: ordenadasEn, idioma: 'en' }),
   indicePlantillas(ordenadasEn, areasEn, 'en'),
   ...ordenadasEn.map((p) => paginaPlantilla(p, ordenadasEn, 'en')),
   indiceGuiasEn(),
-  ...guiasEn(ordenadasEn)
+  ...guiasEn(ordenadasEn),
+  privacidad('en')
 ];
 for (const p of paginas) escribir(`${p.ruta}index.html`, pagina(p));
 for (const p of paginasEn) escribir(`${p.ruta}index.html`, pagina(p));
@@ -165,6 +168,7 @@ ${ordenadasEn.map((p) => `- [${p.nombre}](${SITIO}${RUTAS.en.plantillas}${p.ruta
 ## Optional
 
 - [Guías completas en un solo archivo](${SITIO}llms-full.txt): el texto entero de las guías, en español e inglés.
+- [Política de privacidad](${SITIO}privacidad/): sin cuentas ni servidores; Google Drive es opcional y usa solo el permiso drive.file.
 - [Código fuente en GitHub](${REPO})
 - [Licencia MIT](${REPO}/blob/main/LICENSE)
 `);

@@ -563,3 +563,10 @@ a.pieza:hover .guia-imagen img { transform: scale(1.03); }
   a.pieza, .boton, .vista-play-imagen img, .vista-play-boton, .pieza-flecha, .catalogo-imagen img { transition: none; }
   a.pieza:hover, a.pieza:hover .pieza-flecha, .vista-play:hover .vista-play-imagen img, .vista-play:hover .vista-play-boton { transform: none; }
 }
+
+/* ---------- política de privacidad: un texto para leer, a lo ancho y con títulos de párrafo ---------- */
+.privacidad .titular-texto, .privacidad-texto { grid-column: 1 / -1; }
+.privacidad-texto h2 { font-size: var(--t-frase); line-height: 1.2; letter-spacing: -0.02em; }
+.privacidad-texto > section { max-width: 72ch; }
+.privacidad-texto > section + section { margin-top: 32px; }
+.privacidad-texto p + p { margin-top: 10px; }

@@ -35,7 +35,7 @@ export const TEXTOS = {
     otroIdiomaTitulo: 'Fluye in English', estasEn: 'Estás en',
     pie: {
       programa: 'Programa', descargarWindows: 'Descargar para Windows', probarNavegador: 'Usar en el navegador', versiones: 'Versiones anteriores',
-      proyecto: 'Proyecto', codigoGithub: 'Código en GitHub', licencia: 'Licencia MIT', problema: 'Reportar un problema',
+      proyecto: 'Proyecto', codigoGithub: 'Código en GitHub', licencia: 'Licencia MIT', problema: 'Reportar un problema', privacidad: 'Privacidad',
       frase: 'Programa gratis y de código abierto para hacer diagramas BPMN y de flujo en el navegador o en Windows, en español.',
       final: '© 2026 Esteban Maturana. Licencia MIT. Hecho en Chile. BPMN es un estándar de la OMG.', boton: 'Descargar gratis'
     },
@@ -60,7 +60,7 @@ export const TEXTOS = {
     otroIdiomaTitulo: 'Fluye en español', estasEn: 'You are here',
     pie: {
       programa: 'Software', descargarWindows: 'Download for Windows', probarNavegador: 'Use it in your browser', versiones: 'Previous versions',
-      proyecto: 'Project', codigoGithub: 'Source code on GitHub', licencia: 'MIT license', problema: 'Report an issue',
+      proyecto: 'Project', codigoGithub: 'Source code on GitHub', licencia: 'MIT license', problema: 'Report an issue', privacidad: 'Privacy',
       frase: 'Free, open-source software for BPMN diagrams and flowcharts, in your browser or on Windows. The interface is in Spanish.',
       final: '© 2026 Esteban Maturana. MIT license. Made in Chile. BPMN is an OMG standard.', boton: 'Download free'
     },
@@ -115,6 +115,7 @@ const enlacesPie = (r, idioma) => {
         <li><a href="${REPO}">${p.codigoGithub}</a></li>
         <li><a href="${REPO}/blob/main/LICENSE">${p.licencia}</a></li>
         <li><a href="${REPO}/issues">${p.problema}</a></li>
+        <li><a href="${r}${idioma === 'en' ? 'en/privacy/' : 'privacidad/'}">${p.privacidad}</a></li>
       </ul>
     </div>
     <div>

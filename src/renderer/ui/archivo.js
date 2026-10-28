@@ -1,10 +1,12 @@
 // Abrir y guardar. En la app de escritorio usa el sistema de archivos (por el puente de Electron). En la versión web:
 // - Chrome y Edge (File System Access): abre y guarda sobre el mismo archivo y recuerda los recientes; la "ruta" es
 //   la clave del archivo en el navegador ("web:<n>", ver almacen.js);
-// - los demás navegadores: abrir sube el archivo y guardar lo descarga.
+// - los demás navegadores: abrir sube el archivo y guardar lo descarga;
+// - un archivo abierto o guardado en Google Drive tiene la ruta "drive:<id>" y Guardar lo actualiza allá (drive.js).
 import { decodificarXml, normalizarDeclaracion } from '../modeler/io/codificacion.js';
 import { datosDeHtml } from '../exportar/paquete.js';
 import * as almacen from './almacen.js';
+import * as drive from './drive.js';
 
 const escritorio = window.fluyeEscritorio || null;
 
@@ -144,6 +146,7 @@ export async function abrirRuta(ruta) {
 
 export async function guardar(ruta, contenido, nombre) {
   if (escritorio) return escritorio.guardar(ruta, contenido, nombre);
+  if (drive.esRutaDrive(ruta)) return drive.actualizar(ruta, contenido);
   const handle = conAcceso ? await handleDe(ruta) : null;
   if (!handle) return conAcceso ? guardarComo(contenido, nombre) : descargar(contenido, `${nombre || 'Proceso'}.bpmn`, 'application/xml');
   if (!(await permiso(handle, true))) return { error: 'El navegador no dio permiso para escribir en el archivo. Usa Exportar → BPMN para guardarlo en otro lugar.' };
@@ -210,6 +213,7 @@ export async function exportarPdf({ html, nombre, rutaActual }) {
 // puede, solo cambia el nombre y el próximo Guardar pregunta dónde dejarlo.
 export async function renombrar(ruta, nombre) {
   if (escritorio && ruta) return escritorio.renombrar(ruta, nombre);
+  if (drive.esRutaDrive(ruta)) return drive.renombrar(ruta, `${nombre}.bpmn`);
   const handle = conAcceso ? await handleDe(ruta) : null;
   if (handle && typeof handle.move === 'function') {
     try {
