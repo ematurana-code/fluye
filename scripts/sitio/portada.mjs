@@ -34,7 +34,7 @@ const TX = {
     bajada: 'Fluye dibuja tus procesos con el estándar BPMN y los recorre paso a paso, para que veas por dónde sigue cada caso antes de ponerlo en marcha.',
     abrir: 'Abrir Fluye', descargar: 'Descargar para Windows', instalar: 'Instalar en el navegador', abrirSin: 'Abrir sin instalar',
     nota: 'Gratis y de código abierto. Sin cuenta: tus archivos quedan en tu computador.',
-    visorDe: (n) => `Visor de Fluye: ${n}`, procesos: 'Procesos para recorrer', pista: 'Está andando: en cada decisión, elige tú el camino.',
+    visorDe: (n) => `Visor de Fluye: ${n}`, procesos: 'Procesos para recorrer', pista: 'Está andando solo y elige los caminos al azar. Para elegirlos tú, pulsa "al azar".',
     pantalla: 'Pantalla completa',
     usoTitulo: 'Así se usa Fluye',
     usoTexto: 'Tres pasos, del primer borrador al proceso que todos entienden.',
@@ -86,7 +86,7 @@ const TX = {
     bajada: 'Fluye draws your processes with the BPMN standard and walks through them step by step, so you see where each case goes before you put it to work. The interface is in Spanish.',
     abrir: 'Open Fluye', descargar: 'Download for Windows', instalar: 'Install in your browser', abrirSin: 'Open without installing',
     nota: 'Free and open source. No account: your files stay on your computer.',
-    visorDe: (n) => `Fluye viewer: ${n}`, procesos: 'Processes to walk through', pista: 'It is running: at each decision, you choose the path.',
+    visorDe: (n) => `Fluye viewer: ${n}`, procesos: 'Processes to walk through', pista: 'It runs on its own, picking a path at random at each decision.',
     pantalla: 'Full screen',
     usoTitulo: 'How to use Fluye',
     usoTexto: 'Three steps, from first draft to a process everyone understands.',
@@ -137,7 +137,8 @@ export function portada({ plantillas, idioma = 'es' }) {
   const r = '../'.repeat(ruta.split('/').filter(Boolean).length);
   const probar = PARA_PROBAR.map((id) => plantillas.find((p) => p.id === id)).filter(Boolean);
   const archivo = (p) => `${rutas.plantillas}${p.ruta}/${p.ruta}.bpmn`;
-  const visor = (p) => urlVisor(r, archivo(p), p.nombre, true);
+  // &demo=1: el Play decide solo y vuelve a empezar, para que la demostración no se detenga en cada decisión.
+  const visor = (p) => `${urlVisor(r, archivo(p), p.nombre, true)}&demo=1`;
   const primera = probar[0];
   const lista = (items) => `<ul class="lista-hecha">${items.map((x) => `<li>${x}</li>`).join('')}</ul>`;
 

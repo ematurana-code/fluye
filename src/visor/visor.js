@@ -132,6 +132,8 @@ async function iniciar() {
     if (r.error) aviso(r.error, 'alerta', 5000);
   });
   // La página del proyecto abre el visor con ?play=1 cuando la persona pulsó "Recorrer con el Play": parte andando.
+  // Con &demo=1 (el visor de la portada) decide al azar y vuelve a empezar al terminar: la demostración no se detiene.
+  if (pedido.get('demo') === '1') { play.azar = true; play.repetir = true; }
   if (pedido.get('play') === '1') $('#btn-play').click();
 
   // ----- pestañas: si el archivo trae varios diagramas se puede pasar de uno a otro (solo mirar) -----

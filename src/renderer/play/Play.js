@@ -32,6 +32,8 @@ export default class Play {
     this.corriendo = false;
     this.velocidad = 1;
     this.azar = false;
+    // repetir: al llegar al final vuelve a empezar solo (la demostración de la página del proyecto).
+    this.repetir = false;
     this.marcados = new Set();
     this.fichas = new Map();
     this.fase = 0;
@@ -138,6 +140,10 @@ export default class Play {
     if (this.bucle !== bucle) return; // lo reemplazó otro bucle (pausa y seguir, reiniciar o salir)
     this.corriendo = false;
     this._actualizarBarra();
+    if (this.repetir && this.motor.terminado) {
+      await dormir(2500);
+      if (this.bucle === bucle && this.activo) this.reiniciar(); // pausar o salir en la espera cambia el bucle
+    }
   }
 
   pausar() {
