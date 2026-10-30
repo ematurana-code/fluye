@@ -12,6 +12,9 @@ export const VERSION = paquete.version;
 // baje la versión nueva apenas se publica (GitHub Pages deja guardar los archivos 10 minutos).
 const huella = (archivo) => createHash('sha256').update(readFileSync(join(raizProyecto, 'sitio', archivo))).digest('hex').slice(0, 10);
 const ESTILO = `estilo.css?v=${huella('estilo.css')}`, SCRIPT = `sitio.js?v=${huella('sitio.js')}`;
+// El visor también lleva su huella: GitHub Pages deja las páginas 10 minutos en la caché del navegador, y sin esto el
+// visor de la portada seguía con la versión anterior después de publicar.
+const VISOR_V = createHash('sha256').update(readFileSync(join(raizProyecto, 'dist', 'visor', 'plantilla.html'))).digest('hex').slice(0, 10);
 export const SITIO = 'https://ematurana-code.github.io/fluye/';
 export const REPO = 'https://github.com/ematurana-code/fluye';
 export const DESCARGA = `${REPO}/releases/latest/download/Fluye-Instalar-${VERSION}.exe`;
@@ -237,7 +240,7 @@ export const enFluye = (r, idioma = 'es') => {
 // Dirección del visor de Fluye con una plantilla. archivo: ruta del .bpmn desde la raíz del sitio (el visor está en
 // visor/, de ahí el ../). Con play, el recorrido parte solo al abrirlo.
 export const urlVisor = (r, archivo, titulo, play = true) =>
-  `${r}visor/?archivo=${encodeURIComponent('../' + archivo)}&titulo=${encodeURIComponent(titulo)}${play ? '&play=1' : ''}`;
+  `${r}visor/?v=${VISOR_V}&archivo=${encodeURIComponent('../' + archivo)}&titulo=${encodeURIComponent(titulo)}${play ? '&play=1' : ''}`;
 
 // La vista de un proceso con el botón del Play. Sin JavaScript lleva al visor en su propia página; con JavaScript
 // (sitio.js) lo abre a pantalla completa encima de la página.
