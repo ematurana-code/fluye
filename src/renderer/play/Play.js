@@ -4,6 +4,7 @@ import { create as svgCreate, attr as svgAttr, append as svgAppend, remove as sv
 import MotorPlay from './motor.js';
 import { bo, es, esCarril, esCompuerta, esPool, nombreTipo } from '../modeler/tipos.js';
 import { icono } from '../iconos.js';
+import { mostrarEnCaja } from '../ui/desplazar.js';
 
 const MARCAS = ['fl-activo', 'fl-hecho', 'fl-problema', 'fl-esperando', 'fl-recorrida', 'fl-carril-activo', 'fl-opcion'];
 const VELOCIDADES = [0.5, 1, 2, 4];
@@ -512,7 +513,7 @@ export default class Play {
     if (detalle) cuerpo.append(el('small', '', detalle));
     li.append(cuerpo);
     this.$lista.append(li);
-    li.scrollIntoView({ block: 'nearest' });
+    mostrarEnCaja(li);
   }
 
   _resumen(ok) {
@@ -530,7 +531,7 @@ export default class Play {
     }
     caja.append(datos);
     this.$bitacora.append(caja);
-    caja.scrollIntoView({ block: 'nearest' });
+    mostrarEnCaja(caja);
   }
 
   // ---------- barra de controles ----------

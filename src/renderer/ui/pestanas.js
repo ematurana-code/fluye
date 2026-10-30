@@ -6,6 +6,7 @@
 // en qué diagrama estás; al cambiar, la ola y la ficha se deslizan hasta la pestaña elegida (solo con transform).
 // Las demás pestañas son texto con un círculo hueco (el inicio de cada proceso) y "+" es un círculo punteado.
 import { icono } from '../iconos.js';
+import { mostrarEnCaja } from './desplazar.js';
 
 const LADERA = 20; // ancho de cada ladera de la ola (px); igual a --pst-ladera en styles.css
 const ALTO = 31;
@@ -116,7 +117,7 @@ export function crearPestanas(contenedor, { lista, actual, ir, agregar, renombra
     }
     const viva = fila.querySelector('.fl-pestana.activa');
     moverOla(viva);
-    if (viva) viva.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    if (viva) mostrarEnCaja(viva, 'x');
   }
 
   function editarNombre(caja, texto, indice, nombre) {
