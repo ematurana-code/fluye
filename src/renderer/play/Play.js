@@ -18,6 +18,10 @@ function el(tag, clase, texto) {
 }
 
 const nombreDe = (e) => (e && bo(e).name) || nombreTipo(e);
+// En la tarjeta de una decisión, "Sí" va siempre primero y "No" al final (las demás en su orden), sin importar en qué
+// orden se dibujaron las flechas.
+const RANGO = (c) => { const n = (bo(c).name || '').trim().toLowerCase(); return /^(s[ií]|yes)\b/.test(n) ? 0 : /^no\b/.test(n) ? 2 : 1; };
+const ordenarOpciones = (opciones) => opciones.map((c, i) => [c, i]).sort((a, b) => RANGO(a[0]) - RANGO(b[0]) || a[1] - b[1]).map(([c]) => c);
 
 export default class Play {
   constructor(modeler, { bitacora, barra, alCambiar }) {
@@ -453,7 +457,7 @@ export default class Play {
     tarjeta.append(el('div', 'fl-decision-titulo', bo(compuerta).name || '¿Qué camino sigue?'));
     tarjeta.append(el('div', 'fl-decision-ayuda', multiple ? 'Marca uno o varios caminos' : 'Elige el camino'));
     const marcadas = new Set();
-    for (const c of opciones) {
+    for (const c of ordenarOpciones(opciones)) {
       const b = el('button', 'fl-decision-opcion');
       b.type = 'button';
       const texto = el('span', '', this._textoOpcion(c));

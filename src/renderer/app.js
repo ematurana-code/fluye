@@ -480,13 +480,20 @@ window.addEventListener('keydown', (e) => {
 
 // Mover la vista arrastrando: botón del medio siempre; botón izquierdo también durante el Play (no hay nada que editar).
 let paneo = null;
+// Durante el Play el editor no recibe clics del lienzo (salvo la tarjeta de decisión y la barra del Play): las zonas de
+// clic de diagram-js tienen su propio pointer-events y se saltan el bloqueo del CSS, así que un clic sobre un carril
+// abría el lazo de selección, que quedaba pegado al mouse hasta un clic derecho.
+const clicDelPlay = (e) => document.body.classList.contains('en-play') && !e.target.closest('.fl-decision, .fl-play-barra, .fl-play-insignia');
 $('#lienzo').addEventListener('mousedown', (e) => {
-  const enPlay = document.body.classList.contains('en-play') && e.button === 0 && !e.target.closest('.fl-decision, .fl-play-barra, .fl-play-insignia');
+  const enPlay = clicDelPlay(e);
   if (e.button !== 1 && !enPlay) return;
   e.preventDefault();
-  if (e.button === 1) e.stopPropagation(); // el botón del medio lo mueve solo Fluye (diagram-js también lo haría y se movería al doble)
-  paneo = { x: e.clientX, y: e.clientY };
+  e.stopPropagation(); // el botón del medio lo mueve solo Fluye (diagram-js también lo haría y se movería al doble)
+  if (e.button === 0 || e.button === 1) paneo = { x: e.clientX, y: e.clientY };
 }, true);
+for (const tipo of ['click', 'dblclick', 'contextmenu']) {
+  $('#lienzo').addEventListener(tipo, (e) => { if (clicDelPlay(e)) e.stopPropagation(); }, true);
+}
 window.addEventListener('mousemove', (e) => {
   if (!paneo) return;
   canvas.scroll({ dx: e.clientX - paneo.x, dy: e.clientY - paneo.y });
