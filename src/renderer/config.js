@@ -9,5 +9,5 @@ export const DRIVE_CLIENT_ID = '263504240633-9u52r1evrgvcgi83qimei0lc7dvosdc3.ap
 // DRIVE_API_KEY: clave del mismo proyecto, limitada a la API de Google Picker y a https://ematurana-code.github.io/*
 // (tampoco es secreta). DRIVE_APP_ID: número del proyecto; con él, lo que se elige queda dentro del permiso drive.file.
 // Clave vacía = "Abrir desde Google Drive" muestra solo la lista de lo que Fluye guardó.
-export const DRIVE_API_KEY = '';
+export const DRIVE_API_KEY = 'AIzaSyDD468e1zPP5MXpexd4ayV8cWPXV3CN1DQ'; // "Fluye selector de Drive", creada el 2026-11-10
 export const DRIVE_APP_ID = '263504240633';
