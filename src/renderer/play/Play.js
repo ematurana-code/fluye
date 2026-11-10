@@ -5,6 +5,7 @@ import MotorPlay from './motor.js';
 import { bo, es, esCarril, esCompuerta, esPool, nombreTipo } from '../modeler/tipos.js';
 import { icono } from '../iconos.js';
 import { mostrarEnCaja } from '../ui/desplazar.js';
+import { ciclosSinSalida } from '../modeler/ciclos.js';
 
 const MARCAS = ['fl-activo', 'fl-hecho', 'fl-problema', 'fl-esperando', 'fl-recorrida', 'fl-carril-activo', 'fl-opcion'];
 const VELOCIDADES = [0.5, 1, 2, 4];
@@ -112,6 +113,7 @@ export default class Play {
     cab.append(el('strong', '', 'Recorrido del proceso'), el('small', '', 'Cada paso aparece aquí. En las decisiones eliges el camino.'));
     this.$lista = el('ol', 'fl-bit-lista');
     this.$bitacora.append(cab, this.$lista);
+    this.motor.atrapados = new Set(ciclosSinSalida(this.registro.getAll()).flat());
     this._aplicar(this.motor.iniciar(this.inicio));
     this._actualizarBarra();
   }

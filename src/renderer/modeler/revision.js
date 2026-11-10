@@ -1,7 +1,9 @@
 // Revisión rápida del diagrama abierto (lo que el Play encontraría como problema, pero antes de recorrerlo):
-// pasos sueltos o sin salida, decisiones sin pregunta o con caminos sin nombre, tareas sin nombre, falta inicio o fin.
+// pasos sueltos o sin salida, ciclos sin salida, decisiones sin pregunta o con caminos sin nombre, tareas sin nombre,
+// falta inicio o fin.
 // Lógica pura: recibe los elementos del lienzo y devuelve observaciones con el elemento a mostrar.
 import { bo, es, esActividad, esCompuerta } from './tipos.js';
+import { ciclosSinSalida } from './ciclos.js';
 
 const secuencia = (c) => es(c, 'bpmn:SequenceFlow');
 const entradas = (e) => (e.incoming || []).filter(secuencia);
@@ -47,6 +49,13 @@ export function revisarDiagrama(elementos) {
       const sinNombre = salidas(e).filter((c) => !nombre(c)).length;
       if (sinNombre) obs.push({ texto: `${n ? quien : 'Una decisión'} tiene ${sinNombre === 1 ? 'un camino' : `${sinNombre} caminos`} sin nombre (por ejemplo, “Sí” o “No”).`, elemento: e });
     }
+  }
+  for (const grupo of ciclosSinSalida(elementos)) {
+    const nombres = grupo.map(nombre).filter(Boolean).map((x) => `“${x}”`);
+    const cuales = !nombres.length ? 'Unos pasos' : nombres.length > 3 ? `${nombres.slice(0, 3).join(', ')} y otros`
+      : nombres.length === 1 ? nombres[0] : `${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`;
+    // Se señala la decisión del ciclo, si hay una: es donde falta el camino que sale hacia un fin.
+    obs.push({ texto: `${cuales} ${nombres.length === 1 ? 'forma' : 'forman'} un ciclo sin salida: ningún camino lleva a un fin, así que el proceso daría vueltas para siempre.`, elemento: grupo.find(esCompuerta) || grupo[0] });
   }
   return obs;
 }

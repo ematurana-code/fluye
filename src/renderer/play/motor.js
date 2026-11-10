@@ -12,7 +12,8 @@
 //    con lo que esté corriendo dentro de sus subprocesos). Los otros pools siguen.
 //  - Mensajes entre pools: cada mensaje que llega a un inicio arranca ese proceso; un evento que recibe un mensaje
 //    (o una tarea de recepción) espera hasta que el otro pool lo envíe.
-//  - Problemas: elemento sin salida, unión que nunca se completa (atasco), mensaje que nunca llega y ciclo que se repite demasiado.
+//  - Problemas: elemento sin salida, unión que nunca se completa (atasco), mensaje que nunca llega, ciclo sin salida
+//    (se corta en la segunda vuelta) y ciclo que se repite demasiado.
 import { es } from '../modeler/tipos.js';
 
 export const salidas = (el) => (el.outgoing || []).filter((c) => es(c, 'bpmn:SequenceFlow'));
@@ -35,6 +36,7 @@ export function inicioInterno(sub) {
 export default class MotorPlay {
   constructor({ maxVisitas = 20 } = {}) {
     this.maxVisitas = maxVisitas;
+    this.atrapados = new Set(); // pasos de ciclos sin salida (modeler/ciclos.js); los pone quien usa el motor
     this.reiniciar();
   }
 
@@ -211,7 +213,11 @@ export default class MotorPlay {
     this.fila.push(ficha);
     const vez = this._visitar(destino);
     const sucesos = [{ tipo: 'llegar', ficha, elemento: destino, por, vez }];
-    if (vez > this.maxVisitas) {
+    if (vez > 1 && this.atrapados.has(destino)) {
+      this.fila = this.fila.filter((f) => f !== ficha);
+      this._consumir(ficha);
+      sucesos.push(this._problema('ciclo', destino, 'Este ciclo no tiene salida: ningún camino lleva a un fin, así que el proceso daría vueltas para siempre.'));
+    } else if (vez > this.maxVisitas) {
       this.fila = this.fila.filter((f) => f !== ficha);
       this._consumir(ficha);
       sucesos.push(this._problema('ciclo', destino, `Se pasó ${vez} veces por aquí: parece un ciclo que nunca termina.`));

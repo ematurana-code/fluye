@@ -3,7 +3,7 @@
 // - Sin servidor: el navegador habla directo con Google. El código de Google (Identity Services) se carga recién
 //   cuando la persona usa Drive; hasta entonces la app no se conecta a Google.
 // - El permiso dura la sesión de la pestaña (una hora, y se renueva solo); no se guarda en ningún lado.
-import { DRIVE_CLIENT_ID } from '../config.js';
+import { DRIVE_API_KEY, DRIVE_APP_ID, DRIVE_CLIENT_ID } from '../config.js';
 
 const ALCANCE = 'https://www.googleapis.com/auth/drive.file';
 const API = 'https://www.googleapis.com/drive/v3';
@@ -15,6 +15,8 @@ export const disponible = !!DRIVE_CLIENT_ID && !window.fluyeEscritorio;
 // chrome.identity.launchWebAuthFlow, que abre la misma ventana de Google y devuelve el permiso a la extensión.
 // Su dirección de regreso (https://<id de la extensión>.chromiumapp.org/) tiene que estar autorizada en el cliente.
 const enExtension = typeof chrome !== 'undefined' && !!chrome.identity?.launchWebAuthFlow;
+// El selector de archivos de Google también es código de internet: en la extensión no se puede cargar.
+export const conSelector = disponible && !enExtension && !!DRIVE_API_KEY;
 export const esRutaDrive = (ruta) => typeof ruta === 'string' && ruta.startsWith('drive:');
 const idDe = (ruta) => ruta.slice('drive:'.length);
 
@@ -78,8 +80,44 @@ async function acceso() {
 async function pedir(url, opciones = {}, reintento = true) {
   const r = await fetch(url, { ...opciones, headers: { ...(opciones.headers || {}), Authorization: `Bearer ${await acceso()}` } });
   if (r.status === 401 && reintento) { token = null; return pedir(url, opciones, false); }
+  if (r.status === 403 && (opciones.method || 'GET') !== 'GET') throw new Error('No tienes permiso para cambiar este archivo en Drive (es de otra persona). Usa Guardar como para guardar tu propia copia.');
   if (!r.ok) throw new Error(r.status === 404 ? 'Ese archivo ya no está en tu Drive.' : `Google Drive respondió con un error (${r.status}).`);
   return r;
+}
+
+// Google Picker: se carga recién al usarlo, como Identity Services.
+let selector = null;
+function cargarSelector() {
+  if (!selector) {
+    selector = new Promise((resolver, rechazar) => {
+      const s = Object.assign(document.createElement('script'), { src: 'https://apis.google.com/js/api.js', async: true });
+      s.onload = () => window.gapi.load('picker', { callback: () => resolver(window.google.picker), onerror: () => rechazar(new Error('No se pudo abrir el selector de Google Drive.')) });
+      s.onerror = () => { selector = null; rechazar(new Error('No se pudo conectar con Google. Revisa tu conexión a internet.')); };
+      document.head.appendChild(s);
+    });
+  }
+  return selector;
+}
+
+// Abre el selector de Google con dos pestañas, Mi unidad y Compartido conmigo, y devuelve { id, nombre } (o null si se
+// cerró). Con el número del proyecto (setAppId), el archivo elegido entra al permiso drive.file: Fluye puede leerlo y,
+// si la persona tiene permiso de edición, guardarlo. No ve nada más del Drive.
+export async function elegirDeDrive() {
+  const permiso = await acceso();
+  const picker = await cargarSelector();
+  const tipos = 'application/xml,text/xml,application/octet-stream,text/plain,application/vnd.bpmn+xml';
+  const vista = (mios) => new picker.DocsView(picker.ViewId.DOCS).setMimeTypes(tipos).setIncludeFolders(true).setOwnedByMe(mios);
+  return new Promise((resolver) => {
+    new picker.PickerBuilder()
+      .setAppId(DRIVE_APP_ID).setOAuthToken(permiso).setDeveloperKey(DRIVE_API_KEY).setLocale('es')
+      .setTitle('Elige un proceso (.bpmn)')
+      .addView(vista(true)).addView(vista(false))
+      .setCallback((d) => {
+        if (d.action === picker.Action.PICKED && d.docs?.[0]) resolver({ id: d.docs[0].id, nombre: d.docs[0].name });
+        else if (d.action === picker.Action.CANCEL) resolver(null);
+      })
+      .build().setVisible(true);
+  });
 }
 
 async function carpetaFluye() {

@@ -111,8 +111,19 @@ async function nuevo() {
   actualizarZoom();
 }
 
+// En la web con Google Drive, Abrir y el primer Guardar preguntan dónde: así Drive no queda escondido en los menús.
+const hayDondeElegir = () => !archivo.esEscritorio && drive.disponible;
+
 async function abrir(ruta) {
   if (!(await confirmarDescarte())) return;
+  if (!ruta && hayDondeElegir()) {
+    drive.preparar().catch(() => {});
+    const donde = await elegirOpcion('¿Qué quieres abrir?', `Un proceso guardado en Google Drive${drive.conSelector ? ' (tuyo o compartido contigo)' : ''} o un archivo .bpmn de este computador.`, [
+      { valor: 'drive', texto: 'Desde Google Drive' }, { valor: 'equipo', texto: 'Desde este computador' }
+    ]);
+    if (!donde) return;
+    if (donde === 'drive') return abrirDeDrive(false);
+  }
   const r = ruta ? await archivo.abrirRuta(ruta) : await archivo.abrirDialogo();
   if (ruta && !r) aviso('No se encontró ese archivo: puede que se haya movido o borrado.', 'alerta', 6000);
   if (r && r.error) aviso(r.error, 'error', 6000);
@@ -141,6 +152,14 @@ async function combinar(varios, carpeta) {
 
 async function guardar(como = false) {
   confirmarEdiciones();
+  if ((como || !estado.ruta) && hayDondeElegir()) {
+    drive.preparar().catch(() => {}); // Google se carga mientras la persona elige: la ventana de permiso sale al tiro
+    const donde = await elegirOpcion('¿Dónde lo guardo?', 'En Google Drive lo abres desde cualquier computador y no se pierde si cambias de navegador. En este computador queda como un archivo .bpmn.', [
+      { valor: 'drive', texto: 'En Google Drive' }, { valor: 'equipo', texto: 'En este computador' }
+    ]);
+    if (!donde) return false;
+    if (donde === 'drive') return guardarEnDrive();
+  }
   try {
     const xml = await modeler.guardarXml();
     const base = estado.nombre.replace(/\.(bpmn|xml)$/i, '');
@@ -176,21 +195,32 @@ async function conDrive(accion) {
 
 async function guardarEnDrive() {
   confirmarEdiciones();
-  await conDrive(async () => {
+  const ok = await conDrive(async () => {
     const xml = await modeler.guardarXml();
     document.body.classList.add('ocupado');
-    const r = await drive.crear(`${estado.nombre.replace(/.(bpmn|xml)$/i, '')}.bpmn`, xml);
+    const r = await drive.crear(`${estado.nombre.replace(/\.(bpmn|xml)$/i, '')}.bpmn`, xml);
     Object.assign(estado, { ruta: r.ruta, nombre: r.nombre, guardadoEn: puntoPila(), sucio: false });
     actualizarTitulo();
     aviso('Guardado en tu Google Drive, en la carpeta Fluye. Desde ahora, Guardar lo actualiza allá.', 'ok', 6000);
+    return true;
   });
+  return !!ok;
 }
 
-async function abrirDeDrive() {
-  if (!(await confirmarDescarte())) return;
+async function abrirDeDrive(preguntar = true) {
+  if (preguntar && !(await confirmarDescarte())) return;
+  // Con el selector de Google se elige cualquier .bpmn del Drive, también los compartidos; sin él, la lista de lo que
+  // Fluye guardó.
+  if (drive.conSelector) {
+    const f = await conDrive(() => drive.elegirDeDrive());
+    if (!f) return;
+    const xml = await conDrive(() => { document.body.classList.add('ocupado'); return drive.leer(f.id); });
+    if (xml) await cargar(xml, /\.(bpmn|xml)$/i.test(f.nombre) ? f.nombre : `${f.nombre}.bpmn`, `drive:${f.id}`);
+    return;
+  }
   const lista = await conDrive(() => drive.listar());
   if (!lista) return;
-  if (!lista.length) { aviso('Todavía no hay procesos de Fluye en tu Drive. Guarda uno con Exportar, Google Drive.', 'ok', 6000); return; }
+  if (!lista.length) { aviso('Todavía no hay procesos de Fluye en tu Drive. Guarda uno con Guardar, En Google Drive.', 'ok', 6000); return; }
   const fecha = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   const id = await elegirOpcion('Abrir desde Google Drive', 'Tus procesos guardados con Fluye, del más reciente al más antiguo.',
     lista.map((f) => ({ valor: f.id, texto: `${f.name.replace(/.(bpmn|xml)$/i, '')}, ${fecha.format(new Date(f.modifiedTime))}` })));
@@ -392,7 +422,7 @@ $('#btn-recientes').addEventListener('click', async (e) => {
   if (drive.disponible) {
     drive.preparar().catch(() => {});
     const b = Object.assign(document.createElement('button'), { type: 'button', className: 'fl-menu-item' });
-    b.append(Object.assign(document.createElement('strong'), { textContent: 'Abrir desde Google Drive' }), Object.assign(document.createElement('small'), { textContent: 'Los procesos que guardaste con Fluye en tu Drive' }));
+    b.append(Object.assign(document.createElement('strong'), { textContent: 'Abrir desde Google Drive' }), Object.assign(document.createElement('small'), { textContent: drive.conSelector ? 'Tus procesos y los que te compartieron' : 'Los procesos que guardaste con Fluye en tu Drive' }));
     b.addEventListener('click', () => { menuRecientes.hidden = true; abrirDeDrive(); });
     menuRecientes.appendChild(b);
   }
