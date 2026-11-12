@@ -1,9 +1,10 @@
 // Reglas de modelado: qué se conecta con qué, dónde se suelta cada elemento y qué se redimensiona.
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider.js';
 import {
-  es, esActividad, esAnotacion, esCarril, esCompuerta, esConexion, esDato, esGrupo, esNodo, esPool,
-  esSubprocesoExpandido
+  es, esActividad, esAnotacion, esArtefactoFluye, esBorde, esCarril, esCompuerta, esConexion, esDato, esFase, esGrupo, esNodo, esPool,
+  esSubprocesoExpandido, fasesDe
 } from '../tipos.js';
+import { ANCHO_MIN_FASE, puedeAnclar } from '../modeling/propios.js';
 
 export function poolDe(el) {
   let p = el;
@@ -36,6 +37,7 @@ function existeConexion(origen, destino, tipo, ignorar) {
 export function puedeConectar(origen, destino, ignorar) {
   if (!origen || !destino || origen === destino) return false;
   if (esConexion(origen) || esConexion(destino) || esRaiz(origen) || esRaiz(destino)) return false;
+  if (esArtefactoFluye(origen) || esArtefactoFluye(destino)) return false;
   if (esCarril(origen) || esCarril(destino) || esGrupo(origen) || esGrupo(destino)) return false;
 
   if (esAnotacion(origen) || esAnotacion(destino)) {
@@ -68,6 +70,12 @@ export function puedeConectar(origen, destino, ignorar) {
 
 export function puedeSoltar(forma, destino) {
   if (!destino) return false;
+  if (esFase(destino)) destino = destino.parent; // soltar sobre la franja de una fase = soltar en su pool
+  if (!destino) return false;
+  if (esBorde(forma)) return false; // solo pegado a una tarea (regla shape.attach)
+  if (esFase(forma)) return esPool(destino) || esCarril(destino);
+  // Texto, encabezado e imagen van en cualquier parte: en el lienzo, en un pool o dentro de un subproceso abierto.
+  if (esArtefactoFluye(forma)) return esRaiz(destino) || esPool(destino) || esCarril(destino) || esSubprocesoExpandido(destino);
   if (esPool(forma)) return esRaiz(destino) && !raizEsProceso(destino);
   if (esCarril(forma)) return esPool(destino) || esCarril(destino);
   if (esGrupo(forma)) return esRaiz(destino) || esPool(destino) || esCarril(destino) || esSubprocesoExpandido(destino);
@@ -89,6 +97,20 @@ export function puedeCrear(forma, destino) {
   return puedeSoltar(forma, destino);
 }
 
+// Una fase se ensancha o angosta por su borde derecho (o izquierdo, si no es la primera); el alto es el del pool.
+function reglaFase(f, nb, direction) {
+  if (direction && direction !== 'e' && direction !== 'w') return false;
+  const lista = fasesDe(f.parent);
+  const i = lista.indexOf(f);
+  if (direction === 'w' && i === 0) return false;
+  if (!nb) return true;
+  if (nb.width < ANCHO_MIN_FASE) return false;
+  const siguiente = lista[i + 1], anterior = lista[i - 1];
+  if (direction === 'e' && siguiente && siguiente.x + siguiente.width - (nb.x + nb.width) < ANCHO_MIN_FASE) return false;
+  if (direction === 'w' && anterior && nb.x - anterior.x < ANCHO_MIN_FASE) return false;
+  return true;
+}
+
 export default class FluyeRules extends RuleProvider {
   static $inject = ['eventBus'];
 
@@ -104,6 +126,9 @@ export default class FluyeRules extends RuleProvider {
 
     this.addRule('shape.create', (ctx) => puedeCrear(ctx.shape, ctx.target));
 
+    // Un evento intermedio soltado en el borde de una tarea queda pegado a ella (evento de borde).
+    this.addRule('shape.attach', (ctx) => (puedeAnclar(ctx.shape, ctx.target, ctx.position) ? 'attach' : false));
+
     this.addRule('elements.create', (ctx) => {
       const formas = ctx.elements.filter((e) => !e.waypoints);
       return formas.every((f) => (f.parent ? true : puedeCrear(f, ctx.target)));
@@ -111,7 +136,9 @@ export default class FluyeRules extends RuleProvider {
 
     this.addRule('elements.move', (ctx) => {
       const formas = ctx.shapes;
-      if (formas.some((f) => esCarril(f))) return false;
+      if (formas.some((f) => esCarril(f) || esFase(f))) return false;
+      // Un evento de borde se mueve por el borde de su tarea o a otra tarea; no se suelta suelto.
+      if (formas.length === 1 && esBorde(formas[0])) return puedeAnclar(formas[0], ctx.target, ctx.position) ? 'attach' : false;
       if (!ctx.target) return true;
       return formas.every((f) => f.parent === ctx.target || puedeSoltar(f, ctx.target) ||
         (esCarril(ctx.target) && f.parent === ctx.target.parent));
@@ -120,10 +147,11 @@ export default class FluyeRules extends RuleProvider {
     this.addRule('shape.resize', (ctx) => {
       const { shape: f, newBounds: nb, direction } = ctx;
       if (esCarril(f)) return !direction || direction === 's';
-      const redimensionable = esPool(f) || esActividad(f) || esAnotacion(f) || esGrupo(f) || es(f, 'bpmn:DataStoreReference');
+      if (esFase(f)) return reglaFase(f, nb, direction);
+      const redimensionable = esPool(f) || esActividad(f) || esAnotacion(f) || esGrupo(f) || es(f, 'bpmn:DataStoreReference') || esArtefactoFluye(f);
       if (!redimensionable) return false;
       if (!nb) return true;
-      const min = esPool(f) ? { w: 300, h: 80 } : esSubprocesoExpandido(f) ? { w: 140, h: 90 } : { w: 50, h: 30 };
+      const min = esPool(f) ? { w: 300, h: 80 } : esSubprocesoExpandido(f) ? { w: 140, h: 90 } : esArtefactoFluye(f) ? { w: 24, h: 20 } : { w: 50, h: 30 };
       return nb.width >= min.w && nb.height >= min.h;
     });
 

@@ -4,7 +4,7 @@ import {
   TableCell, TableRow, TextRun, WidthType
 } from 'docx';
 import { pngDelDiagrama } from './imagen.js';
-import { bo, es, esCarril, esCompuerta, esPool, limpiarTexto, nombreTipo } from '../modeler/tipos.js';
+import { bo, es, esCarril, esCompuerta, esPool, faseDe, limpiarTexto, nombreTipo } from '../modeler/tipos.js';
 
 const AZUL = '1E3A8A';
 const GRIS = '64748B';
@@ -48,7 +48,14 @@ function ficha(registro, e, numero) {
   const filas = [['Tipo', nombreTipo(e)]];
   const carril = carrilDe(registro, e);
   if (carril) filas.push(['Responsable', carril]);
+  const fase = faseDe(e);
+  if (fase && bo(fase).name) filas.push(['Fase', limpiarTexto(bo(fase).name)]);
   filas.push(['Descripción', descripcion(e) || '(sin descripción)']);
+  // Eventos en el borde de la tarea: qué puede pasar mientras se hace y a dónde lleva.
+  for (const b of (e.attachers || []).filter((a) => es(a, 'bpmn:BoundaryEvent'))) {
+    const destino = salidas(b).map((c) => nombre(c.target)).join(', ');
+    filas.push(['Si ocurre', `${nombre(b)}${destino ? ` → ${destino}` : ''}${bo(b).cancelActivity === false ? ' (la tarea sigue)' : ''}`]);
+  }
   const antes = entradas(e).map((c) => nombre(c.source));
   if (antes.length) filas.push(['Viene de', antes.join('\n')]);
   const sal = salidas(e);

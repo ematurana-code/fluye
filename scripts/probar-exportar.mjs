@@ -42,6 +42,19 @@ try {
     const f2 = ap.append(no, f.crear('bpmn:EndEvent')); m.renombrar(f2, 'Rechazada');
     m.renombrar(g.outgoing[0], 'Sí'); m.renombrar(g.outgoing[1], 'No');
     const carriles = reg.filter((e) => e.type === 'bpmn:Lane'); m.renombrar(carriles[0], 'Colaborador'); m.renombrar(carriles[1], 'Jefatura');
+    // Elementos propios: dos fases, un evento en el borde, texto libre, encabezado e imagen.
+    const pool = reg.filter((e) => e.type === 'bpmn:Participant')[0], raiz = fluye.get('canvas').getRootElement();
+    m.createShape(f.crear('fluye:fase'), { x: pool.x + 200, y: pool.y + 60 }, pool);
+    m.renombrar(reg.filter((e) => e.type === 'fluye:fase')[0], 'Solicitud');
+    m.createShape(f.crear('fluye:fase'), { x: g.x - 30, y: pool.y + 60 }, pool);
+    m.renombrar(reg.filter((e) => e.type === 'fluye:fase').sort((a, b) => a.x - b.x)[1], 'Respuesta');
+    const borde = m.createShape(f.crear('bpmn:BoundaryEvent', { evento: 'error' }), { x: si.x + si.width * 0.75, y: si.y + si.height }, si, { attach: true });
+    m.renombrar(borde, 'Falla el sistema'); m.connect(borde, no);
+    m.createShape(f.crear('fluye:texto', { datos: { name: 'Plazo de respuesta: 2 días hábiles', negrita: 'true', color: '#1E3A8A', tamano: '16' }, width: 260 }), { x: pool.x + 230, y: pool.y + pool.height + 40 }, raiz);
+    m.createShape(f.crear('fluye:encabezado', { datos: { autor: 'Recursos Humanos', version: '1.0', descripcion: 'Cómo se piden y aprueban las vacaciones.' } }), { x: pool.x + pool.width - 160, y: pool.y + pool.height + 100 }, raiz);
+    const lienzo = Object.assign(document.createElement('canvas'), { width: 120, height: 80 }); const g2 = lienzo.getContext('2d');
+    g2.fillStyle = '#1e3a8a'; g2.fillRect(0, 0, 120, 80); g2.fillStyle = '#93c5fd'; g2.beginPath(); g2.arc(60, 40, 26, 0, 7); g2.fill();
+    m.createShape(f.crear('fluye:imagen', { datos: { name: 'Portal RR. HH.', href: lienzo.toDataURL('image/png') }, width: 90, height: 60 }), { x: pool.x + 560, y: pool.y + pool.height + 60 }, raiz);
     fluye.get('selection').select(null);
     const aB64 = (bytes) => { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); };
     const x = window.fluyeExportar;
@@ -49,15 +62,17 @@ try {
     const png = await x.pngDelDiagrama(fluye, 2);
     const docx = await x.wordDelDiagrama(fluye, 'Solicitud de vacaciones');
     const html = x.htmlParaPdf(fluye, 'Solicitud de vacaciones');
+    const webVacaciones = await x.htmlInteractivo(fluye, 'Solicitud de vacaciones');
     // Página web interactiva con el ejemplo del login (tiene decisiones, paralelo e iteración para probar el Play).
     await fluye.abrir(${JSON.stringify(readFileSync(join(raiz, 'ejemplos', 'Login página web.bpmn'), 'utf8'))});
     const web = await x.htmlInteractivo(fluye, 'Login página web');
     // Y una con varias pestañas (suite MIWG C.4.0: 4 diagramas) para revisar las pestañas de la página.
     await fluye.abrir(${JSON.stringify(readFileSync(join(raiz, 'pruebas', 'miwg', 'referencia', 'C.4.0.bpmn'), 'utf8'))});
     const webPestanas = await x.htmlInteractivo(fluye, 'Varias pestañas (C.4.0)');
-    return { svg, png: aB64(png.bytes), pngTam: png.ancho + 'x' + png.alto, docx: aB64(docx), html, web, webPestanas };
+    return { svg, png: aB64(png.bytes), pngTam: png.ancho + 'x' + png.alto, docx: aB64(docx), html, web, webPestanas, webVacaciones };
   })()`, { esperar: true });
   c.cerrar();
+  writeFileSync(join(salida, 'Solicitud de vacaciones.html'), r.webVacaciones, 'utf8');
   writeFileSync(join(salida, 'Login página web.html'), r.web, 'utf8');
   writeFileSync(join(salida, 'Varias pestañas.html'), r.webPestanas, 'utf8');
 

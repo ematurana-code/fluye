@@ -74,6 +74,20 @@ body.modo-mano.djs-drag-active .fl-lienzo, body.modo-mano.djs-drag-active .fl-li
 .fl-paleta-flotante-titulo { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); padding: 4px 8px 6px; }
 .fl-paleta-variante { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 8px; border: 0; background: none; border-radius: var(--radius-sm); cursor: grab; text-align: left; font-size: 13px; }
 .fl-paleta-variante:hover { background: var(--surface-hover); }
+.fl-paleta-fila { display: flex; align-items: center; gap: 2px; }
+.fl-paleta-fila .fl-paleta-variante { flex: 1; min-width: 0; }
+.fl-paleta-fila .fl-paleta-variante span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fl-paleta-figura { width: 26px; height: 26px; object-fit: contain; flex: none; }
+.fl-paleta-quitar { flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--text-soft); font-size: 17px; line-height: 1; cursor: pointer; }
+.fl-paleta-quitar:hover { background: #FEE2E2; color: var(--danger); }
+.fl-figura-dialogo { max-width: 420px; }
+.fl-figura-vista { display: flex; align-items: center; justify-content: center; height: 120px; margin: 4px 0 10px; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--text-soft); font-size: 13px; background: var(--bg-soft); }
+.fl-figura-vista img { max-width: 100%; max-height: 104px; object-fit: contain; }
+.fl-formato { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.fl-formato button { min-width: 32px; height: 30px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; }
+.fl-formato button.activo { background: #DBEAFE; border-color: #1E3A8A; color: #1E3A8A; }
+.fl-formato button:hover:not(.activo) { background: var(--surface-hover); }
+.fl-formato select { height: 30px; width: auto; padding: 0 6px; }
 
 .fl-lienzo { position: relative; background: #fbfcfe; overflow: hidden; outline: none; }
 

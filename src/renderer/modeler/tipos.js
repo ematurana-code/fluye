@@ -42,8 +42,33 @@ const TAMANOS = {
   grupo: { width: 280, height: 180 },
   pool: { width: 960, height: 300 },
   carril: { width: 930, height: 150 },
-  subprocesoExpandido: { width: 360, height: 200 }
+  subprocesoExpandido: { width: 360, height: 200 },
+  texto: { width: 180, height: 40 },
+  encabezado: { width: 320, height: 140 },
+  imagen: { width: 120, height: 90 }
 };
+
+// Elementos propios de Fluye que no existen en BPMN (como en Bizagi): fases del pool, texto con formato, encabezado e
+// imagen. Se guardan en la parte gráfica del diagrama (extensión "fluye:" del BPMNPlane): otras herramientas los ignoran
+// sin perder nada del proceso. Su objeto es un elemento genérico de moddle (createAny) con el mismo $type.
+export const NS_FLUYE = 'http://fluye.app/schema/1.0';
+export const TIPOS_FLUYE = ['fluye:fase', 'fluye:texto', 'fluye:encabezado', 'fluye:imagen'];
+export const ALTO_CABECERA_FASE = 24;
+// Datos que guarda cada uno (además de id, posición, tamaño, pool donde está y color).
+export const DATOS_FLUYE = {
+  'fluye:fase': ['name'],
+  'fluye:texto': ['name', 'tamano', 'negrita', 'cursiva', 'subrayado', 'color', 'alinear', 'fondo', 'borde'],
+  'fluye:encabezado': ['titulo', 'autor', 'version', 'descripcion', 'fecha'],
+  'fluye:imagen': ['name', 'href']
+};
+export function datosFluye(objeto, tipo) {
+  const datos = {};
+  for (const k of DATOS_FLUYE[tipo] || []) {
+    const v = objeto && objeto[k];
+    if (v !== undefined && v !== null && v !== '') datos[k] = typeof v === 'string' ? limpiarTexto(v) : String(v);
+  }
+  return datos;
+}
 
 const NOMBRES = {
   'bpmn:Task': 'Tarea', 'bpmn:UserTask': 'Tarea de usuario', 'bpmn:ServiceTask': 'Tarea automática',
@@ -59,13 +84,14 @@ const NOMBRES = {
   'bpmn:DataObjectReference': 'Documento', 'bpmn:DataStoreReference': 'Base de datos',
   'bpmn:TextAnnotation': 'Anotación', 'bpmn:Group': 'Grupo',
   'bpmn:SequenceFlow': 'Flujo', 'bpmn:MessageFlow': 'Flujo de mensaje', 'bpmn:Association': 'Asociación',
-  'bpmn:DataInputAssociation': 'Asociación de datos', 'bpmn:DataOutputAssociation': 'Asociación de datos'
+  'bpmn:DataInputAssociation': 'Asociación de datos', 'bpmn:DataOutputAssociation': 'Asociación de datos',
+  'fluye:fase': 'Fase', 'fluye:texto': 'Texto', 'fluye:encabezado': 'Encabezado', 'fluye:imagen': 'Imagen'
 };
 
 // Prefijo para numerar nombres por defecto sin repetir ("Tarea 1", "Tarea 2"...).
 const PREFIJO_NOMBRE = {
   'bpmn:Task': 'Tarea', 'bpmn:UserTask': 'Tarea', 'bpmn:ServiceTask': 'Tarea', 'bpmn:ManualTask': 'Tarea',
-  'bpmn:SubProcess': 'Subproceso', 'bpmn:Participant': 'Proceso', 'bpmn:Lane': 'Carril'
+  'bpmn:SubProcess': 'Subproceso', 'bpmn:Participant': 'Proceso', 'bpmn:Lane': 'Carril', 'fluye:fase': 'Fase'
 };
 
 export const DEFINICIONES_EVENTO = {
@@ -104,6 +130,35 @@ export const esAnotacion = (e) => es(e, 'bpmn:TextAnnotation');
 export const esGrupo = (e) => es(e, 'bpmn:Group');
 export const esSubprocesoExpandido = (e) => es(e, 'bpmn:SubProcess') && e.collapsed === false;
 export const esConexion = (e) => es(e, 'bpmn:SequenceFlow', 'bpmn:MessageFlow', 'bpmn:Association', 'bpmn:DataAssociation');
+export const esFase = (e) => es(e, 'fluye:fase');
+export const esTexto = (e) => es(e, 'fluye:texto');
+export const esEncabezado = (e) => es(e, 'fluye:encabezado');
+export const esImagen = (e) => es(e, 'fluye:imagen');
+export const esArtefactoFluye = (e) => TIPOS_FLUYE.some((t) => es(e, t));
+export const esBorde = (e) => es(e, 'bpmn:BoundaryEvent');
+
+// Fases de un pool, de izquierda a derecha.
+export function fasesDe(pool) {
+  return ((pool && pool.children) || []).filter(esFase).sort((a, b) => a.x - b.x);
+}
+
+// Fase donde cae el centro de un elemento (para el panel, el Word y el Play).
+export function faseDe(elemento) {
+  let pool = elemento && elemento.parent;
+  while (pool && !esPool(pool)) pool = pool.parent;
+  if (!pool || esFase(elemento)) return null;
+  const cx = elemento.x + elemento.width / 2;
+  return fasesDe(pool).find((f) => cx >= f.x && cx <= f.x + f.width) || null;
+}
+
+// Título que muestra un encabezado: el propio o, si no tiene, el nombre de la pestaña (se actualiza solo).
+export function tituloEncabezado(elemento) {
+  const propio = (bo(elemento).titulo || '').trim();
+  if (propio) return propio;
+  let raiz = elemento;
+  while (raiz && raiz.parent) raiz = raiz.parent;
+  return (raiz && raiz.nombreDiagrama) || 'Diagrama';
+}
 
 export function tipoEvento(elemento) {
   const def = (bo(elemento).eventDefinitions || [])[0];
@@ -123,6 +178,9 @@ export function tamanoPorDefecto(tipo, opciones = {}) {
   if (t('bpmn:Group')) return TAMANOS.grupo;
   if (t('bpmn:Participant')) return TAMANOS.pool;
   if (t('bpmn:Lane')) return TAMANOS.carril;
+  if (t('fluye:texto')) return TAMANOS.texto;
+  if (t('fluye:encabezado')) return TAMANOS.encabezado;
+  if (t('fluye:imagen')) return TAMANOS.imagen;
   return { width: 100, height: 80 };
 }
 
@@ -150,7 +208,7 @@ export function coloresBase(elemento) {
   if (esActividad(elemento)) return COLORES.tarea;
   if (esCompuerta(elemento)) return COLORES.compuerta;
   if (esDato(elemento)) return COLORES.dato;
-  if (esPool(elemento) || esCarril(elemento)) return COLORES.contenedor;
+  if (esPool(elemento) || esCarril(elemento) || esFase(elemento) || esEncabezado(elemento)) return COLORES.contenedor;
   if (esAnotacion(elemento)) return COLORES.anotacion;
   return COLORES.grupo;
 }

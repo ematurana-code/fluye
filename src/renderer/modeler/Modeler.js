@@ -27,6 +27,7 @@ import AlignElementsModule from 'diagram-js/lib/features/align-elements/index.js
 import OutlineModule from 'diagram-js/lib/features/outline/index.js';
 import ConnectionPreviewModule from 'diagram-js/lib/features/connection-preview/index.js';
 import RulesModule from 'diagram-js/lib/features/rules/index.js';
+import AttachSupportModule from 'diagram-js/lib/features/attach-support/index.js';
 import DirectEditingModule from 'diagram-js-direct-editing';
 import CroppingConnectionDocking from 'diagram-js/lib/layout/CroppingConnectionDocking.js';
 
@@ -39,6 +40,7 @@ import {
   AgregarCarrilHandler, Carriles, CopiarPegar, CrecimientoAutomatico, FlechasValidas, NombresUnicos, PadreCorrecto, ReglaCrecimiento,
   TamanoMinimo, UbicacionAutomatica, PoolBajoOtro, AgregarPoolHandler
 } from './modeling/comportamientos.js';
+import { EventosDeBorde, Fases, TextoAjustable } from './modeling/propios.js';
 import EdicionNombre from './edicion/EdicionNombre.js';
 import MenuRapido from './contexto/MenuRapido.js';
 import ConectarDesdeBorde from './contexto/ConectarDesdeBorde.js';
@@ -48,7 +50,7 @@ import { combinarArchivos } from './io/combinar.js';
 import { plantillaNueva } from './io/plantilla.js';
 import { normalizarDeclaracion } from './io/codificacion.js';
 import { ajustarVista } from './vista.js';
-import { es, nombreDiagrama, nuevoId } from './tipos.js';
+import { es, esEncabezado, nombreDiagrama, nuevoId } from './tipos.js';
 
 import 'diagram-js/assets/diagram-js.css';
 
@@ -64,8 +66,11 @@ const ModuloFluye = {
   __init__: [
     'fluyeRenderer', 'fluyeRules', 'recorteConexiones', 'padreCorrecto', 'crecimientoAutomatico', 'reglaCrecimiento',
     'carriles', 'poolBajoOtro', 'tamanoMinimo', 'flechasValidas', 'nombresUnicos', 'ubicacionAutomatica', 'copiarPegar', 'edicionNombre', 'menuRapido', 'conectarDesdeBorde',
-    'registroComandos'
+    'registroComandos', 'fases', 'eventosDeBorde', 'textoAjustable'
   ],
+  fases: ['type', Fases],
+  eventosDeBorde: ['type', EventosDeBorde],
+  textoAjustable: ['type', TextoAjustable],
   poolBajoOtro: ['type', PoolBajoOtro],
   fluyeRenderer: ['type', FluyeRenderer],
   elementFactory: ['type', FluyeElementFactory],
@@ -98,7 +103,7 @@ export default class Modeler {
       gridSnapping: { active: true },
       modules: [
         { moddle: ['value', this.moddle] },
-        SelectionModule, OverlaysModule, RulesModule, ModelingModule, MoveModule, CreateModule, ConnectModule, ResizeModule,
+        SelectionModule, OverlaysModule, RulesModule, AttachSupportModule, ModelingModule, MoveModule, CreateModule, ConnectModule, ResizeModule,
         BendpointsModule, ContextPadModule, LassoToolModule, HandToolModule, KeyboardModule, EditorActionsModule,
         KeyboardMoveSelectionModule, MoveCanvasModule, ZoomScrollModule, AutoPlaceModule, AutoScrollModule, SnappingModule,
         GridSnappingModule, CopyPasteModule, AlignElementsModule, OutlineModule, ConnectionPreviewModule, DirectEditingModule,
@@ -147,6 +152,12 @@ export default class Modeler {
 
   async guardarXml() {
     this.terminarEdicion();
+    // Los encabezados muestran la fecha del último guardado.
+    const d = new Date(), dos = (n) => String(n).padStart(2, '0');
+    const hoy = `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}`; // fecha local, no la de Greenwich
+    const encabezados = this.get('elementRegistry').filter((e) => esEncabezado(e) && e.businessObject.fecha !== hoy);
+    for (const e of encabezados) e.businessObject.fecha = hoy;
+    if (encabezados.length) this.get('eventBus').fire('elements.changed', { elements: encabezados });
     const servicios = { moddle: this.moddle, canvas: this.get('canvas'), elementRegistry: this.get('elementRegistry') };
     const xml = await exportarXml(servicios, this.definiciones, this.ocultos || [], this.procesosVisibles || new Set(), this.vistosAlAbrir || new Set(), this.indiceDiagrama || 0);
     this._recordarDibujado();
@@ -208,6 +219,12 @@ export default class Modeler {
   renombrarDiagrama(indice, nombre) {
     const d = this.definiciones && this.definiciones.diagrams[indice];
     if (d) d.name = nombre;
+    // Los encabezados sin título propio muestran el nombre de la pestaña: se redibujan.
+    if (indice === (this.indiceDiagrama || 0)) {
+      this.get('canvas').getRootElement().nombreDiagrama = nombreDiagrama(d, indice);
+      const encabezados = this.get('elementRegistry').filter(esEncabezado);
+      if (encabezados.length) this.get('eventBus').fire('elements.changed', { elements: encabezados });
+    }
   }
 
   // Pestaña donde está dibujado el detalle de un subproceso (-1 si todavía no tiene).

@@ -1,9 +1,11 @@
 // Convierte el diagrama del lienzo a .bpmn (BPMN 2.0 estándar + DI), rearmando la estructura desde lo dibujado.
-import { bo as boDe, es, esAnotacion, esCarril, esDato, esGrupo, esNodo, esPool, esSubprocesoExpandido, nuevoId } from '../tipos.js';
+import {
+  NS_FLUYE, TIPOS_FLUYE, bo as boDe, datosFluye, es, esAnotacion, esArtefactoFluye, esBorde, esCarril, esDato, esGrupo, esNodo, esPool,
+  esSubprocesoExpandido, nuevoId
+} from '../tipos.js';
 import { NS_COLOR, escribirColores } from './colores.js';
 
 export const VERSION_EXPORTADOR = '0.1.0';
-const NS_FLUYE = 'http://fluye.app/schema/1.0';
 
 // ocultos: participantes sin figura visible (ej. el "Proceso principal" de tamaño cero que agrega Bizagi); se conservan tal cual.
 // procesosVisibles: procesos que mostraba el diagrama al abrir; los que no estén ahí (otros diagramas) no se tocan.
@@ -22,7 +24,9 @@ export async function exportarXml({ moddle, canvas, elementRegistry }, definicio
   // La raíz del diagrama es un proceso o, en archivos de bpmn.io/Camunda, un subproceso detallado en su propia pestaña.
   const raizProceso = es(raizBo, 'bpmn:Process', 'bpmn:SubProcess');
   const todos = elementRegistry.getAll().filter((e) => e !== raiz && !e.labelTarget);
-  const formas = todos.filter((e) => !e.waypoints);
+  // Fases, textos, encabezados e imágenes no son BPMN: van aparte, en la extensión del plano (paso 5).
+  const propios = todos.filter((e) => !e.waypoints && esArtefactoFluye(e));
+  const formas = todos.filter((e) => !e.waypoints && !esArtefactoFluye(e));
   const conexiones = todos.filter((e) => e.waypoints);
   const procesos = new Set();
 
@@ -111,6 +115,8 @@ export async function exportarXml({ moddle, canvas, elementRegistry }, definicio
       }
       // Entradas/salidas del proceso viven en su ioSpecification: se dejan donde están.
       if (es(f, 'bpmn:DataInput', 'bpmn:DataOutput')) continue;
+      // Evento de borde: va pegado a la tarea donde está dibujado.
+      if (esBorde(f) && f.host) b.attachedToRef = boDe(f.host);
       const c = contenedor(f) || contenedorOriginal(b) || procesoPorDefecto();
       ponerEn(c, b);
       if (es(f, 'bpmn:DataObjectReference')) {
@@ -223,6 +229,22 @@ export async function exportarXml({ moddle, canvas, elementRegistry }, definicio
       plano.planeElement.push(d);
     }
     const previo = (defs.diagrams || [])[indice];
+    // Extensión del plano: lo propio de Fluye, más lo que otra herramienta haya guardado ahí (se conserva).
+    const ajenos = ((previo && previo.plane && previo.plane.extension && previo.plane.extension.values) || []).filter((v) => !TIPOS_FLUYE.includes(v.$type));
+    const valores = [...ajenos];
+    for (const f of propios) {
+      const p = f.parent;
+      const padre = p && p !== raiz && (esPool(p) || esSubprocesoExpandido(p)) ? boDe(p).id : undefined;
+      const datos = {
+        id: f.id, ...datosFluye(boDe(f), f.type),
+        x: Math.round(f.x), y: Math.round(f.y), width: Math.round(f.width), height: Math.round(f.height)
+      };
+      if (padre) datos.padre = padre;
+      if (f.colores && f.colores.fill) datos.relleno = f.colores.fill;
+      if (f.colores && f.colores.stroke) datos.trazo = f.colores.stroke;
+      valores.push(moddle.createAny(f.type, NS_FLUYE, datos));
+    }
+    if (valores.length) plano.extension = moddle.create('di:Extension', { values: valores });
     const diagrama = moddle.create('bpmndi:BPMNDiagram', { id: (previo && previo.id) || nuevoId('BPMNDiagram'), name: previo && previo.name, plane: plano });
     if (previo && previo.plane && previo.plane.id) plano.id = previo.plane.id;
     const diagramas = [...(defs.diagrams || [])];

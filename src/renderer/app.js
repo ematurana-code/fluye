@@ -602,6 +602,9 @@ const AYUDAS = {
   mensaje: 'Un mensaje une dos pools · Doble clic: escribir qué se envía · Supr: borrar',
   punteada: 'Une un documento o una nota con un paso · Arrastra sus puntos para cambiar el recorrido · Supr: borrar',
   carril: 'Menú rápido: agregar un carril debajo · Arrastra los bordes para cambiar el tamaño · Doble clic: cambiar el nombre',
+  fase: 'Doble clic en la franja: cambiar el nombre · Arrastra su borde derecho para cambiar el ancho · Suelta otra fase encima para dividirla',
+  texto: 'Doble clic: escribir · Panel de la derecha: tamaño, negrita, color y alineación · Arrastra las esquinas para cambiar el tamaño',
+  borde: 'Si ocurre este evento mientras se hace la tarea, el proceso sigue por su flecha · Arrástralo por el borde para moverlo · En el panel: qué lo dispara',
   varios: 'Arrastra para mover todo junto · Flechas del teclado: mover de a poco · Supr: borrar la selección',
   play: 'Arrastra para mover la vista · Espacio: pausa o sigue · Flecha derecha: paso siguiente · Esc: salir del Play'
 };
@@ -613,7 +616,8 @@ function actualizarAyuda() {
   else if (sel.length === 1) {
     const e = sel[0];
     clave = es(e, 'bpmn:SequenceFlow') ? 'flecha' : es(e, 'bpmn:MessageFlow') ? 'mensaje' : esConexion(e) ? 'punteada'
-      : es(e, 'bpmn:ParallelGateway') ? 'paralelo' : esCompuerta(e) ? 'decision' : (esPool(e) || esCarril(e)) ? 'carril' : 'paso';
+      : es(e, 'bpmn:ParallelGateway') ? 'paralelo' : esCompuerta(e) ? 'decision' : (esPool(e) || esCarril(e)) ? 'carril'
+      : e.type === 'fluye:fase' ? 'fase' : e.type === 'fluye:texto' ? 'texto' : e.type === 'bpmn:BoundaryEvent' ? 'borde' : 'paso';
   }
   $('#ayuda-estado').textContent = AYUDAS[clave];
 }

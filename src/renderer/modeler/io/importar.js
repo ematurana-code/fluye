@@ -1,5 +1,5 @@
 // Lee un .bpmn (BPMN 2.0) y arma el diagrama en el lienzo, sin pasar por el historial de deshacer.
-import { es, nombreExterno, nuevoId } from '../tipos.js';
+import { NS_FLUYE, TIPOS_FLUYE, datosFluye, es, nombreDiagrama, nombreExterno, nuevoId } from '../tipos.js';
 import { leerColores } from './colores.js';
 
 const TIPOS_FIGURA = /^bpmn:(.*Event|.*Task|Task|SubProcess|CallActivity|.*Gateway|Participant|Lane|DataObjectReference|DataStoreReference|DataInput|DataOutput|TextAnnotation|Group)$/;
@@ -27,6 +27,7 @@ export async function importarXml({ moddle, canvas, elementFactory, diagrama, ev
   diagrama.clear();
   const raizBo = plano.bpmnElement;
   const raiz = elementFactory.createRoot({ id: `__raiz_${raizBo.id}`, type: raizBo.$type, businessObject: raizBo });
+  raiz.nombreDiagrama = nombreDiagrama(defs.diagrams[indice], indice); // lo muestran los encabezados
   canvas.setRootElement(raiz);
 
   const di = new Map();
@@ -81,7 +82,11 @@ export async function importarXml({ moddle, canvas, elementFactory, diagrama, ev
         crearForma(fe, padre);
       }
     }
-    for (const fe of elementos.filter((x) => es(x, 'bpmn:BoundaryEvent'))) crearForma(fe, padre);
+    // Eventos de borde: quedan pegados a su tarea (se mueven con ella).
+    for (const fe of elementos.filter((x) => es(x, 'bpmn:BoundaryEvent'))) {
+      const host = fe.attachedToRef && formas.get(fe.attachedToRef.id);
+      crearForma(fe, host ? host.parent : padre, host ? { host } : {});
+    }
     for (const a of artefactos.filter((x) => es(x, 'bpmn:TextAnnotation'))) crearForma(a, padre);
   };
 
@@ -111,6 +116,24 @@ export async function importarXml({ moddle, canvas, elementFactory, diagrama, ev
       const pool = [...formas.values()].find((f) => es(f, 'bpmn:Participant') && dentro(d.bounds, f));
       if (!crearForma(bo, pool || raiz)) omitidos++;
     }
+  }
+
+  // Elementos propios de Fluye (fases, textos, encabezados, imágenes): van en la extensión del plano. Las fases quedan
+  // al fondo de su pool (debajo de carriles y pasos); lo demás, encima de todo.
+  for (const v of (plano.extension && plano.extension.values) || []) {
+    const tipo = TIPOS_FLUYE.find((t) => v.$type === t);
+    if (!tipo) continue;
+    const n = (k) => Math.round(Number(v[k]) || 0);
+    if (n('width') < 1 || n('height') < 1) continue;
+    const padre = v.padre ? formas.get(v.padre) : null;
+    const fase = tipo === 'fluye:fase';
+    if (fase && !(padre && es(padre, 'bpmn:Participant'))) continue;
+    const objeto = moddle.createAny(tipo, NS_FLUYE, { id: v.id || nuevoId('Fluye'), ...datosFluye(v, tipo) });
+    const colores = v.relleno || v.trazo ? { fill: v.relleno || undefined, stroke: v.trazo || undefined } : undefined;
+    const forma = elementFactory.createShape({
+      type: tipo, businessObject: objeto, id: objeto.id, x: n('x'), y: n('y'), width: n('width'), height: n('height'), colores
+    });
+    canvas.addShape(forma, padre || raiz, fase ? 0 : undefined);
   }
 
   // Conexiones

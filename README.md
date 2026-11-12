@@ -22,7 +22,8 @@
 
 ## Qué hace
 
-- **Dibuja procesos con BPMN 2.0**, el estándar de la OMG: pools, carriles, tareas, decisiones, paralelos, eventos, mensajes entre pools, subprocesos, documentos y notas.
+- **Dibuja procesos con BPMN 2.0**, el estándar de la OMG: pools, carriles, tareas, decisiones, paralelos, eventos (también en el borde de una tarea: plazos, mensajes, errores), mensajes entre pools, subprocesos, documentos y notas.
+- **Para presentarlo bien:** fases del proceso a lo ancho del pool, texto libre con formato, encabezado con autor, versión y fecha, imágenes y tus propias figuras.
 - **Play paso a paso:** recorre el proceso como si fuera de verdad. En cada decisión preguntas qué camino sigue (o lo dejas al azar), y avisa si algo se atasca: un paso sin salida, un paralelo que nunca se junta o un mensaje que nunca llega.
 - **Revisión mientras dibujas:** el panel avisa qué falta (inicio, fin, pasos sueltos, decisiones sin pregunta) y te lleva al elemento con un clic.
 - **33 plantillas** de 11 áreas (compras, finanzas, recursos humanos, soporte TI, ventas, logística, comercio exterior y más), en tres niveles: simple, intermedia y avanzada.
@@ -87,7 +88,8 @@ Las sugerencias y los reportes de errores son bienvenidos en [Issues](https://gi
 
 **Fluye** ("it flows") is a free, open-source BPMN 2.0 process modeler for Windows. The user interface is in Spanish.
 
-- Draw processes with pools, lanes, tasks, gateways, events, message flows and sub-processes.
+- Draw processes with pools, lanes, tasks, gateways, events (including boundary events), message flows and sub-processes.
+- Presentation extras: phases (milestones) across a pool, formatted free text, a header box (author, version, date), images and your own reusable shapes.
 - **Play:** walk through the process token by token, choose a path at each gateway, and get warned about dead ends, deadlocked joins and messages that never arrive.
 - Live checks, 33 ready-made templates, several diagrams per file (tabs).
 - Export to BPMN, PNG, SVG, PDF, Word, and a single-file **interactive web page** that includes the Play.

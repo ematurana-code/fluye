@@ -12,9 +12,13 @@
 //    con lo que esté corriendo dentro de sus subprocesos). Los otros pools siguen.
 //  - Mensajes entre pools: cada mensaje que llega a un inicio arranca ese proceso; un evento que recibe un mensaje
 //    (o una tarea de recepción) espera hasta que el otro pool lo envíe.
+//  - Tarea con eventos en el borde (plazo, mensaje, error…): se pregunta cómo termina: normal o por uno de esos
+//    eventos. Si el evento detiene la tarea, la ficha sigue solo por él; si no la detiene, sigue por los dos caminos.
 //  - Problemas: elemento sin salida, unión que nunca se completa (atasco), mensaje que nunca llega, ciclo sin salida
 //    (se corta en la segunda vuelta) y ciclo que se repite demasiado.
 import { es } from '../modeler/tipos.js';
+
+const bordesDe = (el) => (el.attachers || []).filter((a) => es(a, 'bpmn:BoundaryEvent'));
 
 export const salidas = (el) => (el.outgoing || []).filter((c) => es(c, 'bpmn:SequenceFlow'));
 export const entradas = (el) => (el.incoming || []).filter((c) => es(c, 'bpmn:SequenceFlow'));
@@ -91,7 +95,19 @@ export default class MotorPlay {
     if (!p || !conexiones || !conexiones.length) return [];
     this.pendiente = null;
     this.decisiones++;
-    const sucesos = [{ tipo: 'elegido', compuerta: p.compuerta, conexiones }, ...this._salir(p.ficha, conexiones)];
+    const sucesos = [{ tipo: 'elegido', compuerta: p.compuerta, conexiones }];
+    if (p.borde) {
+      const evento = conexiones.find((c) => es(c, 'bpmn:BoundaryEvent'));
+      if (!evento) sucesos.push(...this._salir(p.ficha, p.borde.normales));
+      else if (evento.businessObject.cancelActivity !== false) sucesos.push({ tipo: 'saltar', ficha: p.ficha, elemento: evento, desde: p.compuerta },...this._llegar(p.ficha, evento, null));
+      else {
+        // No detiene la tarea: un camino sale por el evento y la tarea sigue por su salida normal.
+        const otra = this._nueva(evento, p.ficha.ambito);
+        sucesos.push(...this._llegar(otra, evento, null));
+        if (p.borde.normales.length) sucesos.push(...this._salir(p.ficha, p.borde.normales));
+        else sucesos.push(this._problema('sin-salida', p.compuerta, 'Este elemento no tiene flecha de salida: el flujo se corta aquí. ¿Falta conectarlo o un evento de fin?'), ...this._consumir(p.ficha));
+      }
+    } else sucesos.push(...this._salir(p.ficha, conexiones));
     sucesos.push(...this._revisarUniones());
     if (!this.fila.length && !this.pendiente && !this.terminado) sucesos.push(...this._cerrar());
     return sucesos;
@@ -176,6 +192,11 @@ export default class MotorPlay {
     ficha.saliendo = false;
 
     const s = salidas(el);
+    const bordes = bordesDe(el);
+    if (bordes.length) {
+      this.pendiente = { ficha, compuerta: el, opciones: [...(s.length ? [s[0]] : []), ...bordes], multiple: false, borde: { normales: s } };
+      return [...sucesos, { tipo: 'decidir', ...this.pendiente }];
+    }
     if (!s.length) {
       this._consumir(ficha);
       return [...sucesos, this._problema('sin-salida', el, 'Este elemento no tiene flecha de salida: el flujo se corta aquí. ¿Falta conectarlo o un evento de fin?')];
@@ -263,6 +284,7 @@ export default class MotorPlay {
       if (vistos.has(el)) continue;
       vistos.add(el);
       for (const c of salidas(el)) pila.push(c.target);
+      for (const b of bordesDe(el)) pila.push(b); // también puede seguir por un evento de su borde
     }
     return false;
   }

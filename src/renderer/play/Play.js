@@ -2,7 +2,7 @@
 // Durante el Play el diagrama queda en solo lectura. Todo texto que viene del modelo se muestra con textContent.
 import { create as svgCreate, attr as svgAttr, append as svgAppend, remove as svgRemove } from 'tiny-svg';
 import MotorPlay from './motor.js';
-import { bo, es, esCarril, esCompuerta, esPool, nombreTipo } from '../modeler/tipos.js';
+import { bo, es, esCarril, esCompuerta, esPool, faseDe, nombreTipo, tipoEvento } from '../modeler/tipos.js';
 import { icono } from '../iconos.js';
 import { mostrarEnCaja } from '../ui/desplazar.js';
 import { ciclosSinSalida } from '../modeler/ciclos.js';
@@ -191,6 +191,10 @@ export default class Play {
     if (p.multiple) {
       elegidas = p.opciones.filter(() => Math.random() < 0.5);
       if (!elegidas.length) elegidas = [p.opciones[Math.floor(Math.random() * p.opciones.length)]];
+    } else if (p.borde && p.borde.normales.length) {
+      // En una tarea con eventos en el borde, lo normal es que termine bien: el evento ocurre una de cada tres veces.
+      const eventos = p.opciones.filter((c) => es(c, 'bpmn:BoundaryEvent'));
+      elegidas = [Math.random() < 0.67 || !eventos.length ? p.opciones[0] : eventos[Math.floor(Math.random() * eventos.length)]];
     } else elegidas = [p.opciones[Math.floor(Math.random() * p.opciones.length)]];
     this.overlays.remove({ element: p.compuerta, type: 'fl-play' });
     await this._aplicar(this.motor.elegir(elegidas));
@@ -233,6 +237,11 @@ export default class Play {
         }
         break;
       }
+      case 'saltar':
+        // La tarea se interrumpe: la ficha pasa al evento de su borde.
+        this._marcarSalida(s.desde, s.ficha);
+        this._ponerFicha(s.ficha, this._centro(s.elemento));
+        break;
       case 'dividir':
         this._log('⇉', `Se divide en ${s.cantidad} caminos en paralelo`, nombreDe(s.elemento), 'info');
         break;
@@ -413,9 +422,11 @@ export default class Play {
     return c.x >= carril.x && c.x <= carril.x + carril.width && c.y >= carril.y && c.y <= carril.y + carril.height;
   }
 
+  // Responsable (carril) y, si el pool tiene fases, la fase: "Ventas · Revisión".
   _carrilDe(e) {
     const carril = this.registro.filter(esCarril).find((l) => this._dentro(e, l));
-    return carril ? nombreDe(carril) : '';
+    const fase = faseDe(e);
+    return [carril ? nombreDe(carril) : '', fase ? bo(fase).name || '' : ''].filter(Boolean).join(' · ');
   }
 
   _poolDe(e) {
@@ -434,7 +445,19 @@ export default class Play {
 
   _textoOpcion(c) {
     const n = bo(c).name;
+    if (es(c, 'bpmn:BoundaryEvent')) {
+      if (n) return n;
+      const tipo = tipoEvento(c);
+      return { temporizador: 'Se vence el plazo', mensaje: 'Llega un mensaje', error: 'Ocurre un error', senal: 'Llega una señal', condicional: 'Se cumple la condición', escalamiento: 'Se escala' }[tipo] || 'Ocurre el evento';
+    }
+    if (this._esSalidaNormal(c)) return n ? `Termina normal (${n})` : 'Termina normal';
     return n ? n : `ir a "${this._destinoLegible(c)}"`;
+  }
+
+  // ¿Es la salida normal de una tarea que tiene eventos en su borde? (opción "Termina normal" de la pregunta)
+  _esSalidaNormal(c) {
+    const p = this.motor.pendiente;
+    return !!(p && p.borde && p.borde.normales.includes(c));
   }
 
   // A qué pasos lleva un camino: si llega a una compuerta sin nombre (un paralelo, una unión), se nombran
@@ -442,7 +465,9 @@ export default class Play {
   _destinoLegible(c) {
     const nombrados = [];
     const vistos = new Set();
-    const pila = [c.target];
+    // Un evento de borde no es una flecha: su destino es a donde lleva su salida.
+    const pila = es(c, 'bpmn:BoundaryEvent') ? (c.outgoing || []).filter((x) => es(x, 'bpmn:SequenceFlow')).map((x) => x.target) : [c.target];
+    if (!pila.length) return 'ningún lado (le falta su flecha de salida)';
     while (pila.length && nombrados.length < 3) {
       const e = pila.shift();
       if (!e || vistos.has(e)) continue;
@@ -454,16 +479,18 @@ export default class Play {
     return nombrados.length === 1 ? nombrados[0] : `${nombrados.slice(0, -1).join(', ')} y ${nombrados[nombrados.length - 1]}`;
   }
 
-  _mostrarDecision({ compuerta, opciones, multiple }) {
+  _mostrarDecision({ compuerta, opciones, multiple, borde }) {
     const tarjeta = el('div', 'fl-decision');
-    tarjeta.append(el('div', 'fl-decision-titulo', bo(compuerta).name || '¿Qué camino sigue?'));
-    tarjeta.append(el('div', 'fl-decision-ayuda', multiple ? 'Marca uno o varios caminos' : 'Elige el camino'));
+    const titulo = borde ? `¿Cómo termina “${nombreDe(compuerta)}”?` : bo(compuerta).name || '¿Qué camino sigue?';
+    tarjeta.append(el('div', 'fl-decision-titulo', titulo));
+    tarjeta.append(el('div', 'fl-decision-ayuda', borde ? 'Elige si termina normal o si ocurre algo mientras se hace' : multiple ? 'Marca uno o varios caminos' : 'Elige el camino'));
     const marcadas = new Set();
-    for (const c of ordenarOpciones(opciones)) {
+    for (const c of borde ? opciones : ordenarOpciones(opciones)) {
       const b = el('button', 'fl-decision-opcion');
       b.type = 'button';
       const texto = el('span', '', this._textoOpcion(c));
-      const destino = el('small', '', bo(c).name ? `→ ${this._destinoLegible(c)}` : '');
+      const conDestino = borde || bo(c).name;
+      const destino = el('small', '', conDestino ? `→ ${this._destinoLegible(c)}` : '');
       b.append(texto, destino);
       b.addEventListener('mouseenter', () => this._marcar(c, 'fl-opcion'));
       b.addEventListener('mouseleave', () => this.canvas.removeMarker(c, 'fl-opcion'));
@@ -485,7 +512,7 @@ export default class Play {
     // scale.min 1: con el diagrama alejado la tarjeta no se achica (sigue legible).
     this.overlays.add(compuerta, 'fl-play', { position: { top: -8, left: compuerta.width + 14 }, html: tarjeta, scale: { min: 1 } });
     requestAnimationFrame(() => this._mostrarEntera(tarjeta));
-    this._log('?', `Decisión: ${bo(compuerta).name || 'elige el camino'}`, this._carrilDe(compuerta), 'pregunta');
+    this._log('?', borde ? titulo : `Decisión: ${bo(compuerta).name || 'elige el camino'}`, this._carrilDe(compuerta), 'pregunta');
   }
 
   // Si la tarjeta queda cortada por un borde (o tapada por la barra del Play), se corre la vista lo justo.

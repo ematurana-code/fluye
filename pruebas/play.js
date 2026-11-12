@@ -123,5 +123,17 @@ export async function probarPlay(fluye, play) {
     unir('iSub', 'tSub'); unir('tSub', 'fSub'); unir('Cierra', 'Fin');
   }, (p) => p.opciones, { fines: ['fSub', 'Fin'], problemas: [], ok: true, uniones: 1 });
 
+  // Evento en el borde de una tarea: el Play pregunta cómo termina la tarea.
+  const conBorde = (interrumpe) => ({ crear, unir, n, m, f }) => {
+    crear('T', 'bpmn:Task'); crear('Fin', 'bpmn:EndEvent'); crear('Avisar', 'bpmn:Task', {}, 160); crear('FinAtraso', 'bpmn:EndEvent', {}, 160);
+    n.Plazo = m.createShape(f.crear('bpmn:BoundaryEvent', { nombre: 'Plazo', evento: 'temporizador' }), { x: n.T.x + 70, y: n.T.y + n.T.height }, n.T, { attach: true });
+    if (!interrumpe) m.cambiarPropiedades(n.Plazo, { cancelActivity: false });
+    unir('inicio', 'T'); unir('T', 'Fin'); unir('Plazo', 'Avisar'); unir('Avisar', 'FinAtraso');
+  };
+  const evento = (p) => p.opciones.filter((c) => c.type === 'bpmn:BoundaryEvent');
+  await caso('Borde: termina normal', conBorde(true), (p) => [p.opciones[0]], { fines: ['Fin'], problemas: [], ok: true });
+  await caso('Borde: el plazo detiene la tarea', conBorde(true), evento, { fines: ['FinAtraso'], problemas: [], ok: true });
+  await caso('Borde: el plazo no detiene la tarea', conBorde(false), evento, { fines: ['Fin', 'FinAtraso'], problemas: [], ok: true });
+
   return { resumen: `${casos.filter((c) => c.bien).length} de ${casos.length} casos bien`, casos: casos.map((c) => `${c.bien ? '✓' : '✗'} ${c.caso}: fines=${c.resultado.fines.join(',')} problemas=${c.resultado.problemas.join(',') || '-'} ok=${c.resultado.ok}`) };
 }

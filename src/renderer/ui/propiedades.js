@@ -1,10 +1,20 @@
 // Panel de propiedades del elemento seleccionado. Todo dato del usuario se muestra con textContent/value (nunca innerHTML).
 import {
-  COLORES_USUARIO, bo, es, esActividad, esCarril, esCompuerta, esConexion, esEvento, esPool, limpiarTexto, nombreTipo, tipoEvento
+  COLORES_USUARIO, DEFINICIONES_EVENTO, bo, es, esActividad, esArtefactoFluye, esBorde, esCarril, esCompuerta, esConexion, esEncabezado,
+  esEvento, esFase, esImagen, esPool, esTexto, faseDe, limpiarTexto, nombreTipo, nuevoId, tipoEvento
 } from '../modeler/tipos.js';
 import { leerNombre } from '../modeler/modeling/comandos.js';
+import { formatoTexto } from '../modeler/draw/FluyeRenderer.js';
 import { icono } from '../iconos.js';
 import { contarDiagrama, revisarDiagrama } from '../modeler/revision.js';
+import { elegirImagen, misFiguras, tamanoEnDiagrama } from './figuras.js';
+import { aviso } from './dialogos.js';
+
+// Qué puede disparar un evento de borde (el orden es el del selector).
+const EVENTOS_BORDE = [['temporizador', 'Plazo o tiempo (temporizador)'], ['mensaje', 'Llega un mensaje'], ['error', 'Error'],
+  ['senal', 'Señal'], ['condicional', 'Se cumple una condición'], ['escalamiento', 'Escalamiento']];
+const TAMANOS_TEXTO = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48];
+const COLORES_TEXTO = ['#0F172A', '#475569', '#1E3A8A', '#059669', '#D97706', '#DC2626', '#6D28D9'];
 
 const VARIANTES_TAREA = [['bpmn:Task', 'Tarea'], ['bpmn:UserTask', 'Tarea de usuario'], ['bpmn:ServiceTask', 'Tarea automática'], ['bpmn:ManualTask', 'Tarea manual']];
 const VARIANTES_COMPUERTA = [['bpmn:ExclusiveGateway', 'Decisión (un camino)'], ['bpmn:ParallelGateway', 'Paralelo (todos)'], ['bpmn:InclusiveGateway', 'Decisión inclusiva (uno o varios)']];
@@ -88,9 +98,14 @@ export function crearPropiedades(contenedor, modeler, { alPlay } = {}) {
     }
     const e = actual = sel[0];
     const ayuda = textos(e);
-    const encabezado = el('div', { class: 'fl-prop-encabezado' }, el('span', { class: 'fl-prop-tipo', texto: nombreTipo(e) }));
+    const encabezado = el('div', { class: 'fl-prop-encabezado' }, el('span', { class: 'fl-prop-tipo', texto: esBorde(e) ? 'Evento en el borde' : nombreTipo(e) }));
     encabezado.title = bo(e).id; // el identificador técnico solo al pasar el mouse
     contenedor.appendChild(encabezado);
+    if (esArtefactoFluye(e)) {
+      propio(e);
+      contenedor.appendChild(el('button', { type: 'button', class: 'btn btn-secondary btn-sm fl-prop-borrar', html: `${icono('borrar', 15)}<span>Borrar</span>`, onclick: () => modeling.removeElements([e]) }));
+      return;
+    }
 
     // Las flechas punteadas (hacia notas y documentos) no llevan nombre en BPMN: no se guardaría.
     if (esConexion(e) && !es(e, 'bpmn:SequenceFlow', 'bpmn:MessageFlow')) {
@@ -123,6 +138,19 @@ export function crearPropiedades(contenedor, modeler, { alPlay } = {}) {
       }
     }
 
+    // Evento de borde: qué lo dispara y si detiene la tarea o corre en paralelo con ella.
+    if (esBorde(e)) {
+      const s = el('select', { class: 'form-input' });
+      const actualTipo = tipoEvento(e);
+      for (const [t, n] of EVENTOS_BORDE) { const o = el('option', { value: t, texto: n }); if (actualTipo === t) o.selected = true; s.appendChild(o); }
+      s.addEventListener('change', () => modeling.cambiarPropiedades(e, { eventDefinitions: [moddle.create(DEFINICIONES_EVENTO[s.value], { id: nuevoId('EventDefinition') })] }));
+      contenedor.appendChild(campo('Qué ocurre', s));
+      const chk = el('input', { type: 'checkbox' });
+      chk.checked = bo(e).cancelActivity !== false;
+      chk.addEventListener('change', () => modeling.cambiarPropiedades(e, { cancelActivity: chk.checked }));
+      contenedor.appendChild(el('label', { class: 'fl-check' }, chk, el('span', { texto: 'Detiene la tarea (si no, la tarea sigue y este camino corre en paralelo)' })));
+    }
+
     if (!esConexion(e)) {
       const desc = el('textarea', { class: 'form-input', rows: '5', placeholder: ayuda.descripcion, spellcheck: 'true' });
       desc.value = documentacion(e);
@@ -135,6 +163,8 @@ export function crearPropiedades(contenedor, modeler, { alPlay } = {}) {
 
     const carril = carrilDe(e);
     if (carril && !esEvento(e)) contenedor.appendChild(campo('Responsable', el('div', { class: 'fl-prop-dato', texto: leerNombre(carril) || '(carril sin nombre)' })));
+    const fase = !esConexion(e) && faseDe(e);
+    if (fase) contenedor.appendChild(campo('Fase', el('div', { class: 'fl-prop-dato', texto: leerNombre(fase) || '(fase sin nombre)' })));
 
     if (!esConexion(e)) {
       const fila = el('div', { class: 'fl-prop-colores' });
@@ -152,6 +182,114 @@ export function crearPropiedades(contenedor, modeler, { alPlay } = {}) {
     }
 
     contenedor.appendChild(el('button', { type: 'button', class: 'btn btn-secondary btn-sm fl-prop-borrar', html: `${icono('borrar', 15)}<span>Borrar</span>`, onclick: () => modeling.removeElements([e]) }));
+  }
+
+  // ---------- fase, texto, encabezado e imagen ----------
+
+  const texto = (valor, alCambiar, opciones = {}) => {
+    const n = el(opciones.area ? 'textarea' : 'input', { class: 'form-input', spellcheck: 'true', placeholder: opciones.placeholder || '', ...(opciones.area ? { rows: String(opciones.area) } : { type: 'text' }) });
+    n.value = valor || '';
+    n.addEventListener('change', () => alCambiar(limpiarTexto(n.value).trim()));
+    if (!opciones.area) n.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); n.blur(); } });
+    return n;
+  };
+  const prop = (e, k) => (v) => modeling.cambiarPropiedades(e, { [k]: v || undefined });
+
+  function colores(e, alElegir, activo, lista) {
+    const fila = el('div', { class: 'fl-prop-colores' });
+    for (const c of lista) {
+      const b = el('button', { type: 'button', title: c.nombre, class: 'fl-swatch' });
+      b.style.setProperty('--relleno', c.relleno);
+      b.style.setProperty('--borde', c.borde);
+      if (c.letra) b.textContent = c.letra;
+      if (activo(c)) b.classList.add('activo');
+      b.addEventListener('click', () => alElegir(c));
+      fila.appendChild(b);
+    }
+    return fila;
+  }
+
+  function propio(e) {
+    const b = bo(e);
+    if (esFase(e)) {
+      contenedor.appendChild(campo('Nombre de la fase', texto(leerNombre(e), (v) => modeling.renombrar(e, v), { placeholder: 'Ej.: Solicitud, Revisión, Entrega' })));
+      const lista = COLORES_USUARIO.map((c) => ({ nombre: c.nombre, relleno: c.fill || '#F8FAFC', borde: c.stroke || '#94a3b8', letra: c.fill ? '' : 'A', valor: c }));
+      contenedor.appendChild(campo('Color de la franja', colores(e, (c) => modeling.cambiarPropiedades(e, null, { colores: c.valor.fill ? { fill: c.valor.fill } : undefined }),
+        (c) => (c.valor.fill ? e.colores && e.colores.fill === c.valor.fill : !e.colores), lista)));
+      contenedor.appendChild(el('p', { class: 'text-muted fl-resumen-pista', texto: 'Arrastra el borde derecho de la fase para cambiar su ancho. Suelta otra fase encima de esta para dividirla.' }));
+      return;
+    }
+    if (esTexto(e)) {
+      contenedor.appendChild(campo('Texto', texto(leerNombre(e), (v) => modeling.renombrar(e, v), { area: 4 })));
+      const f = formatoTexto(e);
+      const barra = el('div', { class: 'fl-formato' });
+      const tam = el('select', { class: 'form-input', title: 'Tamaño de la letra' });
+      for (const t of TAMANOS_TEXTO) { const o = el('option', { value: String(t), texto: `${t}` }); if (t === f.tamano) o.selected = true; tam.appendChild(o); }
+      if (!TAMANOS_TEXTO.includes(f.tamano)) tam.prepend(Object.assign(el('option', { value: String(f.tamano), texto: `${f.tamano}` }), { selected: true }));
+      tam.addEventListener('change', () => modeling.cambiarPropiedades(e, { tamano: tam.value }));
+      barra.appendChild(tam);
+      const alternar = (k, etiqueta, titulo, estilo, activo) => {
+        const btn = el('button', { type: 'button', title: titulo, texto: etiqueta, style: estilo });
+        if (activo) btn.classList.add('activo');
+        btn.setAttribute('aria-pressed', String(!!activo));
+        btn.addEventListener('click', () => modeling.cambiarPropiedades(e, { [k]: activo ? undefined : 'true' }));
+        barra.appendChild(btn);
+      };
+      alternar('negrita', 'N', 'Negrita', 'font-weight:700', f.peso === 700);
+      alternar('cursiva', 'K', 'Cursiva', 'font-style:italic', f.cursiva);
+      alternar('subrayado', 'S', 'Subrayado', 'text-decoration:underline', f.subrayado);
+      for (const [valor, etiqueta, titulo] of [['inicio', '⇤', 'Alinear a la izquierda'], ['centro', '↔', 'Centrar'], ['derecha', '⇥', 'Alinear a la derecha']]) {
+        const btn = el('button', { type: 'button', title: titulo, texto: etiqueta });
+        if (f.alinear === valor) btn.classList.add('activo');
+        btn.addEventListener('click', () => modeling.cambiarPropiedades(e, { alinear: valor === 'inicio' ? undefined : valor }));
+        barra.appendChild(btn);
+      }
+      contenedor.appendChild(campo('Formato', barra));
+      const letras = COLORES_TEXTO.map((c) => ({ nombre: c, relleno: c, borde: c, valor: c }));
+      contenedor.appendChild(campo('Color de la letra', colores(e, (c) => modeling.cambiarPropiedades(e, { color: c.valor === '#0F172A' ? undefined : c.valor }), (c) => f.color === c.valor, letras)));
+      const fondos = [{ nombre: 'Sin fondo', relleno: '#fff', borde: '#94a3b8', letra: '∅', valor: null }, ...COLORES_USUARIO.filter((c) => c.fill).map((c) => ({ nombre: c.nombre, relleno: c.fill, borde: c.stroke, valor: c.fill }))];
+      contenedor.appendChild(campo('Fondo', colores(e, (c) => modeling.cambiarPropiedades(e, { fondo: c.valor || undefined }), (c) => f.fondo === c.valor, fondos)));
+      const chk = el('input', { type: 'checkbox' });
+      chk.checked = f.borde;
+      chk.addEventListener('change', () => modeling.cambiarPropiedades(e, { borde: chk.checked ? 'true' : undefined }));
+      contenedor.appendChild(el('label', { class: 'fl-check' }, chk, el('span', { texto: 'Con borde' })));
+      return;
+    }
+    if (esEncabezado(e)) {
+      let raiz = e;
+      while (raiz.parent) raiz = raiz.parent;
+      contenedor.appendChild(campo('Título', texto(b.titulo, prop(e, 'titulo'), { placeholder: raiz.nombreDiagrama || 'Nombre de la pestaña' }), 'Vacío: usa el nombre de la pestaña y cambia solo si la renombras.'));
+      contenedor.appendChild(campo('Autor', texto(b.autor, prop(e, 'autor'), { placeholder: 'Quién hizo el diagrama' })));
+      contenedor.appendChild(campo('Versión', texto(b.version, prop(e, 'version'), { placeholder: 'Ej.: 1.0' })));
+      contenedor.appendChild(campo('Descripción', texto(b.descripcion, prop(e, 'descripcion'), { area: 3, placeholder: 'Para qué es este diagrama…' }), 'La fecha de “Actualizado” se pone sola al guardar.'));
+      return;
+    }
+    if (esImagen(e)) {
+      contenedor.appendChild(campo('Nombre (va debajo)', texto(leerNombre(e), (v) => modeling.renombrar(e, v), { placeholder: 'Opcional' })));
+      const cambiar = el('button', { type: 'button', class: 'btn btn-secondary btn-sm', texto: 'Cambiar imagen…' });
+      cambiar.addEventListener('click', async () => {
+        const r = await elegirImagen(1200);
+        if (r) modeling.cambiarPropiedades(e, { href: r.href });
+      });
+      const acciones = el('div', { class: 'fl-formato' }, cambiar);
+      const yaGuardada = misFiguras().some((f) => f.href === b.href);
+      if (b.href && !yaGuardada) {
+        const guardar = el('button', { type: 'button', class: 'btn btn-secondary btn-sm', texto: 'Guardar en Mis figuras' });
+        guardar.addEventListener('click', () => {
+          const nombre = leerNombre(e) || 'Figura';
+          try {
+            const lista = misFiguras();
+            const t = tamanoEnDiagrama(e.width, e.height, 256);
+            lista.push({ id: `f${Date.now().toString(36)}`, nombre, href: b.href, ancho: t.width, alto: t.height });
+            localStorage.setItem('fluye.figuras', JSON.stringify(lista));
+            aviso(`“${nombre}” quedó en Mis figuras (en la paleta).`, 'ok');
+            render();
+          } catch { aviso('No se pudo guardar: el almacenamiento de este navegador está lleno.', 'error', 4000); }
+        });
+        acciones.appendChild(guardar);
+      }
+      contenedor.appendChild(campo('Imagen', acciones));
+    }
   }
 
   // Resumen del proceso abierto + revisión rápida (se actualiza mientras se modela).

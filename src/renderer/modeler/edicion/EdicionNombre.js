@@ -1,10 +1,13 @@
 // Edición del nombre en el lugar: doble clic, o automática al crear un elemento (texto ya seleccionado).
-import { es, esActividad, esAnotacion, esCarril, esConexion, esEvento, esGrupo, esPool, esSubprocesoExpandido, nombreExterno } from '../tipos.js';
+import {
+  ALTO_CABECERA_FASE, es, esActividad, esAnotacion, esCarril, esConexion, esEncabezado, esEvento, esFase, esGrupo, esImagen, esPool,
+  esSubprocesoExpandido, esTexto, nombreExterno, tituloEncabezado
+} from '../tipos.js';
 import { leerNombre } from '../modeling/comandos.js';
 import { FUENTE } from '../draw/texto.js';
-import { posicionNombreConexion } from '../draw/FluyeRenderer.js';
+import { formatoTexto, posicionNombreConexion } from '../draw/FluyeRenderer.js';
 
-const EDITAR_AL_CREAR = (el) => esActividad(el) || esPool(el) || esCarril(el) || esAnotacion(el) ||
+const EDITAR_AL_CREAR = (el) => esActividad(el) || esPool(el) || esCarril(el) || esAnotacion(el) || esTexto(el) || esFase(el) ||
   el.type === 'bpmn:ExclusiveGateway' || el.type === 'bpmn:InclusiveGateway';
 
 export default class EdicionNombre {
@@ -46,12 +49,33 @@ export default class EdicionNombre {
 
   activate(el) {
     if (!el.parent || esConexion(el) && !el.waypoints) return null;
-    if (!(esActividad(el) || esEvento(el) || nombreExterno(el) || esPool(el) || esCarril(el) || esAnotacion(el) || esGrupo(el) || es(el, 'bpmn:SequenceFlow', 'bpmn:MessageFlow'))) return null;
+    if (!(esActividad(el) || esEvento(el) || nombreExterno(el) || esPool(el) || esCarril(el) || esAnotacion(el) || esGrupo(el) ||
+      esFase(el) || esTexto(el) || esEncabezado(el) || esImagen(el) || es(el, 'bpmn:SequenceFlow', 'bpmn:MessageFlow'))) return null;
     const zoom = this._canvas.zoom();
     const caja = this._canvas.getAbsoluteBBox(el);
     const tamano = 12 * zoom;
     const estilo = { fontFamily: FUENTE, fontSize: `${tamano}px`, lineHeight: 1.25, color: '#0F172A', fontWeight: '400', textAlign: 'center' };
     let bounds, opciones = { centerVertically: true };
+
+    if (esFase(el)) {
+      bounds = { x: caja.x + 4, y: caja.y + 1, width: caja.width - 8, height: (ALTO_CABECERA_FASE - 2) * zoom };
+      Object.assign(estilo, { fontWeight: '600', backgroundColor: '#fff', border: '1px solid #3b82f6', borderRadius: '4px' });
+      return { bounds, style: estilo, text: leerNombre(el), options: opciones };
+    }
+    if (esTexto(el)) {
+      const f = formatoTexto(el);
+      bounds = { x: caja.x + 4, y: caja.y + 2, width: caja.width - 8, height: Math.max(caja.height - 4, f.tamano * 1.4 * zoom) };
+      Object.assign(estilo, {
+        fontSize: `${f.tamano * zoom}px`, fontWeight: String(f.peso), fontStyle: f.cursiva ? 'italic' : 'normal', color: f.color,
+        textDecoration: f.subrayado ? 'underline' : 'none', textAlign: { inicio: 'left', centro: 'center', derecha: 'right' }[f.alinear]
+      });
+      return { bounds, style: estilo, text: leerNombre(el), options: { autoResize: true, centerVertically: true } };
+    }
+    if (esEncabezado(el)) {
+      bounds = { x: caja.x + 8, y: caja.y + 6, width: caja.width - 16, height: 26 * zoom };
+      Object.assign(estilo, { fontSize: `${16 * zoom}px`, fontWeight: '700', textAlign: 'left', backgroundColor: '#fff' });
+      return { bounds, style: estilo, text: tituloEncabezado(el), options: {} };
+    }
 
     if (esConexion(el)) {
       const p = posicionNombreConexion(el, leerNombre(el) || 'Etiqueta'), vb = this._canvas.viewbox();
@@ -65,7 +89,7 @@ export default class EdicionNombre {
       bounds = { x: caja.x + 6, y: caja.y + 4, width: caja.width - 12, height: 22 * zoom };
       Object.assign(estilo, { textAlign: 'left', fontWeight: '600' });
       opciones = {};
-    } else if (nombreExterno(el)) {
+    } else if (nombreExterno(el) || esImagen(el)) {
       const ancho = 140 * zoom;
       bounds = { x: caja.x + caja.width / 2 - ancho / 2, y: caja.y + caja.height + 3, width: ancho, height: 30 * zoom };
       Object.assign(estilo, { fontSize: `${11 * zoom}px` });
@@ -82,6 +106,14 @@ export default class EdicionNombre {
 
   update(el, texto) {
     const nuevo = (texto || '').replace(/ /g, ' ').trim();
+    // El título del encabezado: si queda igual al nombre de la pestaña, sigue automático.
+    if (esEncabezado(el)) {
+      if (nuevo === tituloEncabezado(el)) return;
+      let raiz = el;
+      while (raiz.parent) raiz = raiz.parent;
+      this._modeling.cambiarPropiedades(el, { titulo: nuevo && nuevo !== raiz.nombreDiagrama ? nuevo : undefined });
+      return;
+    }
     if (nuevo === leerNombre(el)) return;
     this._modeling.renombrar(el, nuevo);
   }

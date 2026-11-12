@@ -1,6 +1,6 @@
 // Crea las figuras del diagrama junto con su objeto BPMN (businessObject).
 import ElementFactory from 'diagram-js/lib/core/ElementFactory.js';
-import { DEFINICIONES_EVENTO, nuevoId, tamanoPorDefecto } from '../tipos.js';
+import { DEFINICIONES_EVENTO, NS_FLUYE, nuevoId, tamanoPorDefecto } from '../tipos.js';
 
 export default class FluyeElementFactory extends ElementFactory {
   static $inject = ['moddle'];
@@ -14,6 +14,12 @@ export default class FluyeElementFactory extends ElementFactory {
     if (tipoElemento === 'label' || tipoElemento === 'root') return super.create(tipoElemento, attrs);
     attrs = { ...attrs };
     let b = attrs.businessObject;
+    if (!b && /^fluye:/.test(attrs.type || '')) {
+      // Elementos propios de Fluye (fase, texto, encabezado, imagen): objeto genérico con sus datos (datos: {...}).
+      b = this._moddle.createAny(attrs.type, NS_FLUYE, { id: nuevoId(attrs.type.replace('fluye:', 'Fluye_')), ...(attrs.datos || {}) });
+      if (attrs.nombre) b.name = attrs.nombre;
+    }
+    delete attrs.datos;
     if (!b) {
       if (!attrs.type) throw new Error('Falta el tipo del elemento');
       b = this._moddle.create(attrs.type, { id: nuevoId(attrs.type) });

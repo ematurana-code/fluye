@@ -6,9 +6,31 @@ import { getConnectionMid } from 'diagram-js/lib/layout/LayoutUtil.js';
 import { dibujarTexto, medir } from './texto.js';
 import { iconoEnSvg } from '../../iconos.js';
 import {
-  cabeceraDe, COLORES, bo, colores, es, esActividad, esAnotacion, esCarril, esCompuerta, esDato, esEvento, esGrupo,
-  esPool, nombreExterno, tipoEvento
+  ALTO_CABECERA_FASE, cabeceraDe, COLORES, bo, colores, es, esActividad, esAnotacion, esCarril, esCompuerta, esDato, esEncabezado,
+  esEvento, esFase, esGrupo, esImagen, esPool, esTexto, nombreExterno, tipoEvento, tituloEncabezado
 } from '../tipos.js';
+
+const si = (v) => v === true || v === 'true';
+// "2026-11-12" → "12-11-2026" (sin pasar por Date: si no, la zona horaria la corre un día).
+const FECHA = (iso) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : '—';
+};
+
+// Formato de un texto libre (guardado como atributos del elemento).
+export function formatoTexto(el) {
+  const b = bo(el);
+  return {
+    tamano: Math.min(72, Math.max(8, Number(b.tamano) || 14)),
+    peso: si(b.negrita) ? 700 : 400,
+    cursiva: si(b.cursiva),
+    subrayado: si(b.subrayado),
+    color: /^#[0-9a-f]{3,8}$/i.test(b.color || '') ? b.color : '#0F172A',
+    alinear: ['inicio', 'centro', 'derecha'].includes(b.alinear) ? b.alinear : 'inicio',
+    fondo: /^#[0-9a-f]{3,8}$/i.test(b.fondo || '') ? b.fondo : null,
+    borde: si(b.borde)
+  };
+}
 
 const PRIORIDAD = 1500;
 let idMarcadores = 0;
@@ -23,13 +45,17 @@ export default class FluyeRenderer extends BaseRenderer {
   }
 
   canRender(elemento) {
-    return /^bpmn:/.test(elemento.type) && !elemento.labelTarget;
+    return /^(bpmn|fluye):/.test(elemento.type) && !elemento.labelTarget;
   }
 
   // ---------- figuras ----------
 
   drawShape(padre, el) {
     const c = colores(el);
+    if (esFase(el)) return this._fase(padre, el, c);
+    if (esTexto(el)) return this._texto(padre, el);
+    if (esEncabezado(el)) return this._encabezado(padre, el, c);
+    if (esImagen(el)) return this._imagen(padre, el);
     if (esPool(el) || esCarril(el)) return this._contenedor(padre, el, c);
     if (esEvento(el)) return this._evento(padre, el, c);
     if (esCompuerta(el)) return this._compuerta(padre, el, c);
@@ -67,6 +93,18 @@ export default class FluyeRenderer extends BaseRenderer {
     if (!nombre) return;
     const ancho = Math.max(90, Math.min(140, medir(nombre, 11) + 8));
     const opciones = { tamano: 11, color: COLORES.texto, maxLineas: 4, clase: 'fl-texto fl-texto-externo', halo: true };
+    // Evento en el borde de una tarea: el nombre va a su lado, hacia afuera de la tarea (si no, taparía su texto).
+    if (es(el, 'bpmn:BoundaryEvent') && el.host) {
+      const h = el.host, cx = el.x + el.width / 2, cy = el.y + el.height / 2;
+      const abajo = Math.abs(cy - (h.y + h.height)) <= 2, arriba = Math.abs(cy - h.y) <= 2, izq = Math.abs(cx - h.x) <= 2;
+      if (abajo || arriba) {
+        dibujarTexto(padre, nombre, { x: el.width + 3, y: abajo ? el.height / 2 + 1 : el.height / 2 - 30, ancho, alto: 28 },
+          { ...opciones, alinear: 'inicio', vertical: abajo ? 'arriba' : 'abajo', maxLineas: 2 });
+        return;
+      }
+      dibujarTexto(padre, nombre, { x: izq ? -ancho - 3 : el.width + 3, y: el.height + 2, ancho }, { ...opciones, alinear: izq ? 'derecha' : 'inicio', maxLineas: 2 });
+      return;
+    }
     // Si una flecha sale o entra por abajo, el nombre va arriba para no quedar cruzado por la línea;
     // si hay flechas arriba y abajo, va arriba a la izquierda, sin tocar la línea vertical del centro.
     const abajo = usaBordeInferior(el), arriba = usaBordeSuperior(el);
@@ -215,6 +253,69 @@ export default class FluyeRenderer extends BaseRenderer {
     const forma = this._rect(padre, el.width, el.height, 10, 'none', c.stroke, 1.4, { 'stroke-dasharray': '8 4 2 4' });
     const nombre = bo(el).categoryValueRef && bo(el).categoryValueRef.value;
     if (nombre) dibujarTexto(padre, nombre, { x: 8, y: 6, ancho: el.width - 16 }, { tamano: 11, peso: 600, alinear: 'inicio', vertical: 'arriba', color: '#334155' });
+    return forma;
+  }
+
+  // Fase (hito) de un pool: columna a todo el alto, con su nombre en una franja arriba y una línea punteada que la
+  // separa de la siguiente (con una punta que indica el avance).
+  _fase(padre, el, c) {
+    const w = el.width, h = el.height, a = ALTO_CABECERA_FASE;
+    const forma = this._rect(padre, w, h, 0, 'none', 'none', 0);
+    this._rect(padre, w, a, 0, (el.colores && el.colores.fill) || COLORES.contenedor.cabecera, 'none', 0);
+    this._ruta(padre, `M0,${a} H${w}`, { stroke: '#CBD5E1', 'stroke-width': 1, fill: 'none' });
+    const pool = el.parent;
+    const ultima = !pool || el.x + el.width >= pool.x + pool.width - 1;
+    if (!ultima) {
+      this._ruta(padre, `M${w},${a} V${h}`, { stroke: c.stroke, 'stroke-width': 1.2, 'stroke-dasharray': '6 4', fill: 'none' });
+      this._ruta(padre, `M${w - 5},3 L${w + 3},${a / 2} L${w - 5},${a - 3}`, { stroke: c.stroke, 'stroke-width': 1.3, fill: 'none', 'stroke-linejoin': 'round' });
+    }
+    dibujarTexto(padre, bo(el).name, { x: 8, y: 2, ancho: w - 20, alto: a - 4 }, { tamano: 12, peso: 600, color: COLORES.texto, maxLineas: 1 });
+    return forma;
+  }
+
+  // Texto libre con formato: tamaño, negrita, cursiva, subrayado, color, alineación, fondo y borde opcionales.
+  _texto(padre, el) {
+    const f = formatoTexto(el);
+    const forma = this._rect(padre, el.width, el.height, 4, f.fondo || 'transparent', f.borde ? f.color : 'none', f.borde ? 1.2 : 0);
+    dibujarTexto(padre, bo(el).name, { x: 6, y: 4, ancho: el.width - 12, alto: el.height - 8 },
+      { tamano: f.tamano, peso: f.peso, cursiva: f.cursiva, subrayado: f.subrayado, color: f.color, alinear: f.alinear, vertical: 'centro' });
+    return forma;
+  }
+
+  // Encabezado: título (el de la pestaña, salvo que se escriba otro), autor, versión, fecha de guardado y descripción.
+  _encabezado(padre, el, c) {
+    const b = bo(el), w = el.width, h = el.height;
+    const forma = this._rect(padre, w, h, 8, (el.colores && el.colores.fill) || '#FFFFFF', c.stroke, 1.4);
+    dibujarTexto(padre, tituloEncabezado(el), { x: 12, y: 8, ancho: w - 24, alto: 24 }, { tamano: 16, peso: 700, color: COLORES.texto, alinear: 'inicio', maxLineas: 1 });
+    this._ruta(padre, `M10,36 H${w - 10}`, { stroke: '#CBD5E1', 'stroke-width': 1, fill: 'none' });
+    const filas = [['Autor', b.autor], ['Versión', b.version], ['Actualizado', FECHA(b.fecha)], ['Descripción', b.descripcion]];
+    let y = 44;
+    const col = 96;
+    for (const [etiqueta, valor] of filas) {
+      if (y + 14 > h - 4) break;
+      const ultima = etiqueta === 'Descripción';
+      const lineas = ultima ? Math.max(1, Math.floor((h - 6 - y) / 13.75)) : 1;
+      dibujarTexto(padre, `${etiqueta}:`, { x: 12, y, ancho: col - 18 }, { tamano: 11, peso: 600, color: '#475569', alinear: 'derecha', vertical: 'arriba' });
+      dibujarTexto(padre, valor || '—', { x: col, y, ancho: w - col - 12 }, { tamano: 11, color: COLORES.texto, alinear: 'inicio', vertical: 'arriba', maxLineas: lineas });
+      y += 16;
+    }
+    return forma;
+  }
+
+  // Imagen (o figura propia): el dibujo cabe entero en la caja; si tiene nombre, va debajo.
+  _imagen(padre, el) {
+    const b = bo(el);
+    const forma = this._rect(padre, el.width, el.height, 4, 'transparent', 'none', 0);
+    if (b.href && /^data:image\//.test(b.href)) {
+      const img = svgCreate('image');
+      svgAttr(img, { x: 0, y: 0, width: el.width, height: el.height, preserveAspectRatio: 'xMidYMid meet' });
+      img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', b.href);
+      svgAppend(padre, img);
+    } else {
+      this._rect(padre, el.width, el.height, 4, '#F8FAFC', '#94A3B8', 1.2, { 'stroke-dasharray': '4 3' });
+      dibujarTexto(padre, 'Imagen', { x: 0, y: 0, ancho: el.width, alto: el.height }, { tamano: 11, color: '#64748B' });
+    }
+    this._nombreDebajo(padre, el);
     return forma;
   }
 

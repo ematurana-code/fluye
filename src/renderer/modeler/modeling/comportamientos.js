@@ -5,8 +5,10 @@ import AutoResizeProvider from 'diagram-js/lib/features/auto-resize/AutoResizePr
 import { getMid, asTRBL } from 'diagram-js/lib/layout/LayoutUtil.js';
 import { computeChildrenBBox, getMinResizeBounds } from 'diagram-js/lib/features/resize/ResizeUtil.js';
 import {
-  cabeceraDe, bo, es, esCarril, esConexion, esPool, esSubprocesoExpandido, nuevoId, prefijoNombre
+  ALTO_CABECERA_FASE, NS_FLUYE, cabeceraDe, bo, datosFluye, es, esArtefactoFluye, esBorde, esCarril, esConexion, esFase, esPool,
+  esSubprocesoExpandido, fasesDe, nuevoId, prefijoNombre
 } from '../tipos.js';
+import { ANCHO_MIN_FASE } from './propios.js';
 import { leerNombre } from './comandos.js';
 import { puedeConectar } from '../rules/FluyeRules.js';
 
@@ -36,7 +38,7 @@ export class PadreCorrecto extends CommandInterceptor {
 
   constructor(eventBus) {
     super(eventBus);
-    const alPool = (p) => (esCarril(p) ? p.parent : p);
+    const alPool = (p) => (esCarril(p) || esFase(p) ? p.parent : p);
     this.preExecute('shape.create', 2000, (e) => { if (!esCarril(e.context.shape)) e.context.parent = alPool(e.context.parent); });
     this.preExecute('elements.create', 2000, (e) => { e.context.parent = alPool(e.context.parent); });
     this.preExecute('elements.move', 2000, (e) => { if (e.context.newParent) e.context.newParent = alPool(e.context.newParent); });
@@ -54,7 +56,9 @@ export class CrecimientoAutomatico extends AutoResize {
   }
 
   getPadding(forma) {
-    return esPool(forma) ? { top: 15, bottom: 15, left: cabeceraDe(forma) + 15, right: 25 } : { top: 25, bottom: 15, left: 15, right: 15 };
+    // Con fases, arriba queda libre la franja con sus nombres.
+    const arriba = esPool(forma) && fasesDe(forma).length ? 15 + ALTO_CABECERA_FASE : 15;
+    return esPool(forma) ? { top: arriba, bottom: 15, left: cabeceraDe(forma) + 15, right: 25 } : { top: 25, bottom: 15, left: 15, right: 15 };
   }
 }
 
@@ -63,7 +67,7 @@ export class ReglaCrecimiento extends AutoResizeProvider {
 
   canResize(elementos, destino) {
     if (!(esPool(destino) || esSubprocesoExpandido(destino))) return false;
-    return elementos.every((e) => !esCarril(e) && !esConexion(e));
+    return elementos.every((e) => !esCarril(e) && !esConexion(e) && !esFase(e));
   }
 }
 
@@ -259,9 +263,22 @@ export class TamanoMinimo {
   constructor(eventBus) {
     eventBus.on('resize.start', 1500, ({ context }) => {
       const f = context.shape;
-      const pasos = (p) => (p.children || []).filter((h) => !esCarril(h) && !h.waypoints && !h.labelTarget);
+      const pasos = (p) => (p.children || []).filter((h) => !esCarril(h) && !esFase(h) && !h.waypoints && !h.labelTarget);
       if (esPool(f)) {
-        const caja = computeChildrenBBox(pasos(f), { top: 15, bottom: 15, left: 15, right: 25 });
+        let caja = computeChildrenBBox(pasos(f), { top: 15, bottom: 15, left: 15, right: 25 });
+        // Con fases, la primera y la última no pueden quedar más angostas que el mínimo.
+        const fases = fasesDe(f);
+        if (fases.length) {
+          const primera = fases[0], ultima = fases[fases.length - 1];
+          const izq = Math.min(primera.x + primera.width - ANCHO_MIN_FASE, ultima.x), der = Math.max(ultima.x + ANCHO_MIN_FASE, primera.x + primera.width);
+          const y = f.y + f.height / 2;
+          const deFases = { x: izq, y, width: der - izq, height: 1 };
+          if (caja) {
+            const x1 = Math.min(caja.x, deFases.x), y1 = Math.min(caja.y, deFases.y);
+            const x2 = Math.max(caja.x + caja.width, deFases.x + deFases.width), y2 = Math.max(caja.y + caja.height, deFases.y + deFases.height);
+            caja = { x: x1, y: y1, width: x2 - x1, height: y2 - y1 };
+          } else caja = deFases;
+        }
         let min = getMinResizeBounds(context.direction, f, { width: 300, height: 80 }, caja);
         const lista = carrilesDe(f);
         if (lista.length > 1) {
@@ -341,7 +358,7 @@ export class UbicacionAutomatica {
     eventBus.on('autoPlace', 1500, ({ source, shape }) => {
       const o = asTRBL(source), medio = getMid(source);
       const x = o.right + 70 + shape.width / 2;
-      const ocupado = (cx, cy) => elementRegistry.filter((el) => el.parent === source.parent && !esConexion(el) && !esCarril(el) && el !== shape)
+      const ocupado = (cx, cy) => elementRegistry.filter((el) => el.parent === source.parent && !esConexion(el) && !esCarril(el) && !esFase(el) && el !== shape)
         .some((el) => cx + shape.width / 2 + 10 > el.x && cx - shape.width / 2 - 10 < el.x + el.width &&
           cy + shape.height / 2 + 10 > el.y && cy - shape.height / 2 - 10 < el.y + el.height);
       // Deja la figura completa dentro del carril donde cae su centro (sin quedar montada en la línea).
@@ -371,6 +388,10 @@ export class CopiarPegar {
       const b = bo(element);
       descriptor.type = element.type;
       descriptor.colores = element.colores;
+      if (esArtefactoFluye(element)) {
+        descriptor.datos = { fluye: datosFluye(b, element.type) };
+        return;
+      }
       descriptor.marcadorVisible = element.marcadorVisible;
       descriptor.datos = {
         name: es(b, 'bpmn:Group') ? leerNombre(element) : b.name, text: b.text, documentacion: (b.documentation || []).map((d) => d.text),
@@ -379,6 +400,14 @@ export class CopiarPegar {
     });
     eventBus.on('copyPaste.pasteElement', 1500, ({ descriptor }) => {
       const d = descriptor.datos || {};
+      descriptor.pegado = true;
+      if (/^fluye:/.test(descriptor.type)) {
+        const propio = moddle.createAny(descriptor.type, NS_FLUYE, { id: nuevoId(descriptor.type.replace('fluye:', 'Fluye_')), ...(d.fluye || {}) });
+        descriptor.businessObject = propio;
+        descriptor.id = propio.id;
+        delete descriptor.datos;
+        return;
+      }
       const nuevo = moddle.create(descriptor.type, { id: nuevoId(descriptor.type) });
       // El nombre de un grupo vive en su categoría: la copia lleva una propia.
       if (descriptor.type === 'bpmn:Group') nuevo.categoryValueRef = moddle.create('bpmn:CategoryValue', { id: nuevoId('CategoryValue'), value: d.name || '' });
@@ -393,6 +422,7 @@ export class CopiarPegar {
       descriptor.id = nuevo.id;
       delete descriptor.datos;
     });
-    eventBus.on('copyPaste.canCopyElements', ({ elements }) => elements.filter((e) => !esCarril(e)));
+    // No se copian carriles ni fases (son parte de su pool), ni eventos de borde sin su tarea.
+    eventBus.on('copyPaste.canCopyElements', ({ elements }) => elements.filter((e) => !esCarril(e) && !esFase(e) && !(esBorde(e) && !elements.includes(e.host))));
   }
 }

@@ -50,6 +50,12 @@ export function revisarDiagrama(elementos) {
       if (sinNombre) obs.push({ texto: `${n ? quien : 'Una decisión'} tiene ${sinNombre === 1 ? 'un camino' : `${sinNombre} caminos`} sin nombre (por ejemplo, “Sí” o “No”).`, elemento: e });
     }
   }
+  // Un evento en el borde de una tarea abre un camino alternativo: necesita a dónde ir.
+  for (const e of elementos.filter((x) => !x.waypoints && es(x, 'bpmn:BoundaryEvent'))) {
+    if (salidas(e).length) continue;
+    const tarea = e.host && nombre(e.host);
+    obs.push({ texto: `${nombre(e) ? `“${nombre(e)}”` : 'Un evento'} en el borde de ${tarea ? `“${tarea}”` : 'una tarea'} no tiene flecha de salida: si ocurre, el proceso se corta.`, elemento: e });
+  }
   for (const grupo of ciclosSinSalida(elementos)) {
     const nombres = grupo.map(nombre).filter(Boolean).map((x) => `“${x}”`);
     const cuales = !nombres.length ? 'Unos pasos' : nombres.length > 3 ? `${nombres.slice(0, 3).join(', ')} y otros`
